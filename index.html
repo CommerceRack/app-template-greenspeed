@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 
 <!-- do not populate or add meta data, the SEO layer will add it -->
-<title>Widespread</title><!-- this will get populated by the SEO layer -->
+<title>GreenSpeed</title><!-- this will get populated by the SEO layer -->
 
 
 <!-- used for optional social media extensions -->
@@ -72,7 +72,9 @@ $(document).ready(function(){
 <div class="container" id='appView'>
 	<section  id='mastHead'>
 		<div class='clearfix contrastUI'>
-			<div class='logo pointer' onClick="return showContent('homepage',{});"></div>
+			<div class='logo pointer' onClick="return showContent('homepage',{});">
+			<!-- ::: YOUR LOGO GOES HERE ::: -->
+			</div>
 			<div class='menuAndSearch'>
 				<ul class='mainMenu menuitems'>
 					<li class='menuItem2' onClick="return showContent('company',{'show':'contact'});">contact</li>
@@ -112,9 +114,9 @@ $(document).ready(function(){
 
 	<div class='clearfix'>
 	<ul id='mastFoot' class='menuitems'>
-		<li class='menuItem1' onClick="return showContent('homepage',{'show':'home'});">home</li>
-		<li class='menuItem2' onClick="return showContent('customer',{'show':'myaccount'});">account</li>
-		<li class='menuItem3' onClick="return showContent('company',{'show':'about'});">company</li>
+		<li class='menuItem1' onClick="return showContent('customer',{'show':'newsletter'});">newsletter</li>
+		<li class='menuItem2' onClick="return showContent('company',{'show':'about'});">company</li>
+		<li class='menuItem3' onClick="return showContent('customer',{'show':'myaccount'});">account</li>
 		<li class='menuItem4' onClick="return showContent('cart',{'show':'cart'});">cart</li>
 		<li class='menuItem5' onClick="return showContent('checkout',{'show':'checkout'});">checkout</li>
 	</ul>
@@ -702,7 +704,9 @@ if you change these, you should move them above this comment so that when you (o
 <!-- .textContentArea is used as a selector in quickstart.js because article tag type isn't ie8 friendly -->
 		<div id='aboutArticle' class='textContentArea article'>
 			<h1>About Us</h1>
-			<div data-bind='var: profile(zoovy:about); format:wiki; wikiFormats:myRIA;' id='aboutUsContent'></div>
+			<div data-bind='var: profile(zoovy:about); format:wiki; wikiFormats:myRIA;' id='aboutUsContent'>
+			<!-- ::: YOUR COMPANY/ABOUT US CONTENT GOES HERE ::: -->
+			</div>
 		</div>
 
 
@@ -727,19 +731,22 @@ if you change these, you should move them above this comment so that when you (o
 
 		<div id='faqArticle' class='displayNone textContentArea'>
 			<h1>Frequently Asked Questions</h1>
-			<div id='faqContent' class='loadingBG ui-accordion ui-widget ui-helper-reset ui-accordion-icons appAccordianesque'></div>
+			<div id='faqContent' class='loadingBG ui-accordion ui-widget ui-helper-reset ui-accordion-icons appAccordianesque'></div><!-- populate faq via faq manager -->
 		</div>
 
 
 
 		<div class='displayNone textContentArea' id='paymentArticle'>
 			<h1>Payment Policy</h1>
-			<div data-bind='var: profile(zoovy:payment_policy); format:wiki; wikiFormats:myRIA;' id='paymentContent'></div>
+			<div data-bind='var: profile(zoovy:payment_policy); format:wiki; wikiFormats:myRIA;' id='paymentContent'>
+			<!-- ::: YOUR PAYMENT POLICY GOES HERE ::: -->
+			</div>
 		</div>
 
 
 		<div class='displayNone textContentArea' id='privacyArticle'>
 			<h1>Privacy Statement</h1>
+	<!-- a default privacy policy has been provided. Feel free to change as desired -->
 	<h4>About this Privacy Policy:</h4>
 	<p>The entire site, or at least specific portions of this site are assisted by Zoovy technology. Zoovy has created this privacy policy as a template for customers who are using Zoovy technology with their websites. Zoovy in no way takes responsibility for the accuracy or enforcement of this policy. For a copy of Zoovy's privacy policy (which does not necessarily apply to the customers of its customers) visit http://www.zoovy.com/legal</p>
 
@@ -784,14 +791,18 @@ if you change these, you should move them above this comment so that when you (o
 
 		<div class='displayNone textContentArea' id='returnArticle'>
 			<h1>Return Policy</h1>
-			<div data-bind='var: profile(zoovy:return_policy); format:wiki; wikiFormats:myRIA;' id='returnContent'></div>
+			<div data-bind='var: profile(zoovy:return_policy); format:wiki; wikiFormats:myRIA;' id='returnContent'>
+			<!-- ::: YOUR RETURN POLICY GOES HERE ::: -->
+			</div>
 		</div>
 
 
 
 		<div class='displayNone textContentArea' id='shippingArticle'>
 			<h1>Shipping Information</h1>
-			<div data-bind='var: profile(zoovy:shipping_policy); format:wiki; wikiFormats:myRIA;' id='shippingContent'></div>
+			<div data-bind='var: profile(zoovy:shipping_policy); format:wiki; wikiFormats:myRIA;' id='shippingContent'>
+			<!-- ::: YOUR SHIPPING POLICY GOES HERE ::: -->
+			</div>
 		</div>
 
 	</div>
@@ -827,11 +838,13 @@ subscribeListsArticle is used for authenticated buyers
 -->
 		<div id='newsletterArticle' class='displayNone textContentArea'>
 			<h1>Subscribe to our Newsletter and Save!</h1>
-			<div data-bind="format:loadsTemplate; loadsTemplate:subscribeFormTemplate;"></div>
+			<div class='marginBottom'><!-- ::: Add a short description about what your newsletter will contain. This text should be targeted towards NEW customers. Feel free to change the header tag (H1) one line above. ::: --></div>
+			<div data-bind="format:loadsTemplate; loadsTemplate:subscribeFormTemplate;"></div><!-- the newsletter form itself will be added to this div -->
 		</div>
 
 		<div id='subscriberListsArticle' class='displayNone textContentArea'>
 			<h1>Manage your Subscriptions</h1>
+			<div class='marginBottom'><!-- ::: Optionally add a short description about what your newsletter will contain. This text should be targeted towards EXISTING customers. Feel free to change the header tag (H1) one line above. ::: --></div>
 <!-- save onchange -->
 <form action='#' name='subscribeFrm'>
 
@@ -900,6 +913,7 @@ subscribeListsArticle is used for authenticated buyers
 
 		<div id='listsArticle' class='displayNone textContentArea'>
 			<h1>List Manager</h1>
+			<div class='marginBottom'><!-- ::: here you can provide a short description to your customers about 'lists'. This would include a wishlist, but allows for more than 1 list :::--></div>
 			<div id='listsContainer' class='prodlist loadingBG'></div>
 
 			<div id='listEditorContainer' class='displayNone loadingBG'></div><!-- editor for a given list gets added here -->
