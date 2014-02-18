@@ -1289,6 +1289,7 @@ will load everything in the RQ will a pass <= [pass]. so pass of 10 loads everyt
 
 						for(var i = 0; i < supportedEvents.length; i += 1)	{
 							$t.on(supportedEvents[i]+".app","[data-app-"+supportedEvents[i]+"]",function(e,p){
+//								dump(" -> executing event. p: "); dump(p);
 								return _app.u._executeEvent($(e.currentTarget),$.extend(p,e));
 								});
 							}	
@@ -1307,6 +1308,9 @@ will load everything in the RQ will a pass <= [pass]. so pass of 10 loads everyt
 				if(ep.handleObj && ep.handleObj.origType)	{
 					type = ep.handleObj.origType; //use this if available. ep.type could be 'focusOut' instead of 'blur'.
 					}
+				
+//				dump(" -> type: "+type);
+				
 				var r, actionsArray = $CT.attr('data-app-'+type).split(","), L = actionsArray.length; // ex: admin|something or admin|something, admin|something_else
 				for(var i = 0; i < L; i += 1)	{
 					var	AEF = $.trim(actionsArray[i]).split('|'); //Action Extension Function.  [0] is extension. [1] is Function.
@@ -1573,11 +1577,12 @@ AUTHENTICATION/USER
 				_app.model.destroy('cartDetail|'+_app.model.fetchCartID()); //need the cart object to update again w/out customer details.
 				_app.model.destroy('whoAmI'); //need this nuked too.
 				_app.vars.cid = null; //used in soft-auth.
-				window.localStorage.clear(); //clear everything from localStorage.
-				
 				_app.calls.buyerLogout.init({'callback':'showMessaging','message':'Thank you, you are now logged out'});
-				_app.calls.refreshCart.init({},'immutable');
+//				_app.calls.refreshCart.init({},'immutable');
 				_app.model.dispatchThis('immutable');
+				if($.support.localStorage)	{
+					window.localStorage.clear(); //clear everything from localStorage.
+					}
 				}, //logBuyerOut
 
 			thisIsAnAdminSession : function()	{
@@ -2805,10 +2810,8 @@ return $r;
 
 //infoObj.state = onCompletes or onInits. later, more states may be supported.
 			handleTemplateEvents : function($ele,infoObj)	{
-				dump("BEGIN handleTemplateEvents. state: "+infoObj.state);
 				infoObj = infoObj || {};
 				if($ele instanceof jQuery && infoObj.state)	{
-					//the following code allows for a data-app-init/complete/depart to be set on the element. 
 					if($.inArray(infoObj.state,['init','complete','depart']) >= 0)	{
 						if($ele.attr('data-app-'+infoObj.state))	{
 							//the following code is also in _app.u.addEventDelegation(). It was copied (tsk, tsk. i know) because at the time, DE was in a plugin.
@@ -2828,7 +2831,7 @@ return $r;
 								}						
 
 							}
-						$ele.trigger(infoObj.state,[infoObj,$ele]);
+						$ele.trigger(infoObj.state,[$ele,infoObj]);
 						}
 					else	{
 						$ele.anymessage({'message':'_app.templateFunctions.handleTemplateEvents, infoObj.state ['+infoObj.state+'] is not valid. Only init, complete and depart are acceptable values.','gMessage':true});

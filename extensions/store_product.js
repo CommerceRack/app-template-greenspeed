@@ -325,7 +325,6 @@ addToCart : function (pid,$form){
 
 			simpleInvDisplay : function($tag,data)	{
 //data.value = available inventory
-
 //				_app.u.dump("BEGIN store_product.renderFunctions.invAvail.");
 				if(data.value > 0)
 					$tag.addClass('instock').append("In Stock");
@@ -456,11 +455,11 @@ it has no inventory AND inventory matters to merchant
 					r = false;
 					}
 				else if(_app.data['appProductGet|'+pid]['%attribs']['zoovy:base_price'] == '')	{
-//					_app.u.dump(" -> base price not set: "+pid);
+					_app.u.dump(" -> base price not set: "+pid);
 					r = false;
 					}
 				else if(_app.data['appProductGet|'+pid]['%attribs']['zoovy:grp_type'] == 'PARENT')	{
-//					_app.u.dump(" -> product is a parent: "+pid);
+					_app.u.dump(" -> product is a parent: "+pid);
 					r = false;
 					}
 //inventory mode of 1 will allow selling more than what's in stock, so skip any inv validating if == 1.
@@ -618,7 +617,7 @@ NOTES
 - if you pass a parentID, it is your responsibility to empty that parent, if needed.
 */
 			prodDataInModal : function(P)	{
-				dump("BEGIN prodDataInModal");
+//				dump("BEGIN prodDataInModal");
 				if(P.pid && P.templateID)	{
 					var $parent = $("#product-modal");
 					
@@ -630,7 +629,7 @@ NOTES
 						}
 //In the handleTemplateEvents execution, the template instance is 'found'. The init, complete and depart events are NOT on $parent, they're on the template instance.
 					$parent.dialog('option','close',function(){
-						dump(" -> GOT into the option close callback."); dump(P);
+//						dump(" -> GOT into the option close callback."); dump(P);
 						P.state = 'depart';
 						_app.renderFunctions.handleTemplateEvents($parent.find("[data-templateid='"+P.templateID+"']:first"),P);
 						});
