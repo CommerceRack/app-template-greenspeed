@@ -169,9 +169,9 @@ calls should always return the number of dispatches needed. allows for cancellin
 
 		cartSet : {
 			init : function(obj,_tag,Q)	{
-				if(obj._cartid && _app.u.thisNestedExists('ext.cart_message.vars.carts.'+obj._cartid,_app))	{
-					_app.model.addDispatchToQ({'_cmd':'cartMessagePush','what':'cart.update','_cartid':obj._cartid},'immutable');
-					}
+//				if(obj._cartid && _app.u.thisNestedExists('ext.cart_message.vars.carts.'+obj._cartid,_app))	{
+//					_app.model.addDispatchToQ({'_cmd':'cartMessagePush','what':'cart.update','_cartid':obj._cartid},'immutable');
+//					}
 				obj["_cmd"] = "cartSet";
 				obj._tag = _tag || {};
 				_app.model.addDispatchToQ(obj,Q || 'immutable');
@@ -399,7 +399,7 @@ left them be to provide guidance later.
 						$c.empty().showLoading({'message':'Updating cart contents'});
 						_app.model.destroy('cartDetail|'+$c.data('cartid'));
 						_app.calls.cartDetail.init($c.data('cartid'),{
-							'callback':'anycontent',
+							'callback':'tlc',
 							'onComplete' : function(){
 								$cart.trigger('complete',$.extend(true,{},P,event));
 								},
@@ -411,10 +411,10 @@ left them be to provide guidance later.
 					$cart.on('refresh.cart',function(event,P){
 						var $c = $(this);
 						$c.intervaledEmpty();
-						if($c.data('anycontent'))	{$c.anycontent('destroy')}
+						if($c.data('tlc'))	{$c.tlc('destroy')}
 						//w/ no destroy here, refresh will use what's in memory IF it's available. If not, it will fetch the cart.
 						_app.calls.cartDetail.init($c.data('cartid'),{
-							'callback':'anycontent',
+							'callback':'tlc',
 							'onComplete' : function(){
 								$cart.trigger('complete',$.extend(true,{},P,event));
 								},
@@ -631,15 +631,15 @@ note - dispatch isn't IN the function to give more control to developer. (you ma
 //used in admin. adminBuyerGet formats address w/ ship_ or bill_ instead of ship/ or bill/
 // addrArr is is the customerGet (for either @ship or @bill). ID is the ID/Shortcut of the method selected/desired.
 			getAndRegularizeAddrObjByID : function(addrArr,ID,type,regularize)	{
-				dump("BEGIN cco.u.getAndRegularizeAddrObjByID. regularize: "+regularize);
+//				dump("BEGIN cco.u.getAndRegularizeAddrObjByID. regularize: "+regularize);
 				var r = false; //what is returned.
 				if(typeof addrArr == 'object' && ID && type)	{
-					var address = addrArr[_app.ext.admin.u.getIndexInArrayByObjValue(addrArr,'_id',ID)];
+					var address = $.extend({},addrArr[_app.ext.admin.u.getIndexInArrayByObjValue(addrArr,'_id',ID)]); //COPY array so original in memory is unaffected.
 					if(regularize)	{
-						dump(" ->  got into the regularize code. if any conversions occur, they'll be listed below: ");
+//						dump(" ->  got into the regularize code. if any conversions occur, they'll be listed below: ");
 						for(var index in address)	{
 							if(index.indexOf(type+'_') >= 0)	{
-								dump(" ---->  converting "+index+" to "+index.replace(type+'_',type+'/'));
+//								dump(" ---->  converting "+index+" to "+index.replace(type+'_',type+'/'));
 								address[index.replace(type+'_',type+'/')] = address[index];
 								delete address[index];
 								}
@@ -732,7 +732,7 @@ note - dispatch isn't IN the function to give more control to developer. (you ma
 							tmp += "<\/select>";
 							tmp += "<select name='payment/YY' class='creditCardYearExp'  required='required'><option value=''><\/option>"+_app.u.getCCExpYears(data['payment/YY'])+"<\/select><\/div>";
 							
-							tmp += "<div><label for='payment/CV'>CVV/CID<input data-format-rules='CV' type='text' size='4' name='payment/CV' class=' creditCardCVV' data-input-format='numeric' data-app-keyup='input-format' value='";
+							tmp += "<div><label for='payment/CV'>CVV/CID<input data-format-rules='CV' type='text' size='4' name='payment/CV' class=' creditCardCVV' data-input-format='numeric' data-input-keyup='input-format' value='";
 							if(data['payment/CV']){tmp += data['payment/CV']}
 							if(!_app.u.thisIsAnAdminSession())	{
 								tmp += " required='required' " //merchant has option of acquiring cvv/cid.
@@ -896,6 +896,10 @@ note - dispatch isn't IN the function to give more control to developer. (you ma
 					delete formObj['qty']; //admin UI for line item editing.	
 					delete formObj['price']; //admin UI for line item editing.
 
+					delete formObj['sum/shp_carrier']; //admin UI custom ship cost.
+					delete formObj['sum/shp_method'];
+					delete formObj['sum/shp_total'];
+					
 					_app.ext.cco.calls.cartSet.init(formObj,_tag); //adds dispatches.
 					}
 				else	{
@@ -971,6 +975,7 @@ in a reorder, that data needs to be converted to the variations format required 
 //callback is executed as part of the cartDetail call, which is piggy backed w/ the append calls.
 //skuArr is an optional param. if set, only the items in skuArr will be appended to the cart.
 			appendOrderItems2Cart : function(vars,callback,skuArr)	{
+//				dump("BEGIN cco.u.appendOrderItems2Cart. skuArr: "); dump(skuArr);
 				vars = vars || {};
 				if(vars.orderid && vars.cartid)	{
 					var cmd; //the command used for the dispatch. varies based on whether this is admin or buyer.
@@ -994,7 +999,10 @@ in a reorder, that data needs to be converted to the variations format required 
 								else	{
 									var items = (cmd == 'adminOrderDetail') ? _app.data[rd.datapointer]['@ITEMS'] : _app.data[rd.datapointer].order['@ITEMS'], L = items.length;
 									for(var i = 0; i < L; i += 1)	{
-										if(skuArr.length && !$.inArray(items[i].sku,skuArr))	{} //skuArr is defined and this item is NOT in the array. do nothing.
+										dump(i+") items[i].sku: "+items[i].sku+" and inArray: "+$.inArray(items[i].sku,skuArr));
+										if(skuArr.length && $.inArray(items[i].sku,skuArr) < 0)	{
+											 //skuArr is defined and this item is NOT in the array. do nothing.
+											}
 										else	{
 											//skuArr is either not defined (append all sku's from order) OR skuArr is defined and this item is in that array. Either way, proceed w/ append.
 											var appendObj = _app.ext.cco.u.buildCartItemAppendObj(items[i],vars.cartid); //will generate a new uuid.
@@ -1141,7 +1149,7 @@ in a reorder, that data needs to be converted to the variations format required 
 
 		renderFormats : {
 // pass in parent data object (entire cart). need to get both the cart ID and the country that has already been selected.
-			countriesAsOptions : function($tag,data)	{
+			countriesasoptions : function($tag,data)	{
 				var r = '';
 				if(data.value.cart && data.value.cart.cartid){
 					var cartid = data.value.cart.cartid;
@@ -1154,17 +1162,17 @@ in a reorder, that data needs to be converted to the variations format required 
 						$tag.val(_app.u.thisNestedExists("data.cartDetail|"+cartid+"."+data.bindData.shiptype+".countrycode",_app) ? cartData[data.bindData.shiptype].countrycode : 'US');
 						}
 					else if(!data.bindData.shiptype)	{
-						$tag.parent().append($("<div \/>").anymessage({'persistent':true,'message':'In cco.renderFormats.countriesAsOptions, data-bind rules must have a shiptype set.','gMessage':true}));
+						$tag.parent().append($("<div \/>").anymessage({'persistent':true,'message':'In cco.renderFormats.countriesasoptions, data-bind rules must have a shiptype set.','gMessage':true}));
 						}
 					else	{
-						$tag.parent().append($("<div \/>").anymessage({'persistent':true,'message':'in cco.renderFormats.countriesAsOptions, _app.data[appCheckoutDestinations|'+cartid+'] or _app.data.cartDetail|'+cartid+' and both are required. is not available in memory.','gMessage':true}));
+						$tag.parent().append($("<div \/>").anymessage({'persistent':true,'message':'in cco.renderFormats.countriesasoptions, _app.data[appCheckoutDestinations|'+cartid+'] or _app.data.cartDetail|'+cartid+' and both are required. is not available in memory.','gMessage':true}));
 						}
 
 					}
 				},
 
 //data.value should be the item object from the cart.
-			cartItemRemoveButton : function($tag,data)	{
+			cartitemremovebutton : function($tag,data)	{
 				if(data.value.stid[0] == '%')	{$tag.remove()} //no remove button for coupons.
 				else if(data.value.asm_master)	{$tag.remove()} //no remove button for assembly 'children'
 				else	{
@@ -1173,7 +1181,7 @@ in a reorder, that data needs to be converted to the variations format required 
 					}
 				},
 
-			cartItemQty : function($tag,data)	{
+			cartitemqty : function($tag,data)	{
 				$tag.val(data.value.qty);
 //for coupons and assemblies, no input desired, but qty display is needed. so the qty is inserted where the input was.
 				if((data.value.stid && data.value.stid[0] == '%') || data.value.asm_master)	{
@@ -1184,7 +1192,7 @@ in a reorder, that data needs to be converted to the variations format required 
 					}
 				},
 
-			paypalECButton : function($tag,data)	{
+			paypalecbutton : function($tag,data)	{
 	
 				if(zGlobals.checkoutSettings.paypalCheckoutApiUser)	{
 					var payObj = _app.ext.cco.u.which3PCAreAvailable();
@@ -1202,7 +1210,7 @@ in a reorder, that data needs to be converted to the variations format required 
 										document.location = _app.data[rd.datapointer].URL;
 										}
 									else	{
-										$('#globalMessaging').anymessage({"message":"In paypalECButton render format, dispatch to obtain paypal URL was successful, but no URL in the response.","gMessage":true});
+										$('#globalMessaging').anymessage({"message":"In paypalecbutton render format, dispatch to obtain paypal URL was successful, but no URL in the response.","gMessage":true});
 										}
 									}
 								}});
@@ -1217,9 +1225,9 @@ in a reorder, that data needs to be converted to the variations format required 
 				else	{
 					$tag.addClass('displayNone');
 					}
-				}, //paypalECButton
+				}, //paypalecbutton
 
-			googleCheckoutButton : function($tag,data)	{
+			googlecheckoutbutton : function($tag,data)	{
 	
 				if(zGlobals.checkoutSettings.googleCheckoutMerchantId && (window._gat && window._gat._getTracker))	{
 					var payObj = _app.ext.cco.u.which3PCAreAvailable(); //certain product can be flagged to disable googlecheckout as a payment option.
@@ -1241,13 +1249,13 @@ in a reorder, that data needs to be converted to the variations format required 
 					$tag.addClass('displayNone');
 					}
 		
-				}, //googleCheckoutButton
+				}, //googlecheckoutbutton
 	
 
 
 //for displaying order balance in checkout order totals.
 //changes value to 0 for negative amounts. Yes, this can happen.			
-			orderBalance : function($tag,data)	{
+			orderbalance : function($tag,data)	{
 				var o = '';
 				var amount = data.value;
 //				_app.u.dump('BEGIN _app.renderFunctions.format.orderBalance()');
@@ -1265,23 +1273,13 @@ in a reorder, that data needs to be converted to the variations format required 
 					o += _app.u.formatMoney(amount,data.bindData.currencySign,'',data.bindData.hideZero);
 					}
 				
-				$tag.text(o);  //update DOM.
+				$tag.text("Balance due: "+o);  //update DOM.
 //				_app.u.dump('END _app.renderFunctions.format.orderBalance()');
 				}, //orderBalance
 
-			secureLink : function($tag,data)	{
-//				_app.u.dump('BEGIN _app.ext.cco.renderFormats.secureLink');
-//				_app.u.dump(" -> data.windowName = '"+data.windowName+"'");
-//if data.windowName is set, the link will open a new tab/window. otherwise, it just changes the page/tab in focus.
-				if(_app.u.isSet(data.windowName))
-					$tag.click(function(){window.open(zGlobals.appSettings.https_app_url+$.trim(data.value)),data.windowName});
-				else
-					$tag.click(function(){window.location = zGlobals.appSettings.https_app_url+$.trim(data.value)});
-				}, //secureLink
-
 //displays the shipping method followed by the cost.
 //is used in cart summary total during checkout.
-			shipInfoById : function($tag,data)	{
+			shipinfobyid : function($tag,data)	{
 				var o = '';
 				var shipMethods = data.value['@SHIPMETHODS'];
 				if(shipMethods)	{
@@ -1303,16 +1301,16 @@ in a reorder, that data needs to be converted to the variations format required 
 					//shipMethods is empty. this may be perfectly normal (admin UI -> new order -> no product in cart yet. store -> no zip or state.)
 					}
 				$tag.html(o);
-				}, //shipInfoById
+				}, //shipinfobyid
 
-			walletName2Icon : function($tag,data)	{
+			walletnameintoicon : function($tag,data)	{
 				$tag.addClass('paycon_'+data.value.substring(0,4).toLowerCase());
 				},
-			paymentStatus : function($tag,data)        {
+			paymentstatus : function($tag,data)        {
 				if(Number(data.value[0]) === 0)        {$tag.append("Paid");}
 				else{$tag.append("Unpaid")}
 				},
-			marketPlaceOrderID : function($tag,data)        {
+			marketplaceorderid : function($tag,data)        {
 				var order = _app.data['adminOrderDetail|'+data.value];
 				var output = "";
 				if(order.flow.payment_method == 'AMAZON')        {output = order.mkt.amazon_orderid}
@@ -1326,6 +1324,11 @@ in a reorder, that data needs to be converted to the variations format required 
 			}, //renderFormats
 		
 		e : {
+			
+			cartFetchExec : function($ele,p)	{
+				$ele.closest("[data-template-role='cart']").trigger('fetch',{'Q':'immutable'}); //will work if getCartAsJqObj was used to create the cart.
+				_app.model.dispatchThis('immutable');
+				},
 			
 			cartItemRemove	: function($ele,p)	{
 				var stid = $ele.closest('[data-stid]').data('stid'), cartid = $ele.closest("[data-template-role='cart']").data('cartid');
@@ -1377,6 +1380,20 @@ in a reorder, that data needs to be converted to the variations format required 
 					//cartItemUpdate will handle error display.
 					}
 				}, //cartItemUpdateExec
+			//will post the input to the cart, passively.
+			cartSetAttrib : function($ele,p)	{
+				var cartid = $ele.data('cartid') || $ele.closest("[data-cartid]").data('cartid');
+				if(cartid)	{
+					var cmdObj = {
+						_cartid : cartid
+						};
+					cmdObj[$ele.attr('name')] = $ele.val();
+					_app.ext.cco.calls.cartSet.init(cmdObj,{},'passive'); _app.model.dispatchThis('passive');
+					}
+				else	{
+					$("#globalMessaging").anymessage({"message":"In cco.e.cartSetAttib, unable to ascertain cart id. Be sure data-cartid is set on/above trigger element.","gMessage":true});
+					}
+				},
 
 			cartZipUpdateExec : function($ele,p)	{
 				_app.ext.cco.calls.cartSet.init({'ship/postal':$ele.val(), 'ship/region':'','_cartid': $ele.closest("[data-template-role='cart']").data('cartid')},{},'immutable');

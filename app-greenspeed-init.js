@@ -13,17 +13,18 @@ $("#productTemplate").on('complete',function(state,$ele,infoObj){
 		fullscreen: false,
 		slideshow: false
 		});
-
 	});
 
 $("#productTemplateQuickView").on('init',function(state,$ele,infoObj){
-	dump(">>>>>>>>>>>>>>>>>>>>>>>>>>>> INIT <<<<<<<<<<<<<<<<<<<<<<<<<<");
-	});
+	handleSrcSetUpdate($ele);
 
-$("#productTemplateQuickView").on('depart',function(state,$ele,infoObj){
-	dump(">>>>>>>>>>>>>>>>>>>>>>>>>>>> DEPART <<<<<<<<<<<<<<<<<<<<<<<<<<");
+	$('.prodDetailImagesContainer',$ele).imagegallery({
+		show: 'fade',
+		hide: 'fade',
+		fullscreen: false,
+		slideshow: false
+		});
 	});
-
 
 
 myApp.rq.push(['script',0,(document.location.protocol == 'file:') ? myApp.vars.testURL+'jsonapi/config.js' : myApp.vars.baseURL+'jsonapi/config.js',function(){
@@ -75,7 +76,8 @@ myApp.rq.push(['script',0,myApp.vars.baseURL+'masonry.pkgd.min.js']); //allows v
 //Cart Messaging Responses.
 
 myApp.cmr.push(['chat.join',function(message){
-	var $ui = myApp.ext.myRIA.a.showBuyerCMUI();
+//	dump(" -> message: "); dump(message);
+	var $ui = myApp.ext.quickstart.a.showBuyerCMUI();
 	$("[data-app-role='messageInput']",$ui).show();
 	$("[data-app-role='messageHistory']",$ui).append("<p class='chat_join'>"+message.FROM+" has joined the chat.<\/p>");
 	$('.show4ActiveChat',$ui).show();
@@ -88,11 +90,12 @@ myApp.cmr.push(['goto',function(message,$context){
 		.addClass('chat_post')
 		.append("<span class='from'>"+message.FROM+"<\/span> has sent over a "+(message.vars.pageType || "")+" link for you within this store. <span class='lookLikeLink'>Click here<\/span> to view.")
 		.on('click',function(){
-			showContent(myApp.ext.myRIA.u.whatAmIFor(message.vars),message.vars);
+			showContent(myApp.ext.quickstart.u.whatAmIFor(message.vars),message.vars);
 			});
 	$history.append($P);
 	$history.parent().scrollTop($history.height());
 	}]);
+
 
 
 //gets executed from app-admin.html as part of controller init process.
@@ -149,3 +152,4 @@ myApp.u.appInitComplete = function(P)	{
 		else	{$('.ocmFacebookComment').hide()}
 		});
 	}
+	

@@ -168,7 +168,7 @@ templateID - the template id used (from _app.templates)
 // override the callback, which will be set to simply display the category in the DOM. getChildDataOf handles creating the template instance as long as parentID and templateID are set.
 		getChildData : {
 			onSuccess : function(tagObj)	{
-//				_app.u.dump('BEGIN _app.ext.myRIA.callbacks.getChildData.onSuccess');
+//				_app.u.dump('BEGIN _app.ext.quickstart.callbacks.getChildData.onSuccess');
 				var path = tagObj.datapointer.split('|')[1];
 //				_app.u.dump(" -> path: "+path);
 				tagObj.callback = 'addCatToDom'; //the tagObj will have 
@@ -194,15 +194,18 @@ templateID - the template id used (from _app.templates)
 
 		renderFormats : {
 
-			numSubcats : function($tag,data){
+			numsubcats : function($tag,data){
 				$tag.append(data.value.length);
-				}, //numSubcats
+				}, //numsubcats
 
-			numProduct : function($tag,data){
+			numproduct : function($tag,data){
 				$tag.append(data.value.length);
-				}, //numSubcats
+				}, //numproduct
 
-			categoryList : function($tag,data)	{
+			categorylist : function($tag,data)	{
+//				dump(" BEGIN store_navcats.renderFormats.categorylist");
+				data.value = data.value;
+//				dump(" -> data.value"); dump(data.value);
 				if(typeof data.value == 'object' && data.value.length > 0)	{
 					var L = data.value.length;
 					var call = 'appNavcatDetail';
@@ -214,9 +217,11 @@ templateID - the template id used (from _app.templates)
 //a null pretty name is NOT a hidden category. But we have to check to avoid a null ptr error. - mc
 						if(!data.value[i].pretty || data.value[i].pretty[0] != '!')	{
 //							var parentID = data.value[i].path+"_catgid+"+(_app.u.guidGenerator().substring(10));
-							var $ele = _app.renderFunctions.createTemplateInstance(data.bindData.loadsTemplate,{'catsafeid':data.value[i].path});
+//							var $ele = _app.renderFunctions.createTemplateInstance(data.bindData.loadsTemplate,{'catsafeid':data.value[i].path});
+							var $tmp = $("<ul \/>").tlc({'templateid':data.bindData.templateid,'verb':'template','dataAttribs':{'catsafeid':data.value[i].path}});
+							var $ele = $tmp.children().first();
 							$tag.append($ele);
-							numRequests += _app.calls.appNavcatDetail.init({'path':data.value[i].path,'detail':data.bindData.detail},{'callback':'anycontent','translateOnly':true,'jqObj':$ele},'mutable');
+							numRequests += _app.calls.appNavcatDetail.init({'path':data.value[i].path,'detail':data.bindData.detail},{'callback':'tlc','jqObj':$ele,'verb':'translate'},'mutable');
 							}
 						}
 					if(numRequests)	{_app.model.dispatchThis('mutable')}
@@ -248,9 +253,8 @@ templateID - the template id used (from _app.templates)
 								reachedRoot = (zGlobals.appSettings.rootcat === s);
 								}
 							if(reachedRoot) {
-								//_app.u.dump(" -> "+i+" s(path): "+s);
-								//_app.u.dump(_app.data['appNavcatDetail|'+s]);
-								$tag.append(_app.renderFunctions.transmogrify({'id':'.','catsafeid':s},data.bindData.loadsTemplate,_app.data['appNavcatDetail|'+s]));
+//								$tag.append(_app.renderFunctions.transmogrify({'id':'.','catsafeid':s},data.bindData.loadsTemplate,_app.data['appNavcatDetail|'+s]));
+								$tag.append(new tlc().runTLC({templateid : data.bindData.templateid, dataset : _app.data['appNavcatDetail|'+s]}).attr({'id':'.','catsafeid':s}));
 								}
 							if(i!=0)
 							s += '.';
@@ -407,7 +411,7 @@ note - there is NO error checking in here to make sure the subcats aren't alread
 			
 						
 			addQueries4BreadcrumbToQ : function(path)	{
-//				_app.u.dump("BEGIN myRIA.u.getBreadcrumbData");
+//				_app.u.dump("BEGIN quickstart.u.getBreadcrumbData");
 				var datapointers = new Array(); //what's returned. the length can be used to update numRequests (if necessary). the array itself can be used for extending by datapointers, if necessary.
 				var pathArray = path.split('.');
 				var len = pathArray.length

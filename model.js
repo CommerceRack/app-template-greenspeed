@@ -83,7 +83,7 @@ function model(_app) {
 	var r = {
 	
 		
-		version : "201401",
+		version : "201402",
 		
 		
 	// --------------------------- GENERAL USE FUNCTIONS --------------------------- \\
@@ -149,6 +149,7 @@ function model(_app) {
 			QID = (QID === undefined) ? 'mutable' : QID; //default to the mutable Q, but allow for PDQ to be passed in.
 			var r; // return value.
 			if(dispatch && !dispatch['_cmd'])	{
+				_app.u.dump("in model.addDispatchToQ, no _cmd was set in dispatch. dispatch follows: ","warn"); dump(dispatch);
 				r = false;
 				}
 // if QID was not a string, a catastropic JS error occured. could (and did) happen if call has bug in it.
@@ -1080,6 +1081,7 @@ or as a series of messages (_msg_X_id) where X is incremented depending on the n
 // check to see if the cartID is already in carts. if so, remove old and add new id to top.
 // do we want a 'bringCartIntoFocus', which would move a cart id to the top? wait and see if it's necessary.
 		addCart2Session : function(cartID)	{
+//			_app.u.dump(">>>>>>>> BEGIN addCart2Session: "+cartID);
 			var carts = _app.vars.carts || this.dpsGet('app','carts') || [];
 //each cart id should only be in carts once. if the cart id is already present, remove it.
 			var index = $.inArray(cartID,carts);
@@ -1777,9 +1779,35 @@ _app.u.dump(" -> DELETED cookie "+c_name);
 				else	{
 					_app.u.throwGMessage("Either extension ["+ext+"] or ns["+ns+"] or varObj ["+(typeof varObj)+"] not passed into admin.u.dpsSet.");
 					}
+				},
+
+			getGrammar : function(url)	{
+				$.ajax({
+					'url' : url + (url.indexOf('?') >= 0 ? '' : '?') + 'release='+_app.vars.release, //append release to eliminate caching on new releases.
+					'dataType' : 'html',
+					'error' : function()	{
+						$('#globalMessaging').anymessage({'errtype':'fail-fatal','message':'An error occured while attempting to load the grammar file. See console for details. The rendering engine will not run without that file.'});
+						},
+					'success' : function(file){
+						try{
+							var pegParserSource = PEG.buildParser(file);
+							window.pegParser = eval(pegParserSource); //make sure pegParser is valid.
+							success = true;
+							}
+						catch(e)	{
+							_app.u.dump("Could not build pegParser.","warn");
+							_app.u.dump(buildErrorMessage(e),"error");
+							}
+						if(success)	{
+							_app.u.dump(" -> successfully built pegParser");
+							}
+						else	{
+							$('#globalMessaging').anymessage({'errtype':'fail-fatal','message':'The grammar file did not pass evaluation. It may contain errors (check console). The rendering engine will not run without that file.'});
+							}
+						}
+					})
+
 				}
-
-
 
 
 

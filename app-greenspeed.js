@@ -16,7 +16,7 @@
 
 ************************************************************** */
 
-var widespread = function(_app) {
+var greenspeed = function(_app) {
 	var theseTemplates = new Array('');
 	var r = {
 
@@ -79,7 +79,7 @@ var widespread = function(_app) {
 //start at spot 1. spot 0 is the page in focus.
 		for(var i = 1; i < 8; i += 1)	{
 			if(hotw[i])	{
-				$menu.append($("<li \/>").data(hotw[i]).addClass('pointer').text(_app.ext.widespread.u.formatInfoObj4HOTW(hotw[i])));
+				$menu.append($("<li \/>").data(hotw[i]).addClass('pointer').text(_app.ext.greenspeed.u.formatInfoObj4HOTW(hotw[i])));
 				}
 			else	{
 				break; //exit early once the end of hotw is reached.

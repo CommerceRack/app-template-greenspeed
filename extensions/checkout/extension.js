@@ -144,10 +144,10 @@ var order_create = function(_app) {
 $('body').hideLoading();
 var $context = responseData._rtag.jqObj;
 
-_app.ext.order_create.u.handlePanel($context,'chkoutMethodsShip',['empty','translate','handleDisplayLogic']);
-_app.ext.order_create.u.handlePanel($context,'chkoutMethodsPay',['empty','translate','handleDisplayLogic']);
 _app.ext.order_create.u.handlePanel($context,'chkoutAddressBill',['empty','translate','handleDisplayLogic']);
 _app.ext.order_create.u.handlePanel($context,'chkoutAddressShip',['empty','translate','handleDisplayLogic']);
+_app.ext.order_create.u.handlePanel($context,'chkoutMethodsShip',['empty','translate','handleDisplayLogic']);
+_app.ext.order_create.u.handlePanel($context,'chkoutMethodsPay',['empty','translate','handleDisplayLogic']);
 					}});
 				var cartid = $context.closest("[data-app-role='checkout']").data('cartid');
 				_app.model.destroy('cartDetail|'+cartid);
@@ -215,7 +215,12 @@ this is what would traditionally be called an 'invoice' page, but certainly not 
 				
 //show post-checkout invoice and success messaging.
 				$checkout.empty();
-				$checkout.anycontent({'templateID':'chkoutCompletedTemplate',data: checkoutData}); //show invoice
+				$checkout.tlc({'templateid':'chkoutCompletedTemplate',dataset: checkoutData}); //show invoice
+
+//This will add a cart message. handy if the buyer and merchant are dialoging.
+				if(cartMessagePush in window)	{
+					cartMessagePush(oldCartID,'cart.orderCreate',{'vars':{'orderid':orderID}});
+					}
 
 //time for some cleanup. Nuke the old cart from memory and local storage, then obtain a new cart id, if necessary (admin doesn't auto-create a new one).
 
@@ -320,7 +325,7 @@ this is what would traditionally be called an 'invoice' page, but certainly not 
 				$('body').hideLoading();
 				$('#globalMessaging').anymessage({'message':rd});
 				if(typeof _gaq != 'undefined')	{
-					_gaq.push(['_trackEvent','Checkout','App Event','Order NOT created. error occured. ('+d['_msg_1_id']+')']);
+					_gaq.push(['_trackEvent','Checkout','App Event','Order NOT created. error occured. ('+rd['_msg_1_id']+')']);
 					}
 
 				}
@@ -657,6 +662,13 @@ payment options, pricing, etc
 					$("[data-app-role='username']",$fieldset).hide();
 					$("[data-app-role='loginPasswordContainer']",$fieldset).show();
 					}
+				// ** 201402
+				//if the user is logged in, make sure the 'create account' checkbox is NOT checked.
+				//otherwise, if checked=checked is set to enable account create by default and a user logs in, the checked box will cause validation error on a hidden panel.
+				if(_app.u.buyerIsAuthenticated())	{
+					$("input[name='want/create_customer']",$fieldset).prop('checked',false);
+					}
+				
 				_app.ext.order_create.u.handlePlaceholder($fieldset);
 				}, //preflight
 
@@ -665,8 +677,11 @@ payment options, pricing, etc
 				
 				var authState = _app.u.determineAuthentication(),
 				createCustomer = formObj['want/create_customer'];
-
-				if(authState == 'authenticated' || authState == 'thirdPartyGuest'  || _app.ext.cco.u.thisSessionIsPayPal())	{
+				
+				if(_app.u.buyerIsAuthenticated())	{
+					$fieldset.hide();
+					}
+				else if(authState == 'thirdPartyGuest'  || _app.ext.cco.u.thisSessionIsPayPal())	{
 					$fieldset.hide();
 					}
 				else {
@@ -817,6 +832,9 @@ an existing user gets a list of previous addresses they've used and an option to
 							break; //exit early once a match is found.
 							}
 						}
+					}
+				else if(_app.vars.thisSessionIsAdmin && !_app.data['cartDetail|'+cartID]['@ITEMS'].length)	{
+					$fieldset.anymessage({"message":"<p>An item must be added to the cart before shipping can be displayed.</p>","persistent":true});
 					}
 //no shipping methods and buyer is logged in.
 				else if(_app.u.buyerIsAuthenticated())	{
@@ -1035,7 +1053,8 @@ note - the order object is available at _app.data['order|'+P.orderID]
 //							_app.u.dump(" -> cartDetail callback for startCheckout reached.");
 							if(_app.data[rd.datapointer]['@ITEMS'].length || _app.u.thisIsAnAdminSession())	{
 								_app.u.dump(" -> cart has items or this is an admin session. cartID: "+cartID);
-								var $checkoutContents = _app.renderFunctions.transmogrify({},'checkoutTemplate',_app.ext.order_create.u.extendedDataForCheckout(cartID));
+//								var $checkoutContents = _app.renderFunctions.transmogrify({},'checkoutTemplate',_app.ext.order_create.u.extendedDataForCheckout(cartID));
+								var $checkoutContents = new tlc().runTLC({'templateid':'checkoutTemplate','dataset':_app.ext.order_create.u.extendedDataForCheckout(cartID)})
 								
 								$checkoutContents.data('cartid',cartID);
 
@@ -1177,9 +1196,9 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 				if(orderID)	{
 					var $orderContent = $("[data-app-role='orderContents']:first",$ele.closest("[data-app-role='orderContainer']")).show();
 					_app.ext.admin.calls.adminOrderDetail.init(orderID,{
-						'callback' : 'anycontent',
+						'callback' : 'tlc',
 						'jqObj' : $orderContent,
-						'translateOnly' : true
+						'verb' : 'translate'
 						},'mutable');
 					_app.model.dispatchThis('mutable');
 					}
@@ -1202,7 +1221,9 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 				},
 
 			cartItemAppendSKU : function($ele,p)	{
+//				dump("BEGIN order_create.e.cartItemAppendSKU");
 				p.skuArr = [$ele.closest("[data-sku]").data('sku')];
+//				dump(" -> p.skuArr: "); dump(p.skuArr);
 				this.cartItemAppendAllSKUsFromOrder($ele,p);
 				},
 
@@ -1232,7 +1253,7 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 					cartid = $ele.closest(":data(cartid)").data('cartid'),
 					vars = {
 						stid : $container.data('stid'),
-						uuid : $container.data('uuid'),
+						uuid : $container.attr('data-uuid'),
 						qty : $("input[name='qty']",$container).val(), //admin wants qty.
 						quantity : $("input[name='qty']",$container).val() //cartItemUpdate wants quantity
 						}
@@ -1250,6 +1271,40 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 					//cartItemUpdate will handle error display.
 					}
 				}, //cartItemUpdateExec
+
+
+			cartShippingSave : function($ele,p)	{
+				p.preventDefault();
+				var
+					$container = $ele.closest("[data-app-role='customShipMethodContainer']"),
+					cartid = $ele.closest(":data(cartid)").data('cartid'),
+					sfo = $container.serializeJSON();
+					
+				$('.ui-state.error',$container).removeClass('ui-state-error'); //remove any previous errors.
+				if(sfo['sum/shp_carrier'] && sfo['sum/shp_method'] && sfo['sum/shp_total'])	{
+					_app.model.addDispatchToQ({
+						'_cmd':'adminCartMacro',
+						'_cartid' : cartid,
+						'_tag' : {},
+						"@updates" : ["SETSHIPPING?"+$.param(sfo)]
+						},'immutable');
+					_app.ext.order_create.u.handleCommonPanels($ele.closest('form'));
+					_app.model.dispatchThis('immutable');
+					}
+				else	{
+					//handle errors.
+					if($("[name='sum/shp_carrier']",$container).val())	{}
+					else	{$("[name='sum/shp_carrier']",$container).addClass('ui-state-error')}
+
+					if($("[name='sum/shp_method']",$container).val())	{}
+					else	{$("[name='sum/shp_method']",$container).addClass('ui-state-error')}
+
+					if($("[name='sum/shp_total']",$container).val())	{}
+					else	{$("[name='sum/shp_total']",$container).addClass('ui-state-error')}
+					}
+
+				}, //orderSummarySave
+
 
 			cartItemAddFromForm : function($ele,p)	{
 				var $chkoutForm	= $ele.closest("[data-add2cart-role='container']"), $checkout = $ele.closest("[data-app-role='checkout']");
@@ -1293,27 +1348,33 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 //						_app.u.dump(" -> sfo: "); _app.u.dump(sfo);
 						if(_app.ext.store_product.validate.addToCart(pid,$form))	{
 							_app.u.dump(" -> passed validation");
-							_app.ext.store_product.u.handleAddToCart($form);
-							_app.model.destroy('cartDetail|'+$checkout.data('cartid'));
-							_app.model.destroy('appPaymentMethods|'+$checkout.data('cartid'));
-							_app.ext.cco.calls.appPaymentMethods.init({_cartid:$checkout.data('cartid')},{},'immutable');
-							_app.calls.cartDetail.init($checkout.data('cartid'),{
-								'callback':function(rd){
-									if(_app.model.responseHasErrors(rd)){
-										$('#prodFinder').anymessage({'message':rd});
+							_app.ext.store_product.u.handleAddToCart($form,{'callback' : function(){
+
+								_app.model.destroy('cartDetail|'+$checkout.data('cartid'));
+								_app.model.destroy('appPaymentMethods|'+$checkout.data('cartid'));
+								_app.ext.cco.calls.appPaymentMethods.init({_cartid:$checkout.data('cartid')},{},'immutable');
+								_app.calls.cartDetail.init($checkout.data('cartid'),{
+									'callback':function(rd){
+										if(_app.model.responseHasErrors(rd)){
+											$('#prodFinder').anymessage({'message':rd});
+											}
+										else	{
+											$('#prodFinder').dialog('close');
+	//										dump(" ----> $chkoutForm.length: "+$chkoutForm.length);
+											_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutCartItemsList',['empty','translate','handleDisplayLogic']); //for toggling display of ref. # field.
+											_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutCartSummary',['empty','translate','handleDisplayLogic']); //for toggling display of ref. # field.
+											_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutMethodsShip',['empty','translate','handleDisplayLogic']);
+											_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutMethodsPay',['empty','translate','handleDisplayLogic']);
+											_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutCartSummary',['empty','translate','handleDisplayLogic']);
+											}
 										}
-									else	{
-										$('#prodFinder').dialog('close');
-//										dump(" ----> $chkoutForm.length: "+$chkoutForm.length);
-										_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutCartItemsList',['empty','translate','handleDisplayLogic']); //for toggling display of ref. # field.
-										_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutCartSummary',['empty','translate','handleDisplayLogic']); //for toggling display of ref. # field.
-										_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutMethodsShip',['empty','translate','handleDisplayLogic']);
-										_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutMethodsPay',['empty','translate','handleDisplayLogic']);
-										_app.ext.order_create.u.handlePanel($chkoutForm,'chkoutCartSummary',['empty','translate','handleDisplayLogic']);
-										}
-									}
-								},'immutable'); //update cart so that if successful, the refresh on preflight panel has updated info.
-							_app.model.dispatchThis('immutable');
+									},'immutable'); //update cart so that if successful, the refresh on preflight panel has updated info.
+								//an issue w/ the API maybe? the cartDetail is coming back w/out the updated items list. ### FUTURE -> address this.
+								setTimeout(function(){
+									_app.model.dispatchThis('immutable');
+									},500);
+								}});
+
 							}
 						else	{
 							_app.u.dump("Chooser add to cart did not pass validation",'warn');
@@ -1454,7 +1515,7 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 					_app.model.destroy('cartDetail|'+$checkout.data('cartid'));
 
 					_app.ext.cco.calls.cartSet.init({"bill/email":$email.val(),"_cartid":$checkout.data('cartid')}) //whether the login succeeds or not, set bill/email in the cart.
-					_app.model.addDispatchToQ({"_cmd":"appBuyerLogin","login":$email.val(),"password":$password.val(),"_tag":{"datapointer":"appBuyerLogin","callback":function(rd){
+					_app.model.addDispatchToQ({"_cmd":"appBuyerLogin","login":$email.val(),"password":$password.val(),'method':'unsecure',"_tag":{"datapointer":"appBuyerLogin","callback":function(rd){
 						$('body').hideLoading();
 						if(_app.model.responseHasErrors(rd)){$fieldset.anymessage({'message':rd})}
 						else	{
@@ -1480,7 +1541,7 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 							_app.model.dispatchThis('immutable');
 							$fieldset.anymessage({'message':'Thank you, you are now logged in.','_msg_0_type':'success'});
 							}						
-						}}},"mutable");
+						}}},"immutable");
 					_app.calls.cartDetail.init($checkout.data('cartid'),{},'immutable'); //update cart so that if successful, the refresh on preflight panel has updated info.
 					_app.model.dispatchThis('immutable');
 					}
@@ -1620,6 +1681,18 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 				_app.ext.order_create.u.handleCommonPanels($form);
 				_app.model.dispatchThis('immutable');
 				}, //execCouponAdd
+//executed on a giftcard when it is in the list of payment methods.
+			addGiftcardPaymethodAsPayment : function($ele,p)	{
+				if($ele.attr('data-giftcard-id'))	{
+					$ele.button('disable');
+					var $checkout = $ele.closest("[data-app-role='checkout']");
+					_app.ext.cco.calls.cartGiftcardAdd.init($ele.attr('data-giftcard-id'),$checkout.data('cartid'),{'callback':'updateAllPanels','extension':'order_create','jqObj':$checkout},'immutable');
+					_app.model.dispatchThis('immutable');
+					}
+				else	{
+					$("#globalMessaging").anymessage({"message":"In order_create.e.addGiftcardPaymethodAsPayment, data-giftcard-id is not set on trigger element.","gMessage":true});
+					}
+				},
 
 			execGiftcardAdd : function($ele,p)	{
 				var $fieldset = $ele.closest('fieldset'),
@@ -1762,11 +1835,11 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 				if(cartID)	{
 					if(_app.u.thisIsAnAdminSession())	{
 						//can skip all the paypal code in an admin session. it isn't a valid payment option.
-						if(_app.data['cartDetail|'+cartID] && _app.data['cartDetail|'+cartID].customer && _app.data['cartDetail|'+cartID].customer.cid && _app.data['adminCustomerDetail|'+_app.data['cartDetail|'+cartID].customer.cid])	{
+						if(_app.u.thisNestedExists("data.cartDetail|"+cartID+".customer.cid",_app) && _app.data['adminCustomerDetail|'+_app.data['cartDetail|'+cartID].customer.cid])	{
 							//change this so object stores the data how buyerAddressList and buyerWalletList would.
-							obj = _app.data['adminCustomerDetail|'+_app.data['cartDetail|'+cartID].customer.cid];
+							obj = $.extend(true,obj,_app.data['adminCustomerDetail|'+_app.data['cartDetail|'+cartID].customer.cid]); //have to copy the detail record or it gets updated in memory.
 							}
-						$.extend(true,obj,_app.data['appPaymentMethods|'+cartID],_app.data['appCheckoutDestinations|'+cartID],_app.data['cartDetail|'+cartID]);
+						$.extend(obj,_app.data['appPaymentMethods|'+cartID],_app.data['appCheckoutDestinations|'+cartID],_app.data['cartDetail|'+cartID]);
 						}
 					else	{
 						if(_app.u.buyerIsAuthenticated())	{
@@ -1818,11 +1891,11 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 			
 //$content could be the parent form or the forms container. just something around this checkout. (so that multiple checkout forms are possible. imp in UI
 //role is the value of data-app-role on the fieldset.
-//actions is what needs to happen. an array.  accepted values are empty, showLoading, addAppEvents, translate and handleDisplayLogic. ex: ['translate','handleDisplayLogic']
+//actions is what needs to happen. an array.  accepted values are empty, showLoading, translate and handleDisplayLogic. ex: ['translate','handleDisplayLogic']
 //actions are rendered in the order they're passed.
 
 			handlePanel : function($context, role, actions)	{
-//				_app.u.dump("BEGIN handlePanel."); //_app.u.dump(actions);
+//				_app.u.dump("BEGIN handlePanel ["+role+"]."); //_app.u.dump(actions);
 
 				if($context instanceof jQuery && role && actions && typeof actions === 'object')	{
 //					_app.u.dump(" -> role: "+role);
@@ -1845,9 +1918,7 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 							}
 						}, //perform things like locking form fields, hiding/showing the panel based on some setting. never pass in the setting, have it read from the form or cart.
 					ao.translate = function(formObj, $fieldset)	{
-//						_app.u.dump(" -> translating "+role+" cartID: "+cartID);
-//						_app.u.dump("_app.ext.order_create.u.extendedDataForCheckout()"); _app.u.dump(_app.ext.order_create.u.extendedDataForCheckout());
-						$fieldset.anycontent({'data' : _app.ext.order_create.u.extendedDataForCheckout(cartID)});
+						$fieldset.tlc({'verb' : 'translate','dataset' : _app.ext.order_create.u.extendedDataForCheckout(cartID)});
 						} //populates the template.
 					
 					for(var i = 0; i < L; i += 1)	{
@@ -1879,7 +1950,11 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 					_app.ext.order_create.u.handlePanel($context,'chkoutMethodsShip',['showLoading']);
 					_app.ext.order_create.u.handlePanel($context,'chkoutMethodsPay',['showLoading']);
 					_app.ext.order_create.u.handlePanel($context,'chkoutCartSummary',['showLoading']);
-					
+
+						if(_app.u.thisIsAnAdminSession())	{
+							_app.ext.order_create.u.handlePanel($context,'chkoutCartItemsList',['showLoading']);
+							}
+
 					_app.model.destroy('cartDetail|'+cartid);
 					_app.ext.cco.calls.appPaymentMethods.init({_cartid:cartid},{},'immutable'); //update pay and ship anytime either address changes.
 					_app.calls.cartDetail.init(cartid,{'callback':function(){
@@ -2054,8 +2129,22 @@ _app.model.dispatchThis('passive');
 						}
 					else if(L > 0)	{
 						for(var i = 0; i < L; i += 1)	{
-	//onClick event is added through an app-event. allows for app-specific events.
-							$r.append("<div class='headerPadding' data-app-role='paymentMethodContainer'><label><input type='radio' name='want/payby' value='"+pMethods[i].id+"' />"+pMethods[i].pretty+"<\/label></div>");
+							var $div = $("<div class='headerPadding' data-app-role='paymentMethodContainer'>");
+							var $label = $("<label \/>");
+							if(pMethods[i].id.indexOf("GIFTCARD") === 0)	{
+								//onClick event is added through an app-event. allows for app-specific events.
+								$("<button>Add</button>")
+									.attr({'title':'Apply this giftcard towards this purchase','data-giftcard-id':pMethods[i].id.split(':')[1]})
+									.button({icons: {primary: "ui-icon-cart"},text: true})
+									.addClass('isGiftcard')
+									.appendTo($label);
+								}
+							else	{
+								//onClick event is added through an app-event. allows for app-specific events.
+								$label.append("<input type='radio' name='want/payby' value='"+pMethods[i].id+"' />");
+								}
+							$label.append(pMethods[i].pretty).appendTo($div);
+							$div.appendTo($r);
 							}
 						}
 					else	{
@@ -2084,7 +2173,7 @@ _app.model.dispatchThis('passive');
 
 		renderFormats : {
 //pass the cart(cart/cartid); in for the databind var. Multiple pieces of data are required for this render format (want/shipping_id and @SHIPMETHODS).
-			shipMethodsAsRadioButtons : function($tag,data)	{
+			shipmethodsasradiobuttons : function($tag,data)	{
 				var o = '',sMethods,L;
 				sMethods = data.value['@SHIPMETHODS'];
 				if(sMethods && sMethods.length)	{
@@ -2101,9 +2190,9 @@ _app.model.dispatchThis('passive');
 				if(data.value.want && data.value.want.shipping_id)	{
 					$("input[value='"+data.value.want.shipping_id+"']",$tag).prop('checked','checked').closest('li').addClass('selected ui-state-active');
 					}
-				}, //shipMethodsAsRadioButtons
+				}, //shipmethodsasradiobuttons
 
-			payMethodsAsRadioButtons : function($tag,data)	{
+			paymethodsasradiobuttons : function($tag,data)	{
 //				_app.u.dump('BEGIN _app.ext.order_create.renderFormats.payOptionsAsRadioButtons');
 //				_app.u.dump(data);
 				var o = '', cartData,pMethods;
@@ -2111,15 +2200,16 @@ _app.model.dispatchThis('passive');
 					cartData = _app.data['cartDetail|'+data.value];
 					pMethods = _app.data['appPaymentMethods|'+data.value]['@methods'];
 					o = _app.ext.order_create.u.buildPaymentOptionsAsRadios(pMethods,cartData.want.payby);
+					$("button[data-giftcard-id]",o).attr('data-app-click','order_create|addGiftcardPaymethodAsPayment');
 					$(":radio",o).each(function(){
 						$(this).attr('data-app-change','order_create|shipOrPayMethodSelectExec');
 						});
 					}
 				else	{
-					o = $("<div \/>").anymessage({'persistent':true,'message':'In order_create.renderFormats.payMethodsAsRadioButtons, cartDetail|'+data.value+' ['+( typeof _app.data['cartDetail|'+data.value] )+'] and/or appPaymentMethods|'+data.value+' ['+( typeof _app.data['appPaymentMethods|'+data.value] )+'] not found in memory. Both are required.','gMessage':true});
+					o = $("<div \/>").anymessage({'persistent':true,'message':'In order_create.renderFormats.paymethodsasradiobuttons, cartDetail|'+data.value+' ['+( typeof _app.data['cartDetail|'+data.value] )+'] and/or appPaymentMethods|'+data.value+' ['+( typeof _app.data['appPaymentMethods|'+data.value] )+'] not found in memory. Both are required.','gMessage':true});
 					}
 				$tag.html(o);
-				} //payMethodsAsRadioButtons
+				} //paymethodsasradiobuttons
 			
 
 			

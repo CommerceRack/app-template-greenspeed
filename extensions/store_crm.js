@@ -269,14 +269,15 @@ obj['softauth'] = "order"; // [OPTIONAL]. if user is logged in, this gets ignore
 				},
 
 			
-			orderTrackingLinks : function($tag,data)	{
-				_app.u.dump("BEGIN myRIA.renderFormats.orderTrackingLinks");
+			ordertrackinglinks : function($tag,data)	{
+//				_app.u.dump("BEGIN quickstart.renderFormats.ordertrackinglinks");
 				_app.u.dump(data.value);
 				
 				var L = data.value.length;
 				var o = ''; //what is appended to tag. a compiled list of shipping lineitems.
 				for(var i = 0; i < L; i += 1)	{
-					o += "<li><a href='"+_app.ext.myRIA.u.getTrackingURL(data.value[i].carrier,data.value[i].track)+"' target='"+data.value[i].carrier+"'>"+data.value[i].track+"</a>";
+					// ### TODO -> need to get the link to quickstart out of here.
+					o += "<li><a href='"+_app.ext.quickstart.u.getTrackingURL(data.value[i].carrier,data.value[i].track)+"' target='"+data.value[i].carrier+"'>"+data.value[i].track+"</a>";
 					if(_app.u.isSet(data.value[i].cost))
 						o += " ("+_app.u.formatMoney(data.value[i].cost,'$',2,true)+")";
 					o += "<\/li>";
@@ -531,7 +532,8 @@ This is used to get add an array of skus, most likely for a product list.
 					var $editor = $("<div \/>");
 					
 					$editor.append("<input type='hidden' name='type' value='"+vars.addressType.toUpperCase()+"' \/>");
-					$editor.anycontent({'templateID':(vars.addressType == 'ship') ? 'chkoutAddressShipTemplate' : 'chkoutAddressBillTemplate','data':{},'showLoading':false});
+//					$editor.anycontent({'templateID':(vars.addressType == 'ship') ? 'chkoutAddressShipTemplate' : 'chkoutAddressBillTemplate','data':{},'showLoading':false});
+					$editor.tlc({'templateid':(vars.addressType == 'ship') ? 'chkoutAddressShipTemplate' : 'chkoutAddressBillTemplate','verb':'template'});
 //* 201338 -> the address id should be at the bottom of the form, not the top. isn't that important or required.
 					$editor.append("<input type='text' maxlength='6' data-minlength='6' name='shortcut' placeholder='address id (6 characters)' \/>");
 					$editor.wrapInner('<form \/>'); //needs this for serializeJSON later.
@@ -621,8 +623,10 @@ This is used to get add an array of skus, most likely for a product list.
 			
 			contactFormSubmit : function($ele,p)	{
 				p.preventDefault();
+				dump(" -> BEGIN store_crm.e.contactFormSubmit");
 				if(_app.u.validateForm($ele))	{
 					var sfo = $ele.serializeJSON();
+					sfo._cmd = "appSendMessage";
 					sfo._tag = {
 						'callback':'showMessaging',
 						'jqObj':$ele,
@@ -631,7 +635,9 @@ This is used to get add an array of skus, most likely for a product list.
 					_app.model.addDispatchToQ(sfo,"immutable");
 					_app.model.dispatchThis('immutable');
 					}
-				else	{} //validateForm handles error display.
+				else	{
+					dump(" -> did not pass validation.");
+					} //validateForm handles error display.
 				},
 			
 			productBuyerListRemoveExec : function($ele,p)	{
