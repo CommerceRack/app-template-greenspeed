@@ -1148,7 +1148,7 @@ will load everything in the RQ will a pass <= [pass]. so pass of 10 loads everyt
 				'passZeroTimeout' : null
 				}; //what is returned.
 			function resourcesAreLoaded(){
-				dump("BEGIN resourcesAreLoaded");
+//				dump("BEGIN resourcesAreLoaded");
 				rObj.passZeroResourcesLoaded = _app.u.numberOfLoadedResourcesFromPass(0); //this should NOT be in the else or it won't get updated once the resources are done.
 				if(_app.u.numberOfLoadedResourcesFromPass(0) == _app.vars.rq.length)	{
 					_app.vars.rq = null; //this is the tmp array used by handleRQ and numberOfResourcesFromPass. Should be cleared for next pass.

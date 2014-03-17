@@ -31,6 +31,8 @@ The media queries are located at the bottom of this file.
 
 */
 
+
+
 body,html	{font-size:85%;} /* increased for non mobile devices w/ a media query */
 
 #appTemplates {display:none;} /* container for all templates. should be hidden */
@@ -156,7 +158,7 @@ and offMenu is toggle off, hiding the change button.
 .stdMargin	{margin:1em;}
 .headerPadding	{padding: .2em .4em;} /* for use in headings or legends that use the ui-state classes and need a little padding within. */
 .stdPadding	{padding:1em;}
-
+.smallPadding	{padding:.5em;}
 .fullWidth	{width:100%;}
 
 
@@ -169,6 +171,7 @@ and offMenu is toggle off, hiding the change button.
 .buyerLoggedIn .hideIfLoggedOut	{display: block;} /* may be 'block' */
 .buyerLoggedIn span.hideIfLoggedOut, .buyerLoggedIn a.hideIfLoggedOut	{display: inline;} /* ensures inline on span elements */
 
+.hint	{font-weight:normal; font-size:.8em;}
 
 /* used in order history and faq (possibly other places) in a format similar to an accordian, but more than one panel can be open. */
 .appAccordianesque .ui-accordion-header {padding:.5em 2em;}
@@ -199,6 +202,7 @@ these get used just about everywhere. leave these fairly generic
 and override using classes or id's as needed.
 
 */
+a.blockLink {border:none; display:block;}
 
 .listStyleNone, .listStyleNone li	{list-style:none;} /* apply to a ul or ol */
 .noPadOrMargin	{padding:0; margin:0;}
@@ -342,9 +346,9 @@ cartTemplate
 
 
 .cartContainer	{width:100%;}
-
 #mainContentArea_cart .continueShoppingButton	{display:none;} /* used in modal cart only */
 
+.cartSummaryTotalsContainer .ui-widget .cartRefreshButton	{margin: -4px 0 0 0; float:right;}
 /*
 
 CUSTOMER PAGES
@@ -541,7 +545,7 @@ CHECKOUT
 	.cartButtons .continueShoppingSpan	{float:left; margin:0;}
 	
 	.companyAddress	{float:left; margin-right:2em; width:40%;}
-	
+	.hint	{font-weight:normal; font-size:.7em;}
 	}
 
 @media only screen and (min-width: 1024px) {
@@ -549,6 +553,8 @@ CHECKOUT
 	.cartSummary	{float:right; width:48%; text-align:right;}
 	}
 	
+
+
 
 
 /* END of quickstart.css */
@@ -618,6 +624,7 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 
 /* used in the header and footer */
 .menuitems	{font-size:.95em; cursor:pointer;}
+.menuitems a	{color:#000; text-decoration:none;}
 .menuItem1	{background:#fff;}
 .menuItem2	{background:#f0f0f0;}
 .menuItem3	{background:#e4e4e4;}
@@ -626,8 +633,8 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 
 
 #mastHeadSearchFrm	{position:relative; margin-top:8px; text-align:center;}
-#mastHeadKeywordsInput	{width:98%; margin:0; padding:.3em 0; border:0; font-size:.8em;}
-#mastHeadSearchButton	{position:absolute; top:3px; right:1%; border:0; background-color:#fff; padding:0;}
+#mastHeadKeywordsInput	{width:98%; margin:0; padding:.3em 0; border:0; font-size:.8em; text-indent:.3em;}
+#mastHeadSearchButton	{position:absolute; top:0px; right:1%; border:0; background-color:#fff; padding:0;}
 
 
 /*
@@ -782,7 +789,7 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 	webkit-box-sizing:border-box;
 	}
 
-.responsiveProdlist .prodThumbContainer	{margin-bottom:.3em; overflow:hidden; width:100%;}
+.responsiveProdlist .prodThumbContainer	{margin-bottom:.3em; overflow:hidden; width:100%; height:120px;}
 
 .price	{color:#000;}
 .reviewSprite	{width:74px;}
@@ -913,7 +920,7 @@ note -> less variance at a smaller screen size. As screen size enlarges, more va
 
 
 	.prodDetailImagesContainer	{display:block; position:relative; margin:0; width:39%; float:left;}
-	.prodDetailSummaryATC	{float:right; margin:0; float:right; width:60%; clear:none;} /* shift element to right side instead of below */
+	.prodDetailSummaryATC	{float:right; margin:0; width:50%; clear:none;} /* shift element to right side instead of below */
 	.ui-tabs-nav	{font-size:1em;}
 	.cycle-overlay	{font-size:1em;}
 
@@ -926,6 +933,7 @@ note -> less variance at a smaller screen size. As screen size enlarges, more va
 
 
 @media only screen and (min-width: 1040px) {
+	.prodDetailSummaryATC	{width:60%;} /* shift element to right side instead of below */
 	.responsiveProdlist li {height:270px;}
 	.anyMasonry.masonTwo {height:305px;}
 	}

@@ -125,7 +125,7 @@ var greenspeed = function(_app) {
 //that way, two render formats named the same (but in different extensions) don't overwrite each other.
 		renderFormats : {
 
-			imageURL2Href : function($tag,data)	{
+			imageurlhref : function($tag,data)	{
 				data.bindData.name = (data.bindData.valuePretext) ? data.bindData.valuePretext+data.value : data.value;
 				data.bindData.w = $tag.attr('width');
 				data.bindData.h = $tag.attr('height');
@@ -133,7 +133,7 @@ var greenspeed = function(_app) {
 				$tag.attr('href',_app.u.makeImage(data.bindData)); //passing in bindData allows for using
 				},
 
-			prodThumbs : function($tag,data)	{
+			prodthumbs : function($tag,data)	{
 				var attribs = data.value['%attribs']; //shortcut.
 				if(attribs['zoovy:prod_image2'])	{
 //					dump(" -> image 2 is set.");
@@ -152,7 +152,7 @@ var greenspeed = function(_app) {
 //					dump(" -> image 2 is NOT set.");
 					//if image2 isn't set, skip em all.
 					}
-				//<a href='blank.gif' data-bind='var: product(zoovy:prod_image2); format:imageURL2Href; h:; w:;' data-gallery="gallery"  ><img src='blank.gif' alt='' data-bind='var: product(zoovy:prod_image2); format:imageURL;' width='75' height='75' /></a>
+				//<a href='blank.gif' data-bind='var: product(zoovy:prod_image2); format:imageurlhref; h:; w:;' data-gallery="gallery"  ><img src='blank.gif' alt='' data-bind='var: product(zoovy:prod_image2); format:imageURL;' width='75' height='75' /></a>
 				},
 			
 			srcset : function($tag,data)	{

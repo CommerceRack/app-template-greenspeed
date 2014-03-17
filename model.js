@@ -1633,8 +1633,8 @@ methods of getting data from non-server side sources, such as cookies, local or 
 		writeLocal : function (key,value,location)	{
 			location = location || 'local';
 			var r = false;
-
-			if($.support[location+'Storage'])	{
+			//IE needed the window[location+'Storage'] check below.
+			if($.support[location+'Storage'] && window[location+'Storage'])	{
 				if(typeof window[location+'Storage'].setItem == 'function' )	{
 					r = true;
 					if (typeof value == "object") {value = JSON.stringify(value);}
