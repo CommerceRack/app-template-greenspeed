@@ -11,7 +11,7 @@ $("#categoryTemplate").on('complete.infinitescroll',function(state,$ele,infoObj)
 	});
 
 
-$("#productTemplate").on('complete.dynimaging',function(state,$ele,infoObj){
+$("#productTemplate, #productTemplateQuickView").on('complete.dynimaging',function(state,$ele,infoObj){
 	handleSrcSetUpdate($ele);
 	$('.prodDetailImagesContainer',$ele).imagegallery({
 		show: 'fade',
@@ -21,7 +21,7 @@ $("#productTemplate").on('complete.dynimaging',function(state,$ele,infoObj){
 		});
 	});
 
-$("#productTemplateQuickView").on('init',function(state,$ele,infoObj){
+$("#productTemplateQuickView").on('complete.dynimaging',function(state,$ele,infoObj){
 	handleSrcSetUpdate($ele);
 	$('.prodDetailImagesContainer.dynimaging',$ele).imagegallery({
 		show: 'fade',
