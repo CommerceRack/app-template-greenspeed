@@ -53,6 +53,8 @@ var quickstart = function(_app) {
 			'subscribeFormTemplate',
 			'orderLineItemTemplate',
 			'invoiceTemplate',
+			'buyerListTemplate',
+			'buyerListProdlistContainerTemplate',
 			'faqTopicTemplate',
 			'faqQnATemplate',
 			'billAddressTemplate',
@@ -310,14 +312,6 @@ document.write = function(v){
 				}
 			}, //handleBuyerAddressUpdate
 
-//used in /customer to show the lists of addresses. This displays on the my account page.
-		showAddresses : {
-			onSuccess : function(_tag)	{
-				var $myAccountPage = $('#myaccountArticle');
-				$myAccountPage.tlc({'dataset':_app.data.buyerAddressList});
-				_app.u.handleButtons($myAccountPage);
-				}
-			}, //showAddresses
 
 //used as part of showContent for the home and category pages. goes and gets all the data.
 		fetchPageContent : {
@@ -402,35 +396,6 @@ document.write = function(v){
 				}
 			}, //showPageContent
 
-//this is used for showing a customer list of product, such as wish or forget me lists
-		showBuyerLists : {
-			onSuccess : function(tagObj)	{
-//				dump('BEGIN _app.ext.quickstart.showList.onSuccess ');
-var $parent = $('#'+tagObj.parentID).removeClass('loadingBG');
-//if the page gets reloaded, de-tab so that running tabs() later re-inits properly.
-if($parent.hasClass("ui-tabs"))	{
-	$parent.anytabs('destroy').empty();
-	}
-if(_app.data[tagObj.datapointer]['@lists'].length > 0)	{
-	var $ul = _app.ext.store_crm.u.getBuyerListsAsUL(tagObj.datapointer);
-	var numRequests = 0;
-	$ul.children().each(function(){
-		var $li = $(this);
-		var listID = $li.data('buyerlistid');
-		$li.wrapInner("<a href='#"+listID+"Contents'></a>"); //adds href for tab selection
-		$parent.append($("<div>").attr({'data-anytab-content':listID+'Contents','data-buyerlistid':listID}).append($("<ul>").addClass('listStyleNone clearfix noPadOrMargin lineItemProdlist').attr('id','prodlistBuyerList_'+listID))); //containers for list contents and ul for productlist
-		numRequests += _app.calls.buyerProductListDetail.init(listID,{'callback':'buyerListAsProdlist','extension':'quickstart','parentID':'prodlistBuyerList_'+listID})
-		});
-	$parent.prepend($ul).anytabs();
-	_app.model.dispatchThis('mutable');
-	}
-else	{
-	$parent.append("You have no lists at this time. Add an item to your wishlist to get started...");
-	}
-				}
-			}, //showBuyerList
-
-
 
 //this is used for showing a customer list of product, such as wish or forget me lists
 //formerly showlist
@@ -441,11 +406,12 @@ else	{
 				var prods = _app.ext.store_crm.u.getSkusFromBuyerList(listID);
 				if(prods.length < 1)	{
 //list is empty.
-					$(_app.u.jqSelector('#',tagObj.parentID)).anymessage({'message':'This list ('+listID+') appears to be empty.'});
+					tagObj.jqObj.parent().anymessage({'message':'This list ('+listID+') appears to be empty.'});
 					}
 				else	{
 //					dump(prods);
-					_app.ext.store_prodlist.u.buildProductList({"loadsTemplate":"productListTemplateBuyerList","withInventory":1,"withVariations":1,"parentID":tagObj.parentID,"csv":prods,"hide_summary":1,"hide_pagination":1},$(_app.u.jqSelector('#',tagObj.parentID)));
+//					tagObj.jqObj.tlc({'verb':'translate','datapointer':tagObj.datapointer});
+					_app.ext.store_prodlist.u.buildProductList({"loadsTemplate":"productListTemplateBuyerList","withInventory":1,"withVariations":1,"parentID":tagObj.parentID,"csv":prods,"hide_summary":1,"hide_pagination":1},tagObj.jqObj);
 					_app.model.dispatchThis();
 					}
 				}
@@ -540,7 +506,6 @@ need to be customized on a per-ria basis.
 
 
 
-
 		tlcFormats : {
 			
 			searchbytag : function(data,thisTLC)	{
@@ -623,34 +588,36 @@ need to be customized on a per-ria basis.
 
 //### later, we could make this more advanced to actually search the attribute. add something like elasticAttr:prod_mfg and if set, key off that.
 			searchlink : function($tag,data){
-				var keywords = data.value.replace(/ /g,"+"),
-				infoObj = {'KEYWORDS':keywords}
-				if(data.bindData.elasticAttr){
-					infoObj.ATTRIBUTES = data.bindData.elasticAttr.split(" ");
+				if(data.value)	{
+					var keywords = data.value.replace(/ /g,"+"),
+					infoObj = {'KEYWORDS':keywords}
+					if(data.bindData.elasticAttr){
+						infoObj.ATTRIBUTES = data.bindData.elasticAttr.split(" ");
+						}
+					$tag.append("<span class='underline pointer'>"+data.value+"<\/span>").bind('click',function(){
+						showContent('search',infoObj)
+						});
 					}
-				$tag.append("<span class='underline pointer'>"+data.value+"<\/span>").bind('click',function(){
-					showContent('search',infoObj)
-					});
 				}, //searchLink
 
 			cpsiawarning : function($tag,data)	{
-
-				var warnings = {
-					'choking_hazard_balloon' : 'Choking Hazard Balloon',
-					'choking_hazard_contains_a_marble' : 'Choking Hazard contains a marble',
-					'choking_hazard_contains_small_ball' : 'Choking Hazard contains a small ball',
-					'choking_hazard_is_a_marble' : 'Choking Hazard is a marble', 
-					'choking_hazard_is_a_small_ball' : 'Choking Hazard is a small ball',
-					'choking_hazard_small_parts' : 'Choking Hazard small parts',
-					'no_warning_applicable' : 'No Warning Applicable'
-					};
-				if(warnings[data.value])	{
-					$tag.append(warnings[data.value]);
+				if(data.value)	{
+					var warnings = {
+						'choking_hazard_balloon' : 'Choking Hazard Balloon',
+						'choking_hazard_contains_a_marble' : 'Choking Hazard contains a marble',
+						'choking_hazard_contains_small_ball' : 'Choking Hazard contains a small ball',
+						'choking_hazard_is_a_marble' : 'Choking Hazard is a marble', 
+						'choking_hazard_is_a_small_ball' : 'Choking Hazard is a small ball',
+						'choking_hazard_small_parts' : 'Choking Hazard small parts',
+						'no_warning_applicable' : 'No Warning Applicable'
+						};
+					if(warnings[data.value])	{
+						$tag.append(warnings[data.value]);
+						}
+					else	{
+						$tag.append(data.value);
+						}
 					}
-				else	{
-					$tag.append(data.value);
-					}
-
 				},
 
 			addpicslider : function($tag,data)	{
@@ -2398,16 +2365,32 @@ either templateID needs to be set OR showloading must be true. TemplateID will t
 									}},"mutable");
 								break;
 							case 'lists':
-								_app.model.addDispatchToQ({"_cmd":"buyerProductLists","_tag":{"datapointer":"buyerProductLists",'parentID':'listsContainer','callback':'showBuyerLists','extension':'quickstart'}},"mutable");
+//								_app.model.addDispatchToQ({"_cmd":"buyerProductLists","_tag":{"datapointer":"buyerProductLists",'parentID':'listsContainer','callback':'showBuyerLists','extension':'quickstart'}},"mutable");
+								_app.model.addDispatchToQ({"_cmd":"buyerProductLists","_tag":{"datapointer":"buyerProductLists",'verb':'translate','jqObj': $('#listsArticle',$customer),'callback':'tlc',onComplete : function(rd){
+//data formatting on lists is unlike any other format for product, so a special handler is used.				
+									function populateBuyerProdlist(listID,$context)	{
+										//add the product list ul here because tlc statement has list ID for bind.
+										$("[data-buyerlistid='"+listID+"']",$customer).append("<ul data-tlc=\"bind $var '.@"+listID+"'; store_prodlist#productlist  --hideSummary='1' --withReviews='1' --withVariations='1' --withInventory='1' --templateid='productListTemplateBuyerList'  --legacy;\" class='listStyleNone fluidList clearfix noPadOrMargin productList'></ul>");
+										_app.model.addDispatchToQ({"_cmd":"buyerProductListDetail","listid":listID,"_tag" : {'datapointer':'buyerProductListDetail|'+listID,"listid":listID,'callback':'buyerListAsProdlist','extension':'quickstart','jqObj':$("[data-buyerlistid='"+listID+"'] ul",$context)}},'mutable');
+										}
+									
+									var data = _app.data[rd.datapointer]['@lists']; //shortcut
+									var L = data.length;
+									var numRequests = 0;
+									for(var i = 0; i < L; i += 1)	{
+										populateBuyerProdlist(data[i].id,rd.jqObj)
+										}
+									_app.model.dispatchThis('mutable');
+									$('.applyAccordion',rd.jqObj).accordion({heightStyle: "content"});
+									}}},"mutable");
 								break;
 							case 'myaccount':
 	//							dump(" -> myaccount article loaded. now show addresses...");
-								_app.ext.cco.calls.appCheckoutDestinations.init({},'mutable'); //needed for country list in address editor.
-								_app.calls.buyerAddressList.init({'callback':'showAddresses','extension':'quickstart'},'mutable');
+								_app.ext.cco.calls.appCheckoutDestinations.init(_app.model.fetchCartID(),{},'mutable'); //needed for country list in address editor.
+								_app.model.addDispatchToQ({"_cmd":"buyerAddressList","_tag":{'callback':'tlc','jqObj':$customer,'verb':'translate','datapointer':'buyerAddressList'}},'mutable');
 								break;
 							
 							case 'logout':
-								dump(" --------> got to here");
 								$(document.body).removeClass('buyerLoggedIn');
 								$('.username').empty();
 								_app.u.logBuyerOut();
@@ -3040,7 +3023,7 @@ else	{
 					quickView('product',{'templateID':templateID,'pid':PID});
 					}
 				else	{
-					$('#globalMessaging').anymessage({"message":"In quickstart.e.quickviewShow, unable to ascertain PID ["+PID+"] or no data-templateID set on trigger element.","gMessage":true});
+					$('#globalMessaging').anymessage({"message":"In quickstart.e.quickviewShow, unable to ascertain PID ["+PID+"] or no data-loadstemplate set on trigger element.","gMessage":true});
 					}
 				}
 

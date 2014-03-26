@@ -22,7 +22,6 @@ quickstart.css
 */
 
 
-
 /*
 
 The css in this file is optimized for a mobile device, then uses media queries to tailor the experience for larger browsers.
@@ -30,8 +29,6 @@ That way, the mobile device (which typically has less power) can skip all the he
 The media queries are located at the bottom of this file.
 
 */
-
-
 
 body,html	{font-size:85%;} /* increased for non mobile devices w/ a media query */
 
@@ -75,9 +72,6 @@ td.valignMiddle	{vertical-align: middle;}
 /* feel free to delete these or override in your own .css file */
 h1, h2, h3, h4, h5, h6	{padding:0; margin:0;}
 
-
-
-
 /* some optional form styling
 <label><span class='prompt'>prompt</span><input class='alignInput'></label> w/ alignedForm class around it on form, fieldset, whatever 
  */
@@ -90,8 +84,7 @@ h1, h2, h3, h4, h5, h6	{padding:0; margin:0;}
     visibility: hidden;
 	}
 .alignedForm .prompt	{text-align:right; float:left; width:35%; display:block; margin-right:2%;}
-.alignedForm .alignInput	{width:60%; float:left;} /* not enforcing width is common enough that it justifies using a class to enforce it. */
-
+.alignedForm .alignInput	{width:60%; float:right;} /* not enforcing width is common enough that it justifies using a class to enforce it. */
 
 /* chrome and safari add an outer border/glow to the input in focus. this removes it. */
 input:focus {
@@ -333,6 +326,7 @@ so the displayNone class is used, then a .grpType_PARENT class is added if the i
 
 
 
+
 /*
 
 BREADCRUMB
@@ -393,6 +387,12 @@ CUSTOMER PAGES
 #buyerAddresses h2	{margin:1em 0; clear:both;}
 #buyerAddresses address	{margin:0 0px 1em 0; float:left; width:90%; display:block; padding:1em;}
 
+
+/* buyer lists */
+.smallButtonList .ui-button-icon-only {width:1.4em}
+.smallButtonList .ui-button-icon-only .ui-button-text	{height:1.4em; padding:0;}
+
+.buyerList .prodThumbContainer	{position:relative;}
 
 
 /*
@@ -569,6 +569,7 @@ CHECKOUT
 
 
 
+
 /* END of quickstart.css */
 
 
@@ -636,7 +637,7 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 
 /* used in the header and footer */
 .menuitems	{font-size:.95em; cursor:pointer;}
-.menuitems a	{color:#000; text-decoration:none;}
+.menuitems a	{color:#000; text-decoration:none; display:block; padding:0; margin:0; width:100%;}
 .menuItem1	{background:#fff;}
 .menuItem2	{background:#f0f0f0;}
 .menuItem3	{background:#e4e4e4;}

@@ -328,14 +328,17 @@ If the data is not there, or there's no data to be retrieved (a Set, for instanc
 			dispatch : function(obj,_tag){
 				_app.u.dump("Attempting to log in");
 				obj._cmd = 'authAdminLogin';
-				if(obj.authtype == 'md5')	{
+				obj.authid = obj.password;
+				obj.authtype = 'password';
+// ** 201402 -> md5 is no longer used for login. 
+/*				if(obj.authtype == 'md5')	{
 					_app.vars.userid = obj.userid.toLowerCase();	 // important!
 					obj.ts = _app.u.ymdNow();
 					obj.authid = Crypto.MD5(obj.password+obj.ts);
 					obj.device_notes = "";
 					delete obj.password;
 					}
-
+*/
 				obj._tag = _tag || {};
 				if(obj.persistentAuth)	{obj._tag.datapointer = "authAdminLogin"} //this is only saved locally IF 'keep me logged in' is true OR it's passed in _tag
 				_app.model.addDispatchToQ(obj,'immutable');
@@ -1141,14 +1144,12 @@ will load everything in the RQ will a pass <= [pass]. so pass of 10 loads everyt
 
 //Run at initComplete. loads all pass zero files and executes their callbacks (if any). then loads resources set for pass > 0
 		loadResources : function()	{
-			dump("BEGIN loadResources");
 			var rObj = {
 				'passZeroResourcesLength' : _app.u.handleRQ(0),
 				'passZeroResourcesLoaded' : 0,
 				'passZeroTimeout' : null
 				}; //what is returned.
 			function resourcesAreLoaded(){
-//				dump("BEGIN resourcesAreLoaded");
 				rObj.passZeroResourcesLoaded = _app.u.numberOfLoadedResourcesFromPass(0); //this should NOT be in the else or it won't get updated once the resources are done.
 				if(_app.u.numberOfLoadedResourcesFromPass(0) == _app.vars.rq.length)	{
 					_app.vars.rq = null; //this is the tmp array used by handleRQ and numberOfResourcesFromPass. Should be cleared for next pass.
@@ -3292,7 +3293,6 @@ $tmp.empty().remove();
 	formatRules : {
 
 		'CC' : function($input,$err)	{
-			_app.u.dump(" got here. is valid cc:  "+_app.u.isValidCC($input.val()));
 			var r = _app.u.isValidCC($input.val());
 			if(!r)	{$err.append('The credit card # provided is not valid')}
 			return r;

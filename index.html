@@ -81,8 +81,8 @@ $(document).ready(function(){
 			<div class='menuAndSearch'>
 				<ul class='mainMenu menuitems'>
 					<li class='menuItem2'><a href='#!company/contact'>contact</a></li>
-					<li class='menuItem3 hideIfLoggedOut'><a href='#!customer/account'>account</a></li>
-					<li class='menuItem3 hideIfLoggedIn'><a href='#!customer/account'>login</a></li><!-- show if logged out -->
+					<li class='menuItem3 hideIfLoggedOut'><a href='#!customer/myaccount'>account</a></li>
+					<li class='menuItem3 hideIfLoggedIn'><a href='#!customer/myaccount'>login</a></li><!-- show if logged out -->
 					<li class='menuItem4'><a href='#!cart'>cart</a></li>
 					<li class='menuItem5'><a href='#!checkout'>checkout</a></li>
 				</ul>
@@ -119,8 +119,8 @@ $(document).ready(function(){
 	<ul id='mastFoot' class='menuitems'>
 		<li class='menuItem1'><a href='#!customer/newsletter'>newsletter</a></li>
 		<li class='menuItem2'><a href='#!company/about'>company</a></li>
-		<li class='menuItem3 hideIfLoggedOut'><a href='#!customer/account'>account</a></li>
-		<li class='menuItem3 hideIfLoggedIn'><a href='#!customer/account'>login</a></li><!-- show if logged out -->
+		<li class='menuItem3 hideIfLoggedOut'><a href='#!customer/myaccount'>account</a></li>
+		<li class='menuItem3 hideIfLoggedIn'><a href='#!customer/myaccount'>login</a></li><!-- show if logged out -->
 		<li class='menuItem4'><a href='#!cart'>cart</a></li>
 		<li class='menuItem5'><a href='#!checkout'>checkout</a></li>	
 	</ul>
@@ -470,11 +470,11 @@ this will likely become more flexible in the future. ###
 	
 		<h1 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h1>
 	
-		<hgroup class="marginBottom">
+		<p class="marginBottom">
 			<h5 data-tlc="bind $var '.pid'; if (is $var --notblank;) {{format --prepend='Sku: '; apply --append;}};" class="stid"></h5>
 			<h5 data-tlc="bind $var '.%attribs.zoovy:prod_mfg'; quickstart#searchlink  --legacy;"></h5>
 			<h5 data-tlc="bind $var '.%attribs.zoovy:prod_mfgid'; if (is $var --notblank;) {{format --prepend='Mfg ID: '; apply --append;}};"></h5>
-		</hgroup>
+		</p>
 	
 		<div class="priceContainer marginBottom">
 			<h4 data-tlc="bind $var '.%attribs.zoovy:base_price'; if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: '; apply --append;}};" class="basePrice"></h4>
@@ -679,17 +679,16 @@ if you change these, you should move them above this comment so that when you (o
 			<!-- ::: add your contact information here ::: -->
 			</div>
 
-			<form action="#" data-app-submit="store_crm|contactFormSubmit" name="contactForm">
+			<form action="#" data-app-submit="store_crm|contactFormSubmit" name="contactForm" class='alignedForm'>
 			<input name="msgtype" value="feedback" type="hidden">
 			<fieldset>
 				<legend>Contact Us</legend>
 				<div id="contactFormMessaging"></div>
-				<div><label><span class="prompt">Email Address</span><input name="sender" required type="email"></label></div>
-				<div><label><span class="prompt">Subject</span><input name="subject" required type="text"></label></div>
-				<div><label><span class="prompt">Order ID</span><input name="OID" type="text"></label></div>
-				<div><label><span class="prompt">Message</span><textarea name="body" required></textarea></label></div>
-				<div class="alignRight"><input class="applyButton" value="Send Message" type="submit">
-				</div>
+				<label><span class="prompt">Email Address</span><input name="sender" required type="email" class='alignInput'></label>
+				<label><span class="prompt">Subject</span><input name="subject" required type="text" class='alignInput'></label>
+				<label><span class="prompt">Order ID</span><input name="OID" type="text" class='alignInput'></label>
+				<label><span class="prompt">Message</span><textarea name="body" required class='alignInput'></textarea></label>
+				<div class="alignRight"><input class="applyButton" value="Send Message" type="submit"></div>
 			</fieldset>
 			</form>
 			<div data-tlc="bind $var '.zoovy:contact'; render --wiki='quickstart'; if (is $var --notblank;) {{apply --append;}};" id="contactContent"></div>
@@ -829,7 +828,7 @@ subscribeListsArticle is used for authenticated buyers
 		<button class="floatRight applyButton" data-icon-primary="ui-icon-plus" data-app-click="quickstart|showBuyerAddressAdd">New Shipping Address</button>
 		<h2>Shipping Address(es)</h2>
 	</div>
-	<div data-tlc="bind $var '.@ship'; controller#loop --templateid='shipAddressTemplate'; if (is $var --notblank;) {{apply --append;}};" class="billAddresses"></div>
+	<div data-tlc="bind $var '.@ship'; controller#loop --templateid='shipAddressTemplate'; if (is $var --notblank;) {{apply --append;}};" class="shipAddresses"></div>
 </div>
 
 
@@ -849,30 +848,24 @@ subscribeListsArticle is used for authenticated buyers
 			<div data-tlc="bind $var '.'; transmogrify --dataset=$var --templateid='invoiceTemplate'; apply --append;" data-bind="format:loadsTemplate; loadsTemplate: invoiceTemplate; useParentData:true;"></div>
 		</div>
 
-
-
 		<div id="changepasswordArticle" class="displayNone textContentArea">
 			<h1>Change Password</h1>
-			<div id="changepasswordContainer">
-
-				<form action="#" name="changePasswordForm" data-app-submit="quickstart|passwordChangeSubmit">
-				<fieldset class="borderNone">
-				<div class="messaging"></div>
-				<div class="marginBottom"><label><span class="prompt">Password</span><input name="password" size="35" required type="password"></label></div>
-				<div class="marginBottom"><label><span class="prompt">Confirm Password</span><input name="password2" required size="35" type="password"></label></div>
-				<div class="marginBottom"><input value="Change Password" class="loadingButton applyButton" type="submit"></div>
-				
-				</fieldset>
-				</form>
-
-			</div>
+			<form action="#" name="changePasswordForm" data-app-submit="quickstart|passwordChangeSubmit" class='alignedForm'>
+			<fieldset class="borderNone">
+			<p>For passwords, we recommend using mixed case, at least one number and one special character.</p>
+			<div class="messaging"></div>
+			<label><span class="prompt">Password</span><input name="password" size="35" required type="password" data-minlength='8'></label>
+			<label><span class="prompt">Confirm Password</span><input name="password2" required size="35" type="password" data-minlength='8'></label>
+			<div class='alignCenter'><input value="Change Password" class="loadingButton applyButton" type="submit"></div>
+			</fieldset>
+			</form>
 		</div>
+
 
 		<div id="listsArticle" class="displayNone textContentArea">
 			<h1>List Manager</h1>
-			<div id="listsContainer" class="prodlist "></div>
 
-			<div id="listEditorContainer" class="displayNone "></div><!-- editor for a given list gets added here -->
+			<div class='applyAccordion' data-tlc="apply --empty; bind $var '.@lists'; controller#loop --templateid='buyerListTemplate'; apply --append; bind $content '.@lists'; controller#loop --templateid='buyerListProdlistContainerTemplate'; apply --append;"></div>
 
 		</div>
 
@@ -888,6 +881,14 @@ subscribeListsArticle is used for authenticated buyers
 </div>
 
 
+
+<h2 id='buyerListTemplate' data-tlc="bind $id '.id'; apply --append; bind $items '.items'; if (is $items --notblank;) {{format --prepend=' (' --append=')'; apply --append;}};"></h2>
+
+
+
+<div id='buyerListProdlistContainerTemplate' data-tlc="bind $id '.id'; apply --attrib='data-buyerlistid';">
+	<!-- the UL is generated automatically because the tlc bind is specific to the list id. trying to use tlc to generate tlc would probably get me committed -->
+</div>
 
 
 
@@ -1016,7 +1017,7 @@ Cart template
 			<!-- spans are set around the buttons so each element has one consitent tag type around it -->
 			<span class="continueShoppingSpan thisButton"><button class="applyButton continueShoppingButton" data-app-click="quickstart|dialogClose">Continue Shopping</button></span>
 	
-			<span id="inStoreCheckoutButton thisButton" title="proceed to secure checkout">
+			<span id="inStoreCheckoutButton" class='thisButton' title="proceed to secure checkout">
 				<a class="applyButton ui-state-highlight checkoutButton" href='#!checkout'>Store Checkout</a>
 			</span>
 	
@@ -1256,17 +1257,17 @@ The 'data-action' attribute is used to assign an onclick.
 <address id="billAddressTemplate" class="ui-widget ui-widget-content ui-corner-all marginBottom ">
 	<button data-app-click="quickstart|showBuyerAddressUpdate" class="floatRight applyButton">edit</button>
 	<div class="addressFullname">
-		<span data-tlc="bind $var '.bill.firstname'; if (is $var --notblank;) {{apply --append;}};" title="first name"></span>
-		<span data-tlc="bind $var '.bill.lastname'; if (is $var --notblank;) {{apply --append;}};" title="last name"></span>
+		<span data-tlc="bind $var '.bill/firstname'; if (is $var --notblank;) {{apply --append;}};" title="first name"></span>
+		<span data-tlc="bind $var '.bill/lastname'; if (is $var --notblank;) {{apply --append;}};" title="last name"></span>
 	</div>
 	<div class="address">
-		<div data-tlc="bind $var '.bill.address1'; if (is $var --notblank;) {{apply --append;}};" title="address"></div>
-		<div data-tlc="bind $var '.bill.address2'; if (is $var --notblank;) {{apply --append;}};" title="address 2"></div>
+		<div data-tlc="bind $var '.bill/address1'; if (is $var --notblank;) {{apply --append;}};" title="address"></div>
+		<div data-tlc="bind $var '.bill/address2'; if (is $var --notblank;) {{apply --append;}};" title="address 2"></div>
 
-		<span data-tlc="bind $var '.bill.city'; if (is $var --notblank;) {{format --append=', '; apply --append;}};" title="city"></span>,
-		<span data-tlc="bind $var '.bill.region'; if (is $var --notblank;) {{format --append='. '; apply --append;}};" title="state"></span>.
-		<span data-tlc="bind $var '.bill.postal'; if (is $var --notblank;) {{apply --append;}};" title="zip"></span>
-		<div data-tlc="bind $var '.bill.countrycode'; if (is $var --notblank;) {{apply --append;}};" title="country"></div>
+		<span data-tlc="bind $var '.bill/city'; if (is $var --notblank;) {{format --append=', '; apply --append;}};" title="city"></span>
+		<span data-tlc="bind $var '.bill/region'; if (is $var --notblank;) {{format --append='. '; apply --append;}};" title="state"></span>
+		<span data-tlc="bind $var '.bill/postal'; if (is $var --notblank;) {{apply --append;}};" title="zip"></span>
+		<div data-tlc="bind $var '.bill/countrycode'; if (is $var --notblank;) {{apply --append;}};" title="country"></div>
 	</div>
 
 </address>
@@ -1276,17 +1277,17 @@ The 'data-action' attribute is used to assign an onclick.
 <address id="shipAddressTemplate" class="ui-widget ui-widget-content ui-corner-all marginBottom ">
 	<button data-app-click="quickstart|showBuyerAddressUpdate" class="floatRight applyButton">edit</button>
 	<div class="addressFullname">
-		<span data-tlc="bind $var '.ship.firstname'; if (is $var --notblank;) {{apply --append;}};" title="first name"></span>
-		<span data-tlc="bind $var '.ship.lastname'; if (is $var --notblank;) {{apply --append;}};" title="last name"></span>
+		<span data-tlc="bind $var '.ship/firstname'; if (is $var --notblank;) {{apply --append;}};" title="first name"></span>
+		<span data-tlc="bind $var '.ship/lastname'; if (is $var --notblank;) {{apply --append;}};" title="last name"></span>
 	</div>
 	<div class="address">
-		<div data-tlc="bind $var '.ship.address1'; if (is $var --notblank;) {{apply --append;}};" title="address"></div>
-		<div data-tlc="bind $var '.ship.address2'; if (is $var --notblank;) {{apply --append;}};" title="address 2"></div>
+		<div data-tlc="bind $var '.ship/address1'; if (is $var --notblank;) {{apply --append;}};" title="address"></div>
+		<div data-tlc="bind $var '.ship/address2'; if (is $var --notblank;) {{apply --append;}};" title="address 2"></div>
 
-		<span data-tlc="bind $var '.ship.city'; if (is $var --notblank;) {{format --append=', '; apply --append;}};" title="city"></span>,
-		<span data-tlc="bind $var '.ship.region'; if (is $var --notblank;) {{format --append='. '; apply --append;}};" title="state"></span>.
-		<span data-tlc="bind $var '.ship.postal'; if (is $var --notblank;) {{apply --append;}};" title="zip"></span>
-		<div data-tlc="bind $var '.ship.countrycode'; if (is $var --notblank;) {{apply --append;}};" title="country"></div>
+		<span data-tlc="bind $var '.ship/city'; if (is $var --notblank;) {{format --append=', '; apply --append;}};" title="city"></span>
+		<span data-tlc="bind $var '.ship/region'; if (is $var --notblank;) {{format --append='. '; apply --append;}};" title="state"></span>
+		<span data-tlc="bind $var '.ship/postal'; if (is $var --notblank;) {{apply --append;}};" title="zip"></span>
+		<div data-tlc="bind $var '.ship/countrycode'; if (is $var --notblank;) {{apply --append;}};" title="country"></div>
 
 	</div>
 
@@ -1388,26 +1389,20 @@ The 'data-action' attribute is used to assign an onclick.
 	<p id='loginMessaging' class='marginBottom appMessaging'></p>
 
 	<div id='loginFormContainer'>
-		<form action='#' data-app-submit='quickstart|accountLoginSubmit' class='marginBottom'>
+		<form action='#' data-app-submit='quickstart|accountLoginSubmit' class='marginBottom alignedForm'>
 		<input type='hidden' name='method' value='unsecure' />
 		<input type='hidden' name='loginCallback' id='loginCallback' value='' /><!-- used to save a callback action in -->
 			<fieldset>
 			<legend>Account Login</legend>
-			<div>
 			<label>
 				<span class='prompt'>Login/Email</span>
-				<input type='email' class='zform_textbox zform_email' required='required'  name='login' value='' size='25' />
+				<input type='email' class='alignInput' required='required'  name='login' value='' size='25'  />
 			</label>
-			</div>
-		
-			<div>
 			<label>
 				<span class='prompt'>Password</span>
-				<input type='password' class='zform_textbox zform_password' required='required'  name='password' value='' size='25' />	
+				<input type='password' class='alignInput' required='required'  name='password' value='' size='25'  />	
 			</label>
-			</div>
-		
-			<div>
+			<div class='alignRight'>
 			<input type='submit' value='log in' class='applyButton ' />
 			</div>
 			</fieldset>
@@ -1415,21 +1410,16 @@ The 'data-action' attribute is used to assign an onclick.
 
 		<div id='recoverPasswordContainer' class='marginBottom'>
 			<div id='recoverPasswordMessaging' class='appMessaging'></div>
-			<form action='#' data-app-submit='quickstart|accountPasswordRecoverSubmit'>
+			<form action='#' data-app-submit='quickstart|accountPasswordRecoverSubmit' class='alignedForm'>
 			<fieldset>
 			<legend>Recover Password</legend>
-			<div class='marginBottom'>
 			<label>
 				<span class='prompt'>Login/Email</span>
-				<input type='text' name='login' required='required' size='25' />
+				<input type='text' name='login' required='required' size='25' class='alignInput' />
 			</label>
-			</div>
-			
-			<div><input type='submit' class='applyButton' value='Email Password to Me' /></div>
-			
+			<div class='alignRight'><input type='submit' class='applyButton' value='Email Password to Me' /></div>
 			</fieldset>
 			</form>
-			
 		</div><!-- /recoverPasswordContainer -->
 
 		<div>
