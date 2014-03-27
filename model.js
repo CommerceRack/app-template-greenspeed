@@ -1800,6 +1800,7 @@ _app.u.dump(" -> DELETED cookie "+c_name);
 						$('#globalMessaging').anymessage({'errtype':'fail-fatal','message':'An error occured while attempting to load the grammar file. See console for details. The rendering engine will not run without that file.'});
 						},
 					'success' : function(file){
+						dump(" -> retrieved .pegjs file. here is the file: "); dump(file);
 						var success;
 						try{
 							var pegParserSource = PEG.buildParser(file);

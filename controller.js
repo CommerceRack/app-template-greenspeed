@@ -921,14 +921,13 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				}
 			//IE 8
 			else if(window.attachEvent)	{
-				console.log(" -> attachEvent is supported hash change will be added in 1 second.");
+				//A little black magic here for IE8 due to a hash related bug in the browser.
+				//make sure a hash is set.  Then set the hash to itself. Then wait a short period and add the hashChange event.
 				window.location.hash = window.location.hash || '#!home'; //solve an issue w/ the hash change reloading the page.
-				window.location.hash = window.location.hash; //don't argue with the IE8 black magic.
+				window.location.hash = window.location.hash;
 				setTimeout(function(){
-					dump(" -> hashchange now added");
 					window.attachEvent("onhashchange", _app.router.handleHashChange);
 					},1000);
-				
 				}
 			else	{
 				$("#globalMessaging").anymessage({"message":"Browser doesn't support addEventListener OR attachEvent.","gMessage":true});
