@@ -2110,10 +2110,10 @@ VALIDATION
 			if(!type)	{type = (typeof msg === 'object') ? 'debug' : 'log';} //supported types are 'warn' and 'error'
 //if the console isn't open, an error occurs, so check to make sure it's defined. If not, do nothing.
 			if(typeof console != 'undefined')	{
-				console.log(" -> type: "+type); //here to debug IE.
+// ### TMP -> IE8 really doens't like this dump code, so for now we'll just use log.
 				console.log(msg);
 // ** 201402 -> moved the type check to the top so that it gets priority (otherwise setting debug on an object is overridden by dir)
-				if(type && typeof console[type] === 'function')	{
+/*				if(type && typeof console[type] === 'function')	{
 					console[type](msg);
 					}
 				else if(typeof console.dir == 'function' && typeof msg == 'object')	{
@@ -2129,7 +2129,7 @@ VALIDATION
 					}
 				else	{} //hhhhmm... unsupported type.
 					
-				}
+*/				}
 			}, //dump
 
 //javascript doesn't have a great way of easily formatting a string as money.

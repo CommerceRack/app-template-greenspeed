@@ -1662,7 +1662,7 @@ methods of getting data from non-server side sources, such as cookies, local or 
 					
 					}
 				else	{
-					_app.u.dump(" -> window."+location+"Storage.setItem is not a function.");
+//					_app.u.dump(" -> window."+location+"Storage.setItem is not a function.");
 					}
 				}
 			else	{

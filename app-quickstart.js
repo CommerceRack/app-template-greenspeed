@@ -173,15 +173,20 @@ document.write = function(v){
 					if($('#cartMessenger').length)	{
 						cartID = _rtag.cartid;
 						_app.model.addCart2Session(cartID); //this function updates _app.vars.carts
-						_app.ext.cart_message.u.initCartMessenger(cartID,$('#cartMessenger')); //starts the cart message polling
-						$('#cartMessenger').tlc({'verb':'translate','dataset':_app.data['cartDetail|'+cartID]}).attr('data-cartid',cartID);
-						$("textarea[name='message']",'#cartmessenger').on('keypress',function(event){
-							if (event.keyCode == 13) {
-								$("[data-app-role='messageSubmitButton']",$(this).closest('form')).trigger('click');
-								return false;
-								}
-							return true;
-							});
+						//don't run cart messenger in older browsers.
+						//disable cart messenger in older browsers for now (for testing).
+						if($.support['localStorage'])	{
+							_app.ext.cart_message.u.initCartMessenger(cartID,$('#cartMessenger')); //starts the cart message polling
+							$('#cartMessenger').tlc({'verb':'translate','dataset':_app.data['cartDetail|'+cartID]}).attr('data-cartid',cartID);
+							$("textarea[name='message']",'#cartmessenger').on('keypress',function(event){
+								if (event.keyCode == 13) {
+									$("[data-app-role='messageSubmitButton']",$(this).closest('form')).trigger('click');
+									return false;
+									}
+								return true;
+								});
+							}
+
 						}
 					else	{
 						dump("#cartMessenger does NOT exist. That means the cart messaging extension won't work right.","warn");
@@ -195,7 +200,7 @@ document.write = function(v){
 				else	{
 					_app.u.dump(" -> cart has been created.");
 					//this was a appCartCreate.
-					if($('#cartMessenger').length)	{
+					if($('#cartMessenger').length && $.support['localStorage'])	{
 						cartID = _app.model.fetchCartID();
 						_app.ext.cart_message.u.initCartMessenger(cartID,$('#cartMessenger')); //starts the cart message polling
 						}
