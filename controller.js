@@ -912,6 +912,8 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				_app.u.dump(" -> Uh Oh! no valid route found for "+location.hash);
 				//what to do here?
 				}
+			
+	
 	//this would get added at end of INIT. that way, init can modify the hash as needed w/out impacting.
 			if (window.addEventListener) {
 				console.log(" -> addEventListener is supported and added for hash change.");
@@ -919,9 +921,14 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				}
 			//IE 8
 			else if(window.attachEvent)	{
-				console.log(" -> attachEvent is supported and added for hash change.");
-//				window.location.hash = window.location.hash; //solve an issue w/ the hash change reloading the page.
-//				window.attachEvent("onhashchange", _app.router.handleHashChange);
+				console.log(" -> attachEvent is supported hash change will be added in 1 second.");
+				window.location.hash = window.location.hash || '#!home'; //solve an issue w/ the hash change reloading the page.
+				window.location.hash = window.location.hash; //don't argue with the IE8 black magic.
+				setTimeout(function(){
+					dump(" -> hashchange now added");
+					window.attachEvent("onhashchange", _app.router.handleHashChange);
+					},1000);
+				
 				}
 			else	{
 				$("#globalMessaging").anymessage({"message":"Browser doesn't support addEventListener OR attachEvent.","gMessage":true});
