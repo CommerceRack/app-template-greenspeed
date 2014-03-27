@@ -173,20 +173,15 @@ document.write = function(v){
 					if($('#cartMessenger').length)	{
 						cartID = _rtag.cartid;
 						_app.model.addCart2Session(cartID); //this function updates _app.vars.carts
-						//don't run cart messenger in older browsers.
-						//disable cart messenger in older browsers for now (for testing).
-						if($.support['localStorage'])	{
-							_app.ext.cart_message.u.initCartMessenger(cartID,$('#cartMessenger')); //starts the cart message polling
-							$('#cartMessenger').tlc({'verb':'translate','dataset':_app.data['cartDetail|'+cartID]}).attr('data-cartid',cartID);
-							$("textarea[name='message']",'#cartmessenger').on('keypress',function(event){
-								if (event.keyCode == 13) {
-									$("[data-app-role='messageSubmitButton']",$(this).closest('form')).trigger('click');
-									return false;
-									}
-								return true;
-								});
-							}
-
+						_app.ext.cart_message.u.initCartMessenger(cartID,$('#cartMessenger')); //starts the cart message polling
+						$('#cartMessenger').tlc({'verb':'translate','dataset':_app.data['cartDetail|'+cartID]}).attr('data-cartid',cartID);
+						$("textarea[name='message']",'#cartmessenger').on('keypress',function(event){
+							if (event.keyCode == 13) {
+								$("[data-app-role='messageSubmitButton']",$(this).closest('form')).trigger('click');
+								return false;
+								}
+							return true;
+							});
 						}
 					else	{
 						dump("#cartMessenger does NOT exist. That means the cart messaging extension won't work right.","warn");
@@ -200,7 +195,7 @@ document.write = function(v){
 				else	{
 					_app.u.dump(" -> cart has been created.");
 					//this was a appCartCreate.
-					if($('#cartMessenger').length && $.support['localStorage'])	{
+					if($('#cartMessenger').length)	{
 						cartID = _app.model.fetchCartID();
 						_app.ext.cart_message.u.initCartMessenger(cartID,$('#cartMessenger')); //starts the cart message polling
 						}
@@ -498,7 +493,6 @@ need to be customized on a per-ria basis.
 			}, //wiki
 
 
-
 		pageTransition : function($o,$n)	{
 //if $o doesn't exist, the animation doesn't run and the new element doesn't show up, so that needs to be accounted for.
 			if($o instanceof jQuery)	{
@@ -592,7 +586,9 @@ need to be customized on a per-ria basis.
 //here, on 'could' disable the display if they didn't want hidden cats to show in the breadcrumb.
 			cattext : function($tag,data)	{
 //				dump(" -> value: "); dump(data.value);
-				if(data.value && data.value[0] == '!')	{data.value = data.value.substring(1)}
+				if(data.value && data.value[0] == '!')	{
+					data.value = data.value.substring(1)
+					}
 				_app.renderFormats.text($tag,data);
 				},
 
@@ -823,6 +819,7 @@ fallback is to just output the value.
 				else if(typeof inv !== "undefined" && (!inv || inv <= 0))	{buttonState = 'disable';}
 				else{}
 				
+
 //				dump(" -> inv: "+inv);
 				$tag.addClass(className).text(buttonText);
 				$tag.button();
@@ -895,7 +892,7 @@ fallback is to just output the value.
 // -> unshift is used in the case of 'recent' so that the 0 spot always holds the most recent and also so the length can be maintained (kept to a reasonable #).
 // infoObj.back can be set to 0 to skip a URI update (will skip both hash state and popstate.) 
 			showContent : function(pageType,infoObj)	{
-				
+//				dump("BEGIN showContent ["+pageType+"]."); dump(infoObj);
 				infoObj = infoObj || {}; //could be empty for a cart or checkout
 /*
 what is returned. is set to true if pop/pushState NOT supported. 
@@ -910,6 +907,7 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 //clicking to links (two product, for example) in a short period of time was rendering both pages at the same time.
 //this will fix that and only show the last clicked item. state of the world render this code obsolete.
 				if($old.length)	{
+
 					$old.siblings().hide(); //make sure only one 'page' is visible.
 					}
 				_app.ext.quickstart.u.closeAllModals();  //important cuz a 'showpage' could get executed via wiki in a modal window.
@@ -917,8 +915,6 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 //if pageType isn't passed in, we're likely in a popState, so look in infoObj.
 				if(pageType){infoObj.pageType = pageType} //pageType
 				else if(pageType == '')	{pageType = infoObj.pageType}
-
-				dump(" -> showContent ["+pageType+"].","log"); //dump(infoObj);
 
 				_app.ext.quickstart.u.handleSearchInput(pageType); //will clear keyword searches when on a non-search page, to avoid confusion.
 
@@ -1093,7 +1089,7 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 //NOT POSTING THIS MESSAGE AS ASYNC BEHAVIOR IS NOT CURRENTLY QUANTIFIABLE					
 				//Used by the SEO generation utility to signal that a page has finished loading. 
 				//parent.postMessage("renderFinished","*");
-				dump("End of showContent reached. mainContent area has "+$("#mainContentArea").children().length+" children","log");
+				
 				return false; //always return false so the default action (href) is cancelled. hashstate will address the change.
 				}, //showContent
 
