@@ -179,8 +179,9 @@ var tlc = function()	{
 				dump("----------------> start new $tag. tlc: \n"+$(this).data('tlc')+" <-----------------");
 				}
 				var commands = {};
+				dump(" -> stringified tlc parse: "+JSON.stringify(window.pegParser['parse'](tlc)));
 				try{
-					dump(" -> stringified tlc parse: "+JSON.stringify(window.pegParser['parse'](tlc)));
+					
 					commands = window.pegParser['parse'](tlc);
 					}
 				catch(e)	{
