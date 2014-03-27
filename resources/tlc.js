@@ -353,6 +353,7 @@ This one block should get called for both img and imageurl but obviously, imageu
 					$tag = globals.tags[argObj.imgdefault]
 					}
 				else	{
+					//ie8 wants 'default', not .default.
 					dump("Formatter img/imageurl specified "+argObj['default']+" as the tag src, but that tag has not been defined",'warn');
 					}
 				}
@@ -450,13 +451,14 @@ This one block should get called for both img and imageurl but obviously, imageu
 
 			//add and remove work w/ either 'tag' or 'class'.
 			case 'add' : 
-				if(argObj.class)	{$tag.addClass(argObj.class)}
+			//IE8 wants 'class' instead of .class.
+				if(argObj['class'])	{$tag.addClass(argObj['class'])}
 				else if(argObj.tag)	{
 					// ### TODO -> not done yet. what to do? add a tag? what tag? where does it come from?
 					}
 				break; 
 			case 'remove':
-				if(argObj.class)	{$tag.removeClass(argObj.class)}
+				if(argObj['class'])	{$tag.removeClass(argObj['class'])}
 				else if(argObj.tag)	{
 					globals.tags[argObj.tag].remove();
 					}
@@ -602,6 +604,7 @@ This one block should get called for both img and imageurl but obviously, imageu
 		var r = globals.binds[argObj.bind];
 		if(globals.binds[argObj.bind] && Number(argObj.chop) && globals.binds[argObj.bind].length > argObj.chop)	{
 			r = globals.binds[argObj.bind].toString();
+
 			r = r.substr(0,Number(argObj.chop));
 			}
 		return r;
@@ -989,6 +992,7 @@ returning a 'false' here will exit the statement loop.
 			}
 		globals.binds[globals.focusBind] = value;
 		return value;
+
 		}
 
 	this.handleCommand_math = function(cmd,globals)	{
@@ -1094,7 +1098,6 @@ returning a 'false' here will exit the statement loop.
 	this.getBinds = function(templateid)	{
 		var _self = this; //'this' context is lost within each loop.
 		var $t = _self.getTemplateInstance(templateid), bindArr = new Array();
-
 
 		$("[data-tlc]",$t).addBack("[data-tlc]").each(function(index,value){ //addBack ensures the container element of the template parsed if it has a tlc.
 			var $tag = $(this), tlc = $tag.data('tlc');

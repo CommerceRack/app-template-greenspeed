@@ -174,7 +174,8 @@ myApp.router.appendInit({
 			myApp.router.handleHashChange();
 			}
 		else	{
-			showContent('homepage');
+			//IE8 didn't like the shortcut to showContent here.
+			myApp.ext.quickstart.a.showContent('homepage');
 			}
 		if(g.uriParams && g.uriParams.meta)	{
 			myApp.ext.cco.calls.cartSet.init({'want/refer':infoObj.uriParams.meta,'cartID':_app.model.fetchCartID()},{},'passive');
