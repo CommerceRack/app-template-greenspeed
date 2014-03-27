@@ -179,12 +179,8 @@ var tlc = function()	{
 					dump("----------------> start new $tag. tlc: \n"+$(this).data('tlc')+" <-----------------");
 					}
 				var commands = {};
-//				dump(" typeof pegParser: "+(typeof window.pegParser));
-//				dump(" typeof pegParser['parse']: "+(typeof window.pegParser['parse']));
-//				dump(" typeof tlc: "+(typeof tlc));
-				var bob = " "+tlc.toString();
 				try{
-					commands = window.pegParser['parse'](bob);
+					commands = window.pegParser['parse'](tlc);
 					}
 				catch(e)	{
 					dump("TLC error: "+_self.buildErrorMessage(e)+" for: "+tlc);
