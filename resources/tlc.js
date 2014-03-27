@@ -175,13 +175,11 @@ var tlc = function()	{
 			$("[data-tlc]",$ele).addBack("[data-tlc]").each(function(index,value){ //addBack ensures the container element of the template parsed if it has a tlc.
 				var $tag = $(this), tlc = $tag.data('tlc');
 //			
-			if($._app.vars.debug == 'tlc')	{
-				dump("----------------> start new $tag. tlc: \n"+$(this).data('tlc')+" <-----------------");
-				}
+				if($._app.vars.debug == 'tlc')	{
+					dump("----------------> start new $tag. tlc: \n"+$(this).data('tlc')+" <-----------------");
+					}
 				var commands = {};
-				dump(" -> stringified tlc parse: "+JSON.stringify(window.pegParser['parse'](tlc)));
 				try{
-					
 					commands = window.pegParser['parse'](tlc);
 					}
 				catch(e)	{
@@ -1100,13 +1098,14 @@ returning a 'false' here will exit the statement loop.
 	
 //This is intendted to be run on a template BEFORE the data is in memory. Allows for gathering what data will be necessary.
 	this.getBinds = function(templateid)	{
+		dump(" ------------> RUNNING tlc.getBinds");
 		var _self = this; //'this' context is lost within each loop.
 		var $t = _self.getTemplateInstance(templateid), bindArr = new Array();
 
 		$("[data-tlc]",$t).addBack("[data-tlc]").each(function(index,value){ //addBack ensures the container element of the template parsed if it has a tlc.
 			var $tag = $(this), tlc = $tag.data('tlc');
 
-			var commands = false;
+			var commands = {};
 			try{
 				commands = window.pegParser['parse'](tlc);
 				}
