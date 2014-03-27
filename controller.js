@@ -183,6 +183,7 @@ _app.templates holds a copy of each of the templates declared in an extension bu
 		}, //handleAdminVars
 
 
+
 					// //////////////////////////////////   CALLS    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \\		
 
 
@@ -912,7 +913,13 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				//what to do here?
 				}
 	//this would get added at end of INIT. that way, init can modify the hash as needed w/out impacting.
-			window.addEventListener("hashchange", _app.router.handleHashChange, false);
+			if (window.addEventListener) {
+				window.addEventListener("hashchange", _app.router.handleHashChange, false);
+				}
+			//IE 8
+			else if(window.attachEvent)	{
+				window.attachEvent("onhashchange", _app.router.handleHashChange);
+				}
 			},
 	
 		handleHashChange : function()	{
@@ -2569,6 +2576,7 @@ if(_app.u.isSet(eleAttr) && typeof eleAttr == 'string')	{
 //NOTE - eventually, we want to get rid of this check and just use the .data at the bottom.
 else if(typeof eleAttr == 'object')	{
 //	_app.u.dump(' -> eleAttr is an object.');
+
 // applying an empty object as .data caused a JS error in IE8
 	if($.isEmptyObject(eleAttr))	{
 //		_app.u.dump(" -> eleAttr is empty");
