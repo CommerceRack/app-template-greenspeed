@@ -885,7 +885,7 @@ fallback is to just output the value.
 // -> unshift is used in the case of 'recent' so that the 0 spot always holds the most recent and also so the length can be maintained (kept to a reasonable #).
 // infoObj.back can be set to 0 to skip a URI update (will skip both hash state and popstate.) 
 			showContent : function(pageType,infoObj)	{
-//				dump("BEGIN showContent ["+pageType+"]."); dump(infoObj);
+				
 				infoObj = infoObj || {}; //could be empty for a cart or checkout
 /*
 what is returned. is set to true if pop/pushState NOT supported. 
@@ -907,6 +907,8 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 //if pageType isn't passed in, we're likely in a popState, so look in infoObj.
 				if(pageType){infoObj.pageType = pageType} //pageType
 				else if(pageType == '')	{pageType = infoObj.pageType}
+
+				dump(" -> showContent ["+pageType+"]."); //dump(infoObj);
 
 				_app.ext.quickstart.u.handleSearchInput(pageType); //will clear keyword searches when on a non-search page, to avoid confusion.
 
@@ -1081,7 +1083,7 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 //NOT POSTING THIS MESSAGE AS ASYNC BEHAVIOR IS NOT CURRENTLY QUANTIFIABLE					
 				//Used by the SEO generation utility to signal that a page has finished loading. 
 				//parent.postMessage("renderFinished","*");
-				
+				dump("End of showContent reached. mainContent area has "+$("#mainContentArea").children().length+" children");
 				return false; //always return false so the default action (href) is cancelled. hashstate will address the change.
 				}, //showContent
 

@@ -1,4 +1,5 @@
 $("#homepageTemplate").on('complete.cycle',function(state,$ele,infoObj){
+	dump(" -> executed homepage.complete");
 	$('.productSlideshow',$ele).cycle();
 	});
 
@@ -35,11 +36,11 @@ $("#productTemplateQuickView").on('complete.dynimaging',function(state,$ele,info
 myApp.rq.push(['script',0,(document.location.protocol == 'file:') ? myApp.vars.testURL+'jsonapi/config.js' : myApp.vars.baseURL+'jsonapi/config.js',function(){
 //in some cases, such as the zoovy UI, zglobals may not be defined. If that's the case, certain vars, such as jqurl, must be passed in via P in initialize:
 //	myApp.u.dump(" ->>>>>>>>>>>>>>>>>>>>>>>>>>>>> zGlobals is an object");
-	myApp.vars.username = zGlobals.appSettings.username.toLowerCase(); //used w/ image URL's.
+	window.myApp.vars.username = zGlobals.appSettings.username.toLowerCase(); //used w/ image URL's.
 //need to make sure the secureURL ends in a / always. doesn't seem to always come in that way via zGlobals
-	myApp.vars.secureURL = zGlobals.appSettings.https_app_url;
-	myApp.vars.domain = zGlobals.appSettings.sdomain; //passed in ajax requests.
-	myApp.vars.jqurl = (document.location.protocol === 'file:') ? myApp.vars.testURL+'jsonapi/' : '/jsonapi/';
+	window.myApp.vars.secureURL = zGlobals.appSettings.https_app_url;
+	window.myApp.vars.domain = zGlobals.appSettings.sdomain; //passed in ajax requests.
+	window.myApp.vars.jqurl = (document.location.protocol === 'file:') ? myApp.vars.testURL+'jsonapi/' : '/jsonapi/';
 	}]); //The config.js is dynamically generated.
 	
 myApp.rq.push(['extension',0,'order_create','extensions/checkout/extension.js']);

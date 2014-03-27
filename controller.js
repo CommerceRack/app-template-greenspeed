@@ -920,6 +920,9 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 			else if(window.attachEvent)	{
 				window.attachEvent("onhashchange", _app.router.handleHashChange);
 				}
+			else	{
+				$("#globalMessaging").anymessage({"message":"Browser doesn't support addEventListener OR attachEvent.","gMessage":true});
+				}
 			},
 	
 		handleHashChange : function()	{
