@@ -178,7 +178,7 @@ var tlc = function()	{
 			if($._app.vars.debug == 'tlc')	{
 				dump("----------------> start new $tag. tlc: \n"+$(this).data('tlc')+" <-----------------");
 				}
-				var commands = false;
+				var commands = {};
 				try{
 					commands = window.pegParser['parse'](tlc);
 					}
