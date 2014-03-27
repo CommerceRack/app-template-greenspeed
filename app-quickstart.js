@@ -908,7 +908,7 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 				if(pageType){infoObj.pageType = pageType} //pageType
 				else if(pageType == '')	{pageType = infoObj.pageType}
 
-				dump(" -> showContent ["+pageType+"]."); //dump(infoObj);
+				dump(" -> showContent ["+pageType+"].","log"); //dump(infoObj);
 
 				_app.ext.quickstart.u.handleSearchInput(pageType); //will clear keyword searches when on a non-search page, to avoid confusion.
 
@@ -1083,7 +1083,7 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 //NOT POSTING THIS MESSAGE AS ASYNC BEHAVIOR IS NOT CURRENTLY QUANTIFIABLE					
 				//Used by the SEO generation utility to signal that a page has finished loading. 
 				//parent.postMessage("renderFinished","*");
-				dump("End of showContent reached. mainContent area has "+$("#mainContentArea").children().length+" children");
+				dump("End of showContent reached. mainContent area has "+$("#mainContentArea").children().length+" children","log");
 				return false; //always return false so the default action (href) is cancelled. hashstate will address the change.
 				}, //showContent
 
