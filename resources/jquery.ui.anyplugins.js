@@ -1030,10 +1030,7 @@ https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications
 					}
 					
 				$ele.removeClass('newMediaFile').data('queued',true);
-				self['options'].ajaxRequest($.extend(true,{
-					'filename' : file.name,
-					'filecontents' : filecontents,
-					},file),{'container' : self.element,'fileElement':$ele});
+				self['options'].ajaxRequest($.extend(true,{'filename' : file.name,'filecontents' : filecontents},file),{'container' : self.element,'fileElement':$ele});
 //				xhr.sendAsBinary(evt.target.result);
 				};
 			reader.readAsBinaryString(file);
