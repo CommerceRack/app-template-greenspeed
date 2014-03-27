@@ -919,8 +919,8 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				}
 			//IE 8
 			else if(window.attachEvent)	{
-				console.log(" -> attachEvent is supported and added for hash change.");
-				window.location.hash = window.location.hash; //solve an issue w/ the hash change reloading the page.
+				console.log(" -> attachEvent is supported and added for hash change. current hash: "+window.location.hash);
+				window.location.hash = window.location.hash || '#!home'; //solve an issue w/ the hash change reloading the page.
 				window.attachEvent("onhashchange", _app.router.handleHashChange);
 				}
 			else	{
