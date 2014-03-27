@@ -124,7 +124,7 @@ var tlc = function()	{
 	
 //used w/ peg parser for tlc errors.
 	this.buildErrorMessage = function(e) {
-//		dump(e.message);
+//		dump(e);
 		return e.line !== undefined && e.column !== undefined ? "Line " + e.line + ", column " + e.column + ": " + e.message : e.message;
 		}
 
@@ -166,21 +166,21 @@ var tlc = function()	{
 //	this.gatherDatapointers = function(){}'
 
 	this.translate = function($ele,dataset)	{
-//		dump("BEGIN tlc.translate");
 //		dump(" -> dataset: "); dump(dataset);
-		dump(" ------------------> start tlc.translate <------------------");
 		if($ele instanceof jQuery && dataset)	{
 			var _self = this;
 			this.handleTemplates($ele); //create any required templates that are in the html. (email uses this).
 			$("[data-tlc]",$ele).addBack("[data-tlc]").each(function(index,value){ //addBack ensures the container element of the template parsed if it has a tlc.
 				var $tag = $(this), tlc = $tag.data('tlc');
 //			
-				if($._app.vars.debug == 'tlc')	{
-					dump("----------------> start new $tag. tlc: \n"+$(this).data('tlc')+" <-----------------");
-					}
+			if($._app.vars.debug == 'tlc')	{
+				dump("----------------> start new $tag. tlc: \n"+$(this).data('tlc')+" <-----------------");
+				}
 				var commands = {};
 				try{
+					//IE8 doesn't like .parse, wants 'parse'.
 					commands = window.pegParser['parse'](tlc);
+					
 					}
 				catch(e)	{
 					dump("TLC error: "+_self.buildErrorMessage(e)+" for: "+tlc);
@@ -606,7 +606,6 @@ This one block should get called for both img and imageurl but obviously, imageu
 		var r = globals.binds[argObj.bind];
 		if(globals.binds[argObj.bind] && Number(argObj.chop) && globals.binds[argObj.bind].length > argObj.chop)	{
 			r = globals.binds[argObj.bind].toString();
-
 			r = r.substr(0,Number(argObj.chop));
 			}
 		return r;
@@ -994,7 +993,6 @@ returning a 'false' here will exit the statement loop.
 			}
 		globals.binds[globals.focusBind] = value;
 		return value;
-
 		}
 
 	this.handleCommand_math = function(cmd,globals)	{
@@ -1098,7 +1096,6 @@ returning a 'false' here will exit the statement loop.
 	
 //This is intendted to be run on a template BEFORE the data is in memory. Allows for gathering what data will be necessary.
 	this.getBinds = function(templateid)	{
-		dump(" ------------> RUNNING tlc.getBinds");
 		var _self = this; //'this' context is lost within each loop.
 		var $t = _self.getTemplateInstance(templateid), bindArr = new Array();
 
