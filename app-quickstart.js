@@ -498,14 +498,19 @@ need to be customized on a per-ria basis.
 			}, //wiki
 
 
+
 		pageTransition : function($o,$n)	{
 //if $o doesn't exist, the animation doesn't run and the new element doesn't show up, so that needs to be accounted for.
-			if($o.length)	{
+			if($o instanceof jQuery)	{
 				dump(" -> got here.  n.is(':visible'): "+$n.is(':visible'));
 				$o.fadeOut(1000, function(){$n.fadeIn(1000)}); //fade out old, fade in new.
 				}
-			else	{
+			else if($n instanceof jQuery)	{
 				$n.fadeIn(1000)
+				}
+			else	{
+				//hhmm  not sure how or why we got here.
+				dump("WARNING! in pageTransition, neither $o nor $n were instances of jQuery.  how odd.",'warn');
 				}
 			}, //pageTransition
 

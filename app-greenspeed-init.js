@@ -31,13 +31,13 @@ $("#productTemplateQuickView").on('complete.dynimaging',function(state,$ele,info
 		});
 	});
 
-
+/*
 if(typeof window.matchMedia != "undefined" || typeof window.msMatchMedia != "undefined")    {}
 else{
 	dump(" -> media queries are NOT supported. use polyfill ");
 	myApp.rq.push(['script',0,myApp.vars.baseURL+'css3-mediaqueries.js']); //in zero pass in case product page is first page.
     }
-
+*/
 
 
 
