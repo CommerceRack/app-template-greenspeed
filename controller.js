@@ -1630,7 +1630,7 @@ URI PARAM
 			kvp2Array : function(s)	{
 				var r = false;
 				if(s && s.indexOf('=') > -1)	{
-					r = s?JSON['parse']('{"' + s.replace(/&/g, '","').replace(/=/g,'":"') + '"}',function(key, value) { return key===""?value:decodeURIComponent(value) }):{};
+					r = s ? JSON['parse']('{"' + s.replace(/&/g, '","').replace(/=/g,'":"') + '"}',function(key, value) { return key===""?value:decodeURIComponent(value) }) : {};
 					}
 				else	{}
 				return r;

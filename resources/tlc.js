@@ -166,6 +166,7 @@ var tlc = function()	{
 //	this.gatherDatapointers = function(){}'
 
 	this.translate = function($ele,dataset)	{
+		dump("BEGIN tlc.translate");
 //		dump(" -> dataset: "); dump(dataset);
 		if($ele instanceof jQuery && dataset)	{
 			var _self = this;
@@ -178,7 +179,7 @@ var tlc = function()	{
 				}
 				var commands = false;
 				try{
-					commands = window.pegParser.parse(tlc);
+					commands = window.pegParser['parse'](tlc);
 					}
 				catch(e)	{
 					dump(_self.buildErrorMessage(e)); dump(tlc);
