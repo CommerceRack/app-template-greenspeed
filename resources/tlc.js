@@ -180,6 +180,7 @@ var tlc = function()	{
 				}
 				var commands = {};
 				try{
+					dump(" -> stringified tlc parse: "+JSON.stringify(window.pegParser['parse'](tlc)));
 					commands = window.pegParser['parse'](tlc);
 					}
 				catch(e)	{
