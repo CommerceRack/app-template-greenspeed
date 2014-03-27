@@ -124,11 +124,8 @@ var tlc = function()	{
 	
 //used w/ peg parser for tlc errors.
 	this.buildErrorMessage = function(e) {
-		if(e && e.message)	{
-			dump(e.message);
-			return e.line !== undefined && e.column !== undefined ? "Line " + e.line + ", column " + e.column + ": " + e.message : e.message;
-			}
-		else	{dump("Unknown peg related error");}
+//		dump(e.message);
+		return e.line !== undefined && e.column !== undefined ? "Line " + e.line + ", column " + e.column + ": " + e.message : e.message;
 		}
 
 	this.createTemplate = function(templateid)	{
@@ -169,8 +166,11 @@ var tlc = function()	{
 //	this.gatherDatapointers = function(){}'
 
 	this.translate = function($ele,dataset)	{
-		dump("BEGIN tlc.translate");
+//		dump("BEGIN tlc.translate");
 //		dump(" -> dataset: "); dump(dataset);
+		dump(" ------------------> start tlc.translate <------------------");
+		dump(" typeof window.pegParser: "+typeof window.pegParser);
+		dump(" typeof window.pegParser.parse: "+typeof window.pegParser['parse']);
 		if($ele instanceof jQuery && dataset)	{
 			var _self = this;
 			this.handleTemplates($ele); //create any required templates that are in the html. (email uses this).
@@ -185,7 +185,7 @@ var tlc = function()	{
 					commands = window.pegParser['parse'](tlc);
 					}
 				catch(e)	{
-					dump(_self.buildErrorMessage(e)); dump(tlc);
+					dump("TLC error: "+_self.buildErrorMessage(e)+" for: "+tlc);
 					}
 	
 				if(commands && !$.isEmptyObject(commands))	{
