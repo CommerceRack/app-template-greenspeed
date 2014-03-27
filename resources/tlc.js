@@ -181,9 +181,10 @@ var tlc = function()	{
 				var commands = {};
 //				dump(" typeof pegParser: "+(typeof window.pegParser));
 //				dump(" typeof pegParser['parse']: "+(typeof window.pegParser['parse']));
-				dump(" typeof tlc: "+(typeof tlc));
+//				dump(" typeof tlc: "+(typeof tlc));
+				var bob = " "+tlc.toString();
 				try{
-					commands = window.pegParser['parse'](tlc.toString());
+					commands = window.pegParser['parse'](bob);
 					}
 				catch(e)	{
 					dump("TLC error: "+_self.buildErrorMessage(e)+" for: "+tlc);
