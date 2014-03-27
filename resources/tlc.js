@@ -353,7 +353,7 @@ This one block should get called for both img and imageurl but obviously, imageu
 					$tag = globals.tags[argObj.imgdefault]
 					}
 				else	{
-					dump("Formatter img/imageurl specified "+argObj.default+" as the tag src, but that tag has not been defined",'warn');
+					dump("Formatter img/imageurl specified "+argObj['default']+" as the tag src, but that tag has not been defined",'warn');
 					}
 				}
 			else	{} //image attributes will be passed.
@@ -1094,6 +1094,7 @@ returning a 'false' here will exit the statement loop.
 	this.getBinds = function(templateid)	{
 		var _self = this; //'this' context is lost within each loop.
 		var $t = _self.getTemplateInstance(templateid), bindArr = new Array();
+
 
 		$("[data-tlc]",$t).addBack("[data-tlc]").each(function(index,value){ //addBack ensures the container element of the template parsed if it has a tlc.
 			var $tag = $(this), tlc = $tag.data('tlc');

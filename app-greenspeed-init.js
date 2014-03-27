@@ -1,4 +1,3 @@
-
 $("#homepageTemplate").on('complete.cycle',function(state,$ele,infoObj){
 	$('.productSlideshow',$ele).cycle();
 	});
