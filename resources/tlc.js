@@ -169,8 +169,6 @@ var tlc = function()	{
 //		dump("BEGIN tlc.translate");
 //		dump(" -> dataset: "); dump(dataset);
 		dump(" ------------------> start tlc.translate <------------------");
-		dump(" typeof window.pegParser: "+typeof window.pegParser);
-		dump(" typeof window.pegParser.parse: "+typeof window.pegParser['parse']);
 		if($ele instanceof jQuery && dataset)	{
 			var _self = this;
 			this.handleTemplates($ele); //create any required templates that are in the html. (email uses this).
