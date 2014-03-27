@@ -919,9 +919,9 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				}
 			//IE 8
 			else if(window.attachEvent)	{
-				console.log(" -> attachEvent is supported and added for hash change. current hash: "+window.location.hash);
-				window.location.hash = window.location.hash || '#!home'; //solve an issue w/ the hash change reloading the page.
-				window.attachEvent("onhashchange", _app.router.handleHashChange);
+				console.log(" -> attachEvent is supported and added for hash change.");
+//				window.location.hash = window.location.hash; //solve an issue w/ the hash change reloading the page.
+//				window.attachEvent("onhashchange", _app.router.handleHashChange);
 				}
 			else	{
 				$("#globalMessaging").anymessage({"message":"Browser doesn't support addEventListener OR attachEvent.","gMessage":true});
@@ -1630,7 +1630,7 @@ URI PARAM
 			kvp2Array : function(s)	{
 				var r = false;
 				if(s && s.indexOf('=') > -1)	{
-					r = s?JSON.parse('{"' + s.replace(/&/g, '","').replace(/=/g,'":"') + '"}',function(key, value) { return key===""?value:decodeURIComponent(value) }):{};
+					r = s?JSON['parse']('{"' + s.replace(/&/g, '","').replace(/=/g,'":"') + '"}',function(key, value) { return key===""?value:decodeURIComponent(value) }):{};
 					}
 				else	{}
 				return r;
