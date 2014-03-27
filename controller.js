@@ -914,10 +914,13 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				}
 	//this would get added at end of INIT. that way, init can modify the hash as needed w/out impacting.
 			if (window.addEventListener) {
+				console.log(" -> addEventListener is supported and added for hash change.");
 				window.addEventListener("hashchange", _app.router.handleHashChange, false);
 				}
 			//IE 8
 			else if(window.attachEvent)	{
+				console.log(" -> attachEvent is supported and added for hash change.");
+				window.location.hash = window.location.hash; //solve an issue w/ the hash change reloading the page.
 				window.attachEvent("onhashchange", _app.router.handleHashChange);
 				}
 			else	{
@@ -2107,6 +2110,8 @@ VALIDATION
 			if(!type)	{type = (typeof msg === 'object') ? 'debug' : 'log';} //supported types are 'warn' and 'error'
 //if the console isn't open, an error occurs, so check to make sure it's defined. If not, do nothing.
 			if(typeof console != 'undefined')	{
+				console.log(" -> type: "+type); //here to debug IE.
+				console.log(msg);
 // ** 201402 -> moved the type check to the top so that it gets priority (otherwise setting debug on an object is overridden by dir)
 				if(type && typeof console[type] === 'function')	{
 					console[type](msg);
