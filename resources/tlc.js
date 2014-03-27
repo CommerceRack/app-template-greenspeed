@@ -124,8 +124,11 @@ var tlc = function()	{
 	
 //used w/ peg parser for tlc errors.
 	this.buildErrorMessage = function(e) {
-		dump(e);
-		return e.line !== undefined && e.column !== undefined ? "Line " + e.line + ", column " + e.column + ": " + e.message : e.message;
+		if(e && e.message)	{
+			dump(e.message);
+			return e.line !== undefined && e.column !== undefined ? "Line " + e.line + ", column " + e.column + ": " + e.message : e.message;
+			}
+		else	{dump("Unknown peg related error");}
 		}
 
 	this.createTemplate = function(templateid)	{
