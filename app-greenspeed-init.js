@@ -32,6 +32,14 @@ $("#productTemplateQuickView").on('complete.dynimaging',function(state,$ele,info
 	});
 
 
+if(typeof window.matchMedia != "undefined" || typeof window.msMatchMedia != "undefined")    {}
+else{
+	dump(" -> media queries are NOT supported. use polyfill ");
+	myApp.rq.push(['script',0,myApp.vars.baseURL+'css3-mediaqueries.js']); //in zero pass in case product page is first page.
+    }
+
+
+
 
 myApp.rq.push(['script',0,(document.location.protocol == 'file:') ? myApp.vars.testURL+'jsonapi/config.js' : myApp.vars.baseURL+'jsonapi/config.js',function(){
 //in some cases, such as the zoovy UI, zglobals may not be defined. If that's the case, certain vars, such as jqurl, must be passed in via P in initialize:
