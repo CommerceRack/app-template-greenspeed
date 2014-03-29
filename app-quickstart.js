@@ -2085,6 +2085,7 @@ effects the display of the nav buttons only. should be run just after the handle
 //handleTemplateEvents gets executed in showContent, which should always be used to execute this function.
 // ** 201346 -> The company navlinks are now generated based on what articles are present and not disabled. built to allow for wizard to easily add new pages.
 			showCompany : function(infoObj)	{
+				dump("BEGIN showCompany");
 				infoObj.show = infoObj.show || 'about'; //what page to put into focus. default to 'about us' page
 				var parentID = 'mainContentArea_company'; //this is the id that will be assigned to the companyTemplate instance.
 				
@@ -2092,11 +2093,13 @@ effects the display of the nav buttons only. should be run just after the handle
 				infoObj.state = 'init';
 				infoObj.parentID = 'mainContentArea_company';
 				var $mcac = $('#mainContentArea_company');
-				
+				dump(" -> show: "+infoObj.show);
 				if($mcac.length)	{
+					dump(" -> mcac already on DOM");
 					//template has already been added to the DOM. likley moving between company pages.
 					}
 				else	{
+					dump(" -> mcac NOT on DOM yet. add");
 //					var $content = _app.renderFunctions.createTemplateInstance(infoObj.templateID,parentID);
 //no interpolation takes place on the company pages (except faq). the content should be hard coded.
 					var $tmp = $("<div>").tlc({
@@ -2515,7 +2518,7 @@ buyer to 'take with them' as they move between  pages.
 // * 201346 -> function now returns a boolean based on whether or not hte page is shown.
 			showArticleIn : function($page,infoObj)	{
 				var r = true; //what is returned. set to false if the article is NOT shown.
-//				dump("BEGIN quickstart.u.showArticle"); dump(infoObj);
+				dump("BEGIN quickstart.u.showArticle"); // dump(infoObj);
 				$('.textContentArea',$page).hide(); //hide all the articles by default and we'll show the one in focus later.
 				
 				var subject;
@@ -2531,7 +2534,9 @@ buyer to 'take with them' as they move between  pages.
 				if(subject)	{
 					var $article = $('#'+subject+'Article',$page);
 					if($article.length)	{
+						dump(" -> subect '"+subject+"' length: ".$article);
 						if(!$article.hasClass('disabled'))	{
+							dump(" -> article is NOT disabled");
 							$article.show(); //only show content if page doesn't require authentication.
 							switch(subject)	{
 								case 'faq':
@@ -2539,6 +2544,7 @@ buyer to 'take with them' as they move between  pages.
 									_app.model.dispatchThis();
 									break;
 								default:
+									dump(" -> got to 'default' in the switch.");
 									//the default action is handled in the 'show()' above. it happens for all.
 								}
 							}
