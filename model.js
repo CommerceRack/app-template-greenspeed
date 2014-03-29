@@ -1760,7 +1760,7 @@ A note about cookies:
 				var r = false, DPS = this.readLocal('dps','local') || {};
 //				_app.u.dump("DPS from local: "); _app.u.dump(DPS);
 				if($.isEmptyObject(DPS))	{
-//					_app.u.dump(" ^^ Entire 'DPS' object is empty.");
+					_app.u.dump(" ^^ Entire 'DPS' object is empty.");
 					// if nothing is local, no work to do. this allows an early exit.
 					} 
 				else	{
@@ -1768,7 +1768,7 @@ A note about cookies:
 					else if(ext && DPS[ext])	{r = DPS[ext]} //an extension was passed and an object exists.
 					else if(!ext)	{r = DPS} //return the global object. obj existing is already known by here.
 					else	{} //could get here if ext passed but obj.ext doesn't exist.
-//					_app.u.dump(" ^^ value for DPS Get: "); _app.u.dump(r);
+					_app.u.dump(" ^^ value for DPS Get: "); _app.u.dump(r);
 					}
 //				_app.u.dump("DPS returned: "); _app.u.dump(r);
 				return r;

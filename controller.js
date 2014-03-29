@@ -136,12 +136,13 @@ _app.templates holds a copy of each of the templates declared in an extension bu
 			_app.vars._session = _app.u.getParameterByName('_session');
 			_app.u.dump(" -> session found on URI: "+_app.vars._session);
 			}
-		//no localStorage support. IE8
+		//in case localstorage is disabled.
 		else if(!$.support.localStorage)	{
 			_app.vars._session = _app.model.readCookie('_session');
 			}
 		else	{
 			_app.vars._session = _app.model.dpsGet('controller','_session');
+			dump("check localstorage for _session: "+_app.vars._session);
 			if(_app.vars._session)	{
 				_app.u.dump(" -> session found in DPS: "+_app.vars._session);
 				//use the local session id.
@@ -152,7 +153,7 @@ _app.templates holds a copy of each of the templates declared in an extension bu
 				_app.u.dump(" -> generated new session: "+_app.vars._session);
 				_app.model.dpsSet('controller','_session',_app.vars._session);
 				if(!$.support.localStorage)	{
-					_app.model.writeCookie('_session',_app.vars._session); //IE8 support
+					_app.model.writeCookie('_session',_app.vars._session); //for browsers w/ localstorage disabled.
 					}
 				}
 			}
@@ -1029,6 +1030,7 @@ Some utilities for loading external files, such as .js, .css or even extensions.
 							}
 						};
 					}
+
 				else {
 					if(typeof callback == 'function')	{
 						script.onload = function(){callback(params)}
@@ -1657,7 +1659,6 @@ AUTHENTICATION/USER
 	//kill all the memory and localStorage vars used in determineAuthentication
 				_app.model.destroy('appBuyerLogin'); //nuke this so app doesn't fetch it to re-authenticate session.
 				_app.model.destroy('cartDetail|'+_app.model.fetchCartID()); //need the cart object to update again w/out customer details.
-
 				_app.model.destroy('whoAmI'); //need this nuked too.
 				_app.vars.cid = null; //used in soft-auth.
 				_app.calls.buyerLogout.init({'callback':'showMessaging','message':'Thank you, you are now logged out'});
@@ -1892,7 +1893,6 @@ VALIDATION
 				var regex = new RegExp("^[a-zA-Z0-9]+$");
 				if (!regex.test(key)) {
 					event.preventDefault();
-
 					r = false;
 					}
 				}
@@ -2118,10 +2118,10 @@ VALIDATION
 //called within the throwError function too
 		dump : function(msg,type)	{
 			// * 201402 -> the default type for an object was changed to debug to take less room in the console. dir is still available if passed as type.
-			if(!type)	{type = (typeof msg == 'object') ? 'debug' : 'log';} //supported types are 'warn' and 'error'
 			console.log(msg);
+/*			if(!type)	{type = (typeof msg == 'object') ? 'debug' : 'log';} //supported types are 'warn' and 'error'
 //if the console isn't open, an error occurs, so check to make sure it's defined. If not, do nothing.
-/*			if(typeof console != 'undefined')	{
+			if(typeof console != 'undefined')	{
 // ** 201402 -> moved the type check to the top so that it gets priority (otherwise setting debug on an object is overridden by dir)
 				if(type && typeof console[type] === 'function')	{
 					console[type](msg);
