@@ -2504,10 +2504,22 @@ name Mod 10 or Modulus 10. */
 
 //If certain privacy settings are set in a browser, even detecting if localStorage is available causes a NS_ERROR_NOT_AVAIL.
 //So we first test to make sure the test doesn't cause an error. thanks ff.
-				try{window.localStorage; jQuery.support.localStorage = true;}
+				try{
+					window.localStorage;
+					window.localStorage.setItem('test','test');
+					if(window.localStorage.getItem('test') == 'test')	{
+						jQuery.support.localStorage = true;
+						}
+					}
 				catch(e){jQuery.support.localStorage = false;}
 				
-				try{window.sessionStorage; jQuery.support.sessionStorage = true;}
+				try{
+					window.sessionStorage;
+					window.sessionStorage.setItem('test','test');
+					if(window.sessionStorage.getItem('test') == 'test')	{
+						jQuery.support.sessionStorage = true;
+						}
+					}
 				catch(e){jQuery.support.sessionStorage = false;}
 
 //update jQuery.support with whether or not placeholder is supported.
