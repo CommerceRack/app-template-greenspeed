@@ -1760,7 +1760,7 @@ A note about cookies:
 					else if(ext && DPS[ext])	{r = DPS[ext]} //an extension was passed and an object exists.
 					else if(!ext)	{r = DPS} //return the global object. obj existing is already known by here.
 					else	{} //could get here if ext passed but obj.ext doesn't exist.
-					_app.u.dump(" ^^ value for DPS Get: "); _app.u.dump(r);
+//					_app.u.dump(" ^^ value for DPS Get: "); _app.u.dump(r);
 					}
 //				_app.u.dump("DPS returned: "); _app.u.dump(r);
 				return r;
@@ -1772,9 +1772,9 @@ A note about cookies:
 //for instance, in orders, what were the most recently selected filter criteria.
 //ext and namespace (ns) are required. reduces likelyhood of nuking entire preferences object.
 			dpsSet : function(ext,ns,varObj)	{
-				dump("BEGIN dpsSet for ext: "+ext+" and ns: "+ns);
+//				dump("BEGIN dpsSet for ext: "+ext+" and ns: "+ns);
 				if(ext && ns && (varObj || varObj == 0))	{
-					dump(" -> have all the vars for setting");
+//					dump(" -> have all the vars for setting");
 					var DPS = this.readLocal('dps','local') || {}; //readLocal returns false if no data local.
 					if(typeof DPS[ext] === 'object'){
 						DPS[ext][ns] = varObj;
@@ -1784,7 +1784,7 @@ A note about cookies:
 						DPS[ext][ns] = varObj;
 						} //object  exists already. update it.
 //SANITY -> can't extend, must overwrite. otherwise, turning things 'off' gets obscene.					
-					dump(" -> writeLocal returned: "+this.writeLocal('dps',DPS,'local')); //update the localStorage session var.
+//					dump(" -> writeLocal returned: "+this.writeLocal('dps',DPS,'local')); //update the localStorage session var.
 					}
 				else	{
 					_app.u.throwGMessage("Either extension ["+ext+"] or ns["+ns+"] or varObj ["+(typeof varObj)+"] not passed into admin.u.dpsSet.");
