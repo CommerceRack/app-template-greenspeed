@@ -2079,13 +2079,14 @@ effects the display of the nav buttons only. should be run just after the handle
 					}
 				return $product;
 				}, //showProd
-				
-				
+
+
 //Show one of the company pages. This function gets executed by showContent.
 //handleTemplateEvents gets executed in showContent, which should always be used to execute this function.
-// ** 201346 -> The company navlinks are now generated based on what articles are present and not disabled. built to allow for wizard to easily add new pages.
+//The company navlinks are generated based on what articles are present and not disabled. built to allow for wizard to easily add new pages.
 			showCompany : function(infoObj)	{
-				dump("BEGIN showCompany");
+				dump("BEGIN showCompany. infoObj.show: "+infoObj.show);
+				dump(" infoObj.stringify: "+JSON.stringify(infoObj));
 				infoObj.show = infoObj.show || 'about'; //what page to put into focus. default to 'about us' page
 				var parentID = 'mainContentArea_company'; //this is the id that will be assigned to the companyTemplate instance.
 				
@@ -2534,7 +2535,7 @@ buyer to 'take with them' as they move between  pages.
 				if(subject)	{
 					var $article = $('#'+subject+'Article',$page);
 					if($article.length)	{
-						dump(" -> subect '"+subject+"' length: ".$article);
+						dump(" -> #'"+subject+"'Article.length: ".$article.length);
 						if(!$article.hasClass('disabled'))	{
 							dump(" -> article is NOT disabled");
 							$article.show(); //only show content if page doesn't require authentication.
