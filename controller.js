@@ -136,6 +136,10 @@ _app.templates holds a copy of each of the templates declared in an extension bu
 			_app.vars._session = _app.u.getParameterByName('_session');
 			_app.u.dump(" -> session found on URI: "+_app.vars._session);
 			}
+		//no localStorage support. IE8
+		else if(!$.support.localStorage)	{
+			_app.vars._session = _app.model.readCookie('_session');
+			}
 		else	{
 			_app.vars._session = _app.model.dpsGet('controller','_session');
 			if(_app.vars._session)	{
@@ -147,6 +151,9 @@ _app.templates holds a copy of each of the templates declared in an extension bu
 				_app.vars._session = _app.u.guidGenerator();
 				_app.u.dump(" -> generated new session: "+_app.vars._session);
 				_app.model.dpsSet('controller','_session',_app.vars._session);
+				if(!$.support.localStorage)	{
+					_app.model.writeCookie('_session',_app.vars._session); //IE8 support
+					}
 				}
 			}
 		}, //handleSession
@@ -181,7 +188,6 @@ _app.templates holds a copy of each of the templates declared in an extension bu
 		_app.vars.username = _app.vars.username.toLowerCase();
 		
 		}, //handleAdminVars
-
 
 
 					// //////////////////////////////////   CALLS    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \\		
@@ -895,9 +901,8 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				}
 			return uriParams;
 			},
-	
-		init : function()	{
 
+		init : function()	{
 			//initObj is a blank object by default, but may be updated outside this process. so instead of setting it to an object, it's extended to merge the two.
 			$.extend(_app.router.initObj,{
 				hash : location.hash,
@@ -912,8 +917,6 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				_app.u.dump(" -> Uh Oh! no valid route found for "+location.hash);
 				//what to do here?
 				}
-			
-	
 	//this would get added at end of INIT. that way, init can modify the hash as needed w/out impacting.
 			if (window.addEventListener) {
 				console.log(" -> addEventListener is supported and added for hash change.");
@@ -922,7 +925,7 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 			//IE 8
 			else if(window.attachEvent)	{
 				//A little black magic here for IE8 due to a hash related bug in the browser.
-				//make sure a hash is set.  Then set the hash to itself. Then wait a short period and add the hashChange event.
+				//make sure a hash is set.  Then set the hash to itself (yes, i know, but that part is key). Then wait a short period and add the hashChange event.
 				window.location.hash = window.location.hash || '#!home'; //solve an issue w/ the hash change reloading the page.
 				window.location.hash = window.location.hash;
 				setTimeout(function(){
@@ -1173,7 +1176,7 @@ will load everything in the RQ will a pass <= [pass]. so pass of 10 loads everyt
 				if(_app.u.numberOfLoadedResourcesFromPass(0) == _app.vars.rq.length)	{
 					_app.vars.rq = null; //this is the tmp array used by handleRQ and numberOfResourcesFromPass. Should be cleared for next pass.
 					_app.model.addExtensions(_app.vars.extensions);
-					_app.router.init();
+					_app.router.init(); ///### FUTURE -> this should be in the app / app init, not here.
 					_app.u.handleRQ(1); //this will empty the RQ.
 					_app.rq.push = _app.u.loadResourceFile; //reassign push function to auto-add the resource.
 					}
@@ -1654,6 +1657,7 @@ AUTHENTICATION/USER
 	//kill all the memory and localStorage vars used in determineAuthentication
 				_app.model.destroy('appBuyerLogin'); //nuke this so app doesn't fetch it to re-authenticate session.
 				_app.model.destroy('cartDetail|'+_app.model.fetchCartID()); //need the cart object to update again w/out customer details.
+
 				_app.model.destroy('whoAmI'); //need this nuked too.
 				_app.vars.cid = null; //used in soft-auth.
 				_app.calls.buyerLogout.init({'callback':'showMessaging','message':'Thank you, you are now logged out'});
@@ -1888,6 +1892,7 @@ VALIDATION
 				var regex = new RegExp("^[a-zA-Z0-9]+$");
 				if (!regex.test(key)) {
 					event.preventDefault();
+
 					r = false;
 					}
 				}
@@ -2113,13 +2118,11 @@ VALIDATION
 //called within the throwError function too
 		dump : function(msg,type)	{
 			// * 201402 -> the default type for an object was changed to debug to take less room in the console. dir is still available if passed as type.
-			if(!type)	{type = (typeof msg === 'object') ? 'debug' : 'log';} //supported types are 'warn' and 'error'
+			if(!type)	{type = (typeof msg == 'object') ? 'debug' : 'log';} //supported types are 'warn' and 'error'
 //if the console isn't open, an error occurs, so check to make sure it's defined. If not, do nothing.
 			if(typeof console != 'undefined')	{
-// ### TMP -> IE8 really doens't like this dump code, so for now we'll just use log.
-				console.log(msg);
 // ** 201402 -> moved the type check to the top so that it gets priority (otherwise setting debug on an object is overridden by dir)
-/*				if(type && typeof console[type] === 'function')	{
+				if(type && typeof console[type] === 'function')	{
 					console[type](msg);
 					}
 				else if(typeof console.dir == 'function' && typeof msg == 'object')	{
@@ -2135,7 +2138,7 @@ VALIDATION
 					}
 				else	{} //hhhhmm... unsupported type.
 					
-*/				}
+				}
 			}, //dump
 
 //javascript doesn't have a great way of easily formatting a string as money.
@@ -2590,7 +2593,6 @@ if(_app.u.isSet(eleAttr) && typeof eleAttr == 'string')	{
 //NOTE - eventually, we want to get rid of this check and just use the .data at the bottom.
 else if(typeof eleAttr == 'object')	{
 //	_app.u.dump(' -> eleAttr is an object.');
-
 // applying an empty object as .data caused a JS error in IE8
 	if($.isEmptyObject(eleAttr))	{
 //		_app.u.dump(" -> eleAttr is empty");

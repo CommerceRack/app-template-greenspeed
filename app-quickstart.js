@@ -120,6 +120,9 @@ var quickstart = function(_app) {
 					dump(" -> cartID obtained from fetchCartID. cartid: "+cartID);
 					//no need to add this cartID to the session/vars.carts, because that's where fetch gets it from.
 					}
+				else if(!$.support.localStorage)	{
+					cartID = _app.model.readCookie('_cart'); //IE8 support
+					}
 				else	{}
 
 				if(cartID)	{
@@ -218,6 +221,11 @@ document.write = function(v){
 						
 						}}},"mutable"); //used to determine if user is logged in or not.
 					_app.model.dispatchThis('mutable');
+
+					if(!$.support.localStorage)	{
+						_app.model.writeCookie('_cart',cartID); //IE8 support
+						}
+
 					}
 				
 				}
@@ -819,7 +827,6 @@ fallback is to just output the value.
 				else if(typeof inv !== "undefined" && (!inv || inv <= 0))	{buttonState = 'disable';}
 				else{}
 				
-
 //				dump(" -> inv: "+inv);
 				$tag.addClass(className).text(buttonText);
 				$tag.button();
@@ -907,7 +914,6 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 //clicking to links (two product, for example) in a short period of time was rendering both pages at the same time.
 //this will fix that and only show the last clicked item. state of the world render this code obsolete.
 				if($old.length)	{
-
 					$old.siblings().hide(); //make sure only one 'page' is visible.
 					}
 				_app.ext.quickstart.u.closeAllModals();  //important cuz a 'showpage' could get executed via wiki in a modal window.
