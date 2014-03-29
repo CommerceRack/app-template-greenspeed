@@ -2119,8 +2119,9 @@ VALIDATION
 		dump : function(msg,type)	{
 			// * 201402 -> the default type for an object was changed to debug to take less room in the console. dir is still available if passed as type.
 			if(!type)	{type = (typeof msg == 'object') ? 'debug' : 'log';} //supported types are 'warn' and 'error'
+			console.log(msg);
 //if the console isn't open, an error occurs, so check to make sure it's defined. If not, do nothing.
-			if(typeof console != 'undefined')	{
+/*			if(typeof console != 'undefined')	{
 // ** 201402 -> moved the type check to the top so that it gets priority (otherwise setting debug on an object is overridden by dir)
 				if(type && typeof console[type] === 'function')	{
 					console[type](msg);
@@ -2139,7 +2140,7 @@ VALIDATION
 				else	{} //hhhhmm... unsupported type.
 					
 				}
-			}, //dump
+*/			}, //dump
 
 //javascript doesn't have a great way of easily formatting a string as money.
 //top that off with each browser handles some of these functions a little differently. nice.

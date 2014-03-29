@@ -1724,6 +1724,7 @@ A note about cookies:
 				y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
 				x=x.replace(/^\s+|\s+$/g,"");
 				if (x==c_name)	{
+					dump(" -> "+c_name +" cookie value: "+y);
 					return unescape(y);
 					}
 				}
