@@ -1649,25 +1649,17 @@ methods of getting data from non-server side sources, such as cookies, local or 
 		writeLocal : function (key,value,location)	{
 			location = location || 'local';
 			var r = false;
-
 			if($.support[location+'Storage'])	{
-				if(typeof window[location+'Storage'].setItem == 'function' )	{
-					r = true;
-					if (typeof value == "object") {value = JSON.stringify(value);}
-
+				r = true;
+				if (typeof value == "object") {value = JSON.stringify(value);}
 //a try is used here so that if storage is full, the error is handled gracefully.
-					try	{
-						window[location+'Storage'].setItem(key, value);
-						}
-					catch(e)	{
-						r = false;
-						_app.u.dump(' -> '+location+'Storage [key: '+key+'] defined but not available.');
-						_app.u.dump(e.message);
-						}
-					
+				try	{
+					window[location+'Storage'].setItem(key, value);
 					}
-				else	{
-//					_app.u.dump(" -> window."+location+"Storage.setItem is not a function.");
+				catch(e)	{
+					r = false;
+					_app.u.dump(' -> '+location+'Storage [key: '+key+'] defined but not available.');
+					_app.u.dump(e.message);
 					}
 				}
 			else	{
@@ -1780,7 +1772,9 @@ A note about cookies:
 //for instance, in orders, what were the most recently selected filter criteria.
 //ext and namespace (ns) are required. reduces likelyhood of nuking entire preferences object.
 			dpsSet : function(ext,ns,varObj)	{
+				dump("BEGIN dpsSet for ext: "+ext+" and ns: "+ns);
 				if(ext && ns && (varObj || varObj == 0))	{
+					dump(" -> have all the vars for setting");
 					var DPS = this.readLocal('dps','local') || {}; //readLocal returns false if no data local.
 					if(typeof DPS[ext] === 'object'){
 						DPS[ext][ns] = varObj;
@@ -1790,7 +1784,7 @@ A note about cookies:
 						DPS[ext][ns] = varObj;
 						} //object  exists already. update it.
 //SANITY -> can't extend, must overwrite. otherwise, turning things 'off' gets obscene.					
-					this.writeLocal('dps',DPS,'local'); //update the localStorage session var.
+					dump(" -> writeLocal returned: "+this.writeLocal('dps',DPS,'local')); //update the localStorage session var.
 					}
 				else	{
 					_app.u.throwGMessage("Either extension ["+ext+"] or ns["+ns+"] or varObj ["+(typeof varObj)+"] not passed into admin.u.dpsSet.");
