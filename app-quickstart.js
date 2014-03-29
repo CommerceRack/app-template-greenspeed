@@ -121,7 +121,8 @@ var quickstart = function(_app) {
 					//no need to add this cartID to the session/vars.carts, because that's where fetch gets it from.
 					}
 				else if(!$.support.localStorage)	{
-					cartID = _app.model.readCookie('_cart'); //IE8 support
+					cartID = _app.model.readCookie('cartid'); //IE8 support
+					dump(" -> localStorage not supported. cookie cart value: "+cartID);
 					}
 				else	{}
 
@@ -223,7 +224,7 @@ document.write = function(v){
 					_app.model.dispatchThis('mutable');
 
 					if(!$.support.localStorage)	{
-						_app.model.writeCookie('_cart',cartID); //IE8 support
+						_app.model.writeCookie('cartid',cartID); //IE8 support
 						}
 
 					}

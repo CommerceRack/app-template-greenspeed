@@ -1107,6 +1107,11 @@ or as a series of messages (_msg_X_id) where X is incremented depending on the n
 				carts.splice( $.inArray(cartID, carts), 1 );
 				_app.model.destroy('cartDetail|'+cartID);
 				this.dpsSet('app','carts',carts); //update localStorage.
+				//IE8
+				if(!$.support.localStorage)	{
+					_app.model.deleteCookie('cartid');
+					}
+
 				}
 			else	{
 				$('#globalMessaging').anymessage({'message':'In model.removeCartFromSession, no cartid passed','gMessage':true});
@@ -1732,16 +1737,15 @@ A note about cookies:
 			},
 
 		writeCookie : function(c_name,value)	{
-var myDate = new Date();
-myDate.setTime(myDate.getTime()+(1*24*60*60*1000));
-document.cookie = c_name +"=" + value + ";expires=" + myDate + ";domain=.zoovy.com;path=/";
-document.cookie = c_name +"=" + value + ";expires=" + myDate + ";domain=www.zoovy.com;path=/";
+			var myDate = new Date();
+			myDate.setTime(myDate.getTime()+(1*24*60*60*1000));
+			document.cookie = c_name +"=" + value + ";expires=" + myDate + ";domain="+document.domain+";path=/";
 			},
 //deleting a cookie seems to cause lots of issues w/ iOS and some other mobile devices (where admin login is concerned, particularly. 
 //test before earlier.
 		deleteCookie : function(c_name)	{
-document.cookie = c_name+ "=; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/";
-_app.u.dump(" -> DELETED cookie "+c_name);
+			document.cookie = c_name+ "=; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/";
+			_app.u.dump(" -> DELETED cookie "+c_name);
 			},
 
 
