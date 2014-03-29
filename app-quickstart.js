@@ -171,7 +171,10 @@ document.write = function(v){
 		addCart2CM : {
 			onSuccess : function(_rtag){
 				var cartID = false;
-//				_app.u.dump("BEGIN quickstart.callbacks.addCart2CM.onSuccess");
+				_app.u.dump("BEGIN quickstart.callbacks.addCart2CM.onSuccess");
+				dump(" -> $.support.localStorage: "+$.support.localStorage);
+				
+				
 				if(_rtag.datapointer == 'appCartExists' && _app.data[_rtag.datapointer].exists)	{
 					_app.u.dump(" -> existing cart is valid. add to cart manager"); 
 					if($('#cartMessenger').length)	{
