@@ -779,7 +779,7 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 			
 		_buildMatchParams : function(route,hash,keysArr)	{
 			var regex = new RegExp(/{{(.*?)}}/g), vars = {};
-			var matchVarsArr = [], isMatch;
+			var matchVarsArr = [], isMatch, vars = {};
 			while(isMatch = regex.exec(route))	{matchVarsArr.push(isMatch[1]);} //isMatch[0] is the match value
 			dump(" _buildMatchParams matchVarsArr.length: "+matchVarsArr.length);
 			if(matchVarsArr && matchVarsArr.length)	{
