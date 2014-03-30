@@ -779,11 +779,12 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 			
 		_buildMatchParams : function(route,hash,keysArr)	{
 			var regex = new RegExp(/{{(.*?)}}/g), vars = {};
-			var matchVarsArr = [];
+			var matchVarsArr = [], isMatch;
 			while(isMatch = regex.exec(route))	{matchVarsArr.push(isMatch[1]);} //isMatch[0] is the match value
-		
+			dump(" _buildMatchParams matchVarsArr.length: "+matchVarsArr.length);
 			if(matchVarsArr && matchVarsArr.length)	{
 				for(var i = 0, L = matchVarsArr.length; i < L; i += 1)	{
+					dump(i+") "+matchVarsArr[i]);
 					vars[matchVarsArr[i]] = keysArr[i];
 					}
 				}
@@ -943,6 +944,7 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 			if(location.hash.indexOf('#!') == 0  && !_app.vars.ignoreHashChange)	{
 				// ### TODO -> test this with hash params set by navigateTo. may need to uri encode what is after the hash.
 				var routeObj = _app.router._getRouteObj(location.hash.substr(2),'hash'); //if we decide to strip trailing slash, use .replace(/\/$/, "")
+				dump(" -> routeObj in router: "+JSON.stringify(routeObj));
 				if(routeObj)	{
 					routeObj.hash = location.hash;
 					routeObj.hashParams = (location.hash.indexOf('?') >= 0 ? _app.u.kvp2Array(location.hash.split("?")[1]) : {});
