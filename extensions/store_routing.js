@@ -37,7 +37,7 @@ var store_routing = function(_app) {
 				_app.router.addAlias('category', 	function(routeObj){showContent('category',	routeObj.params);});
 				_app.router.addAlias('product', 	function(routeObj){showContent('product',	routeObj.params);});
 				_app.router.addAlias('company', 	function(routeObj){
-					dump(" -> router alias executed for company. routeObj: "+JSON.stringify(routeObj));
+//					dump(" -> router alias executed for company. routeObj: "+JSON.stringify(routeObj));
 					showContent('company',routeObj.params);
 					});
 				_app.router.addAlias('customer', 	function(routeObj){showContent('customer',	routeObj.params);});
