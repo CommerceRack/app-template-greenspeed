@@ -810,7 +810,8 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 		//substring matches can be accomplished w/ a regex in the route.
 					if(isMatch && isMatch[0] == hash)	{
 						dump(" -> isMatch: "+JSON.stringify(isMatch));
-						r = {'match' : isMatch, 'params' : _app.router._buildMatchParams(routeObj.route,hash,isMatch.splice(1))}; //isMatch is spliced because the first val is the 'match value'.
+						//IE 8 requires the second param in splice.
+						r = {'match' : isMatch, 'params' : _app.router._buildMatchParams(routeObj.route,hash,isMatch.splice(1,1))}; //isMatch is spliced because the first val is the 'match value'.
 						}
 					}
 				else	{
