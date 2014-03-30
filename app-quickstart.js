@@ -2534,8 +2534,8 @@ buyer to 'take with them' as they move between  pages.
 
 				if(subject)	{
 					var $article = $('#'+subject+'Article',$page);
+					dump(" -> $article.length: "+$article.length);
 					if($article.length)	{
-						dump(" -> #'"+subject+"'Article.length: ".$article.length);
 						if(!$article.hasClass('disabled'))	{
 							dump(" -> article is NOT disabled");
 							$article.show(); //only show content if page doesn't require authentication.
