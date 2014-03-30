@@ -780,9 +780,9 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 		_buildMatchParams : function(route,hash,keysArr)	{
 			var regex = new RegExp(/{{(.*?)}}/g), vars = {}, matchVarsArr = [], isMatch;
 			while(isMatch = regex.exec(route))	{matchVarsArr.push(isMatch[1]);} //isMatch[0] is the match value
+		
 			if(matchVarsArr && matchVarsArr.length)	{
 				for(var i = 0, L = matchVarsArr.length; i < L; i += 1)	{
-					dump(i+") "+matchVarsArr[i]+":"+ keysArr[i]);
 					vars[matchVarsArr[i]] = keysArr[i];
 					}
 				}
@@ -809,8 +809,7 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 		//regex.exec[0] will be the match value. so comparing that to the hash will ensure no substring matches get thru.
 		//substring matches can be accomplished w/ a regex in the route.
 					if(isMatch && isMatch[0] == hash)	{
-						dump(" -> isMatch: "+JSON.stringify(isMatch));
-						//IE 8 requires the second param in splice.
+						//IE8 requires the second param be passed into splice
 						r = {'match' : isMatch, 'params' : _app.router._buildMatchParams(routeObj.route,hash,isMatch.splice(1,1))}; //isMatch is spliced because the first val is the 'match value'.
 						}
 					}
@@ -1031,7 +1030,6 @@ Some utilities for loading external files, such as .js, .css or even extensions.
 							}
 						};
 					}
-
 				else {
 					if(typeof callback == 'function')	{
 						script.onload = function(){callback(params)}
@@ -2119,8 +2117,7 @@ VALIDATION
 //called within the throwError function too
 		dump : function(msg,type)	{
 			// * 201402 -> the default type for an object was changed to debug to take less room in the console. dir is still available if passed as type.
-			console.log(msg);
-/*			if(!type)	{type = (typeof msg == 'object') ? 'debug' : 'log';} //supported types are 'warn' and 'error'
+			if(!type)	{type = (typeof msg == 'object') ? 'debug' : 'log';} //supported types are 'warn' and 'error'
 //if the console isn't open, an error occurs, so check to make sure it's defined. If not, do nothing.
 			if(typeof console != 'undefined')	{
 // ** 201402 -> moved the type check to the top so that it gets priority (otherwise setting debug on an object is overridden by dir)
@@ -2141,7 +2138,7 @@ VALIDATION
 				else	{} //hhhhmm... unsupported type.
 					
 				}
-*/			}, //dump
+			}, //dump
 
 //javascript doesn't have a great way of easily formatting a string as money.
 //top that off with each browser handles some of these functions a little differently. nice.

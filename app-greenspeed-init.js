@@ -178,6 +178,7 @@ myApp.router.appendInit({
 		return {'init':true} //returning anything but false triggers a match.
 		},
 	'callback':function(f,g){
+		dump(" -> triggered callback for appendInit");
 		g = g || {};
 		if(document.location.hash)	{
 			myApp.router.handleHashChange();

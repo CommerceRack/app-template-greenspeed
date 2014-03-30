@@ -121,8 +121,7 @@ var quickstart = function(_app) {
 					//no need to add this cartID to the session/vars.carts, because that's where fetch gets it from.
 					}
 				else if(!$.support.localStorage)	{
-					cartID = _app.model.readCookie('cartid'); //IE8 support
-					dump(" -> localStorage not supported. cookie cart value: "+cartID);
+					cartID = _app.model.readCookie('_cart'); //support browsers w/out localstorage
 					}
 				else	{}
 
@@ -171,10 +170,7 @@ document.write = function(v){
 		addCart2CM : {
 			onSuccess : function(_rtag){
 				var cartID = false;
-				_app.u.dump("BEGIN quickstart.callbacks.addCart2CM.onSuccess");
-				dump(" -> $.support.localStorage: "+$.support.localStorage);
-				
-				
+//				_app.u.dump("BEGIN quickstart.callbacks.addCart2CM.onSuccess");
 				if(_rtag.datapointer == 'appCartExists' && _app.data[_rtag.datapointer].exists)	{
 					_app.u.dump(" -> existing cart is valid. add to cart manager"); 
 					if($('#cartMessenger').length)	{
@@ -227,7 +223,7 @@ document.write = function(v){
 					_app.model.dispatchThis('mutable');
 
 					if(!$.support.localStorage)	{
-						_app.model.writeCookie('cartid',cartID); //IE8 support
+						_app.model.writeCookie('_cart',cartID); //support browsers w/ localstorage disabled.
 						}
 
 					}
@@ -507,12 +503,12 @@ need to be customized on a per-ria basis.
 
 		pageTransition : function($o,$n)	{
 //if $o doesn't exist, the animation doesn't run and the new element doesn't show up, so that needs to be accounted for.
-			if($o instanceof jQuery)	{
+			if($o instanceof jQuery && $o.length)	{
 				dump(" -> got here.  n.is(':visible'): "+$n.is(':visible'));
 				$o.fadeOut(1000, function(){$n.fadeIn(1000)}); //fade out old, fade in new.
 				}
 			else if($n instanceof jQuery)	{
-				$n.fadeIn(1000)
+				$n.fadeIn(1000);
 				}
 			else	{
 				//hhmm  not sure how or why we got here.
@@ -1081,7 +1077,6 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 						});
 					}
 				else if(infoObj.performTransition == false)	{
-					
 					}
 				else if(typeof _app.ext.quickstart.pageTransition == 'function')	{
 //					dump(" -> parentID.length: "+$(_app.u.jqSelector('#',infoObj.parentID)).length);
@@ -2079,14 +2074,12 @@ effects the display of the nav buttons only. should be run just after the handle
 					}
 				return $product;
 				}, //showProd
-
-
+				
+				
 //Show one of the company pages. This function gets executed by showContent.
 //handleTemplateEvents gets executed in showContent, which should always be used to execute this function.
-//The company navlinks are generated based on what articles are present and not disabled. built to allow for wizard to easily add new pages.
+// ** 201346 -> The company navlinks are now generated based on what articles are present and not disabled. built to allow for wizard to easily add new pages.
 			showCompany : function(infoObj)	{
-				dump("BEGIN showCompany. infoObj.show: "+infoObj.show);
-				dump(" infoObj.stringify: "+JSON.stringify(infoObj));
 				infoObj.show = infoObj.show || 'about'; //what page to put into focus. default to 'about us' page
 				var parentID = 'mainContentArea_company'; //this is the id that will be assigned to the companyTemplate instance.
 				
@@ -2094,13 +2087,11 @@ effects the display of the nav buttons only. should be run just after the handle
 				infoObj.state = 'init';
 				infoObj.parentID = 'mainContentArea_company';
 				var $mcac = $('#mainContentArea_company');
-				dump(" -> show: "+infoObj.show);
+				
 				if($mcac.length)	{
-					dump(" -> mcac already on DOM");
 					//template has already been added to the DOM. likley moving between company pages.
 					}
 				else	{
-					dump(" -> mcac NOT on DOM yet. add");
 //					var $content = _app.renderFunctions.createTemplateInstance(infoObj.templateID,parentID);
 //no interpolation takes place on the company pages (except faq). the content should be hard coded.
 					var $tmp = $("<div>").tlc({
@@ -2519,7 +2510,7 @@ buyer to 'take with them' as they move between  pages.
 // * 201346 -> function now returns a boolean based on whether or not hte page is shown.
 			showArticleIn : function($page,infoObj)	{
 				var r = true; //what is returned. set to false if the article is NOT shown.
-				dump("BEGIN quickstart.u.showArticle"); // dump(infoObj);
+//				dump("BEGIN quickstart.u.showArticle"); dump(infoObj);
 				$('.textContentArea',$page).hide(); //hide all the articles by default and we'll show the one in focus later.
 				
 				var subject;
@@ -2534,10 +2525,8 @@ buyer to 'take with them' as they move between  pages.
 
 				if(subject)	{
 					var $article = $('#'+subject+'Article',$page);
-					dump(" -> $article.length: "+$article.length);
 					if($article.length)	{
 						if(!$article.hasClass('disabled'))	{
-							dump(" -> article is NOT disabled");
 							$article.show(); //only show content if page doesn't require authentication.
 							switch(subject)	{
 								case 'faq':
@@ -2545,7 +2534,6 @@ buyer to 'take with them' as they move between  pages.
 									_app.model.dispatchThis();
 									break;
 								default:
-									dump(" -> got to 'default' in the switch.");
 									//the default action is handled in the 'show()' above. it happens for all.
 								}
 							}
