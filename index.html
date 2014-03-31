@@ -37,6 +37,18 @@ document.getElementsByTagName('base')[0].href = baseURL;
 	<link rel="stylesheet" type="text/css" href="app-greenspeed_ie8.css" />
 <![endif]-->
 
+
+<!--[if lt IE 9]>
+   <script>
+      document.createElement('header');
+      document.createElement('nav');
+      document.createElement('section');
+      document.createElement('article');
+      document.createElement('aside');
+      document.createElement('footer');
+   </script>
+<![endif]-->
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 <script src="controller.js"></script>
@@ -47,25 +59,27 @@ document.getElementsByTagName('base')[0].href = baseURL;
 
 
 <script type="text/javascript">
+var myApp = {};
 $(document).ready(function(){
+
 	window.myApp = new initApp({
-		"release":"201402.039",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201402.040",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
 		"testURL":"http://www.sporks.zoovy.com/", //used ONLY if protocol is file: (for testing)
 		"addjQueryPointer" : true,
 		"initComplete" : function(t){
-			dump(" -> init is complete");
-			t.u.loadScript('app-greenspeed-init.js',function(){
+			myApp.u.loadScript('app-greenspeed-init.js',function(){
 				dump(" -> callback for greenspeed init executed");
-				var progress = t.u.loadResources(); //the object returns by loadResources will get updated as the resources finish loading.
-				t.u.showProgress(progress);
+				var progress = myApp.u.loadResources(); //the object returns by loadResources will get updated as the resources finish loading.
+				myApp.u.showProgress(progress);
 				});
 			}
 
 		});
 	$(document.body).append("version: "+myApp.vars.release);
+	myApp.vars.initComplete();
 	myCreole = new Parse.Simple.Creole();
 	});
 </script>
@@ -75,7 +89,7 @@ $(document).ready(function(){
 <body>
 
 <div class="container" id='appView'>
-	<section  id='mastHead'>
+	<section id='mastHead'>
 		<div class='clearfix contrastUI'>
 			<div class='logo'>
 			<a href='#!home'>
@@ -282,10 +296,10 @@ don't modify the 'data-templateid' unless you are changing template names and up
 
 
 <li id="categoryListTemplateRootCats" class="clearfix">
-<!--	<a data-tlc="bind $var '.'; store_routing#seoanchor --type='category' --seo; apply --attrib='href';">
-	<div class="thumbContainer marginRight"><img data-tlc="bind $var '.%meta.CAT_THUMB'; if (is $var --notblank;) {{ apply --img --media=$var --width=35 --height=35 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="catThumb" alt="" height="35" width="35"></div>-->
+	<a data-tlc="bind $var '.'; store_routing#seoanchor --type='category' --seo; apply --attrib='href';">
+	<div class="thumbContainer marginRight"><img data-tlc="bind $var '.%meta.CAT_THUMB'; if (is $var --notblank;) {{ apply --img --media=$var --width=35 --height=35 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="catThumb" alt="" height="35" width="35"></div>
 	<div class="catName"><span data-tlc="bind $var '.pretty'; apply --append;"></span></div>
-<!--	</a> -->
+	</a>
 </li>
 
 </ul>
@@ -474,11 +488,11 @@ this will likely become more flexible in the future. ###
 	
 		<h1 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h1>
 	
-		<p class="marginBottom">
+		<div class="marginBottom">
 			<h5 data-tlc="bind $var '.pid'; if (is $var --notblank;) {{format --prepend='Sku: '; apply --append;}};" class="stid"></h5>
 			<h5 data-tlc="bind $var '.%attribs.zoovy:prod_mfg'; quickstart#searchlink  --legacy;"></h5>
 			<h5 data-tlc="bind $var '.%attribs.zoovy:prod_mfgid'; if (is $var --notblank;) {{format --prepend='Mfg ID: '; apply --append;}};"></h5>
-		</p>
+		</div>
 	
 		<div class="priceContainer marginBottom">
 			<h4 data-tlc="bind $var '.%attribs.zoovy:base_price'; if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: '; apply --append;}};" class="basePrice"></h4>
@@ -1003,8 +1017,8 @@ Cart template
 	<h3>Shipping:</h3>
 
 	<div class="cartZipCodeContainer marginBottom">
-		<label for="data-ship_zip">Zip/Postal Code:</label>
-		<input data-tlc="bind $var '.ship.postal'; if(is $var --blank) {{bind $var '.bill.postal'; }}; apply --select=$var; " size="6" name="ship/postal" value="" maxlength="10" data-app-blur="cco|cartZipUpdateExec" type="text">
+		<label>Zip/Postal Code:
+		<input data-tlc="bind $var '.ship.postal'; if(is $var --blank) {{bind $var '.bill.postal'; }}; apply --select=$var; " size="6" name="ship/postal" value="" maxlength="10" data-app-blur="cco|cartZipUpdateExec" type="text"></label>
 	</div>
 
 	<ul data-tlc="order_create#shipmethodsasradiobuttons  --legacy;" class="noPadOrMargin listStyleNone" data-bind="useParentData:true; format:shipmethodsasradiobuttons; extension: order_create;" data-app-role="shipMethodsUL"></ul>

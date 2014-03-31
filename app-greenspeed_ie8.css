@@ -2,7 +2,9 @@
 
 
 
-
+header, nav, section, article, aside, footer {
+   display:block;
+}
 
 
 /* 
@@ -16,6 +18,7 @@ IE 8 specific styles to compensate for media queries not being available.  These
 	
 
 	body	{font-size:1em;}
+
 	#mastHead .logo {width:20%;}
 	#mastHead .menuAndSearch	{width:80%;}
 	#mastHead .mainMenu li	{width:25%;}
