@@ -32,7 +32,10 @@ document.getElementsByTagName('base')[0].href = baseURL;
 
 <link href='https://fonts.googleapis.com/css?family=Voltaire' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="app-greenspeed.css"><!-- quickstart.css is merged into this file along w/ the jquery ui theme -->
-
+<!-- IE8 does not support media queries, so a special stylesheet is present. -->
+<!--[if lte IE 8]>
+	<link rel="stylesheet" type="text/css" href="app-greenspeed_ie8.css" />
+<![endif]-->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
@@ -50,7 +53,7 @@ $(document).ready(function(){
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
-		"testURL":"http://www.rickf.zoovy.com/", //used ONLY if protocol is file: (for testing)
+		"testURL":"http://www.sporks.zoovy.com/", //used ONLY if protocol is file: (for testing)
 		"addjQueryPointer" : true,
 		"initComplete" : function(t){
 			dump(" -> init is complete");

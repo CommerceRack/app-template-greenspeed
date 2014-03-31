@@ -1,0 +1,66 @@
+@charset "utf-8";
+
+
+
+
+
+
+/* 
+IE 8 specific styles to compensate for media queries not being available.  These are the styles from the media queries isolated in a file that will be loaded only by IE.
+*/
+
+    .cycle-slideshow { width: 200px;}
+    .cycle-overlay { padding: 4px;}
+    .cycle-caption { bottom: 4px; right: 4px }
+	
+	
+
+	body	{font-size:1em;}
+	#mastHead .logo {width:20%;}
+	#mastHead .menuAndSearch	{width:80%;}
+	#mastHead .mainMenu li	{width:25%;}
+	#mastFoot li	{float:left; width:20%;}
+	#mastHead .menuItem2,#mastHead .menuItem5	{display:block;}
+	#mastHead .menuitems li	{width:25%;}
+	#mastHeadKeywordsInput	{font-size:1em; padding:.2em 0;}
+	#mastHeadSearchButton	{padding:.2em; top:0px}
+	
+	.productSlideshowContainer	{float:right; width:40%; margin:0; z-index:20; position:relative; text-align:right;}
+	.productSlideshowContainer .cycle-overlay { text-align:right;}
+	.bannerContainer .mainBanner	{display:inline-block;}
+
+	.cartQuantityInput	{clear:both;} /* this is wide, so put it on it's own line so that it doesn't wrap (only in small screens) */
+	#cartTemplateShippingContainer	{width:49%;}
+	#cartTemplateCostSummary	{float:right; width:49%;}
+	.cartButtons span	{float:right; margin:0 0 .4em .4em;}
+	.cartButtons .continueShoppingSpan	{float:left; margin:0;}
+
+
+
+	.responsiveProdlist li	{
+		margin:0 .5% .5em .5%;
+		width:19%;
+		height: 180px;
+		}
+	
+	.categoryList > li {
+		width: 49%; float:left; margin:0 1% .5em 0;
+		}
+
+	.ui-tabs .ui-tabs-nav li a {
+		padding: 0.5em 1em;
+		}
+
+
+
+	.prodDetailImagesContainer	{display:block; position:relative; margin:0; width:39%; float:left;}
+	.prodDetailSummaryATC	{float:right; margin:0; width:50%; clear:none;} /* shift element to right side instead of below */
+	.ui-tabs-nav	{font-size:1em;}
+	.cycle-overlay	{font-size:1em;}
+
+	.anyMasonry	{width:19%;}
+	.anyMasonry.masonOne {height:305px; width:38%;} /* masonry works better if all widths to be increments of each other, it appears. so 38% instead of 39%. */
+	.prodDetailSummaryATC	{width:60%;} /* shift element to right side instead of below */
+	.responsiveProdlist li {height:270px;}
+
+
