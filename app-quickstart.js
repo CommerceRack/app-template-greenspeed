@@ -503,6 +503,7 @@ need to be customized on a per-ria basis.
 
 		pageTransition : function($o,$n)	{
 //if $o doesn't exist, the animation doesn't run and the new element doesn't show up, so that needs to be accounted for.
+//$o MAY be a jquery instance but have no length, so check both.
 			if($o instanceof jQuery && $o.length)	{
 				dump(" -> got here.  n.is(':visible'): "+$n.is(':visible'));
 				$o.fadeOut(1000, function(){$n.fadeIn(1000)}); //fade out old, fade in new.
@@ -1079,6 +1080,7 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 				else if(infoObj.performTransition == false)	{
 					}
 				else if(typeof _app.ext.quickstart.pageTransition == 'function')	{
+
 //					dump(" -> parentID.length: "+$(_app.u.jqSelector('#',infoObj.parentID)).length);
 					_app.ext.quickstart.pageTransition($old,$new);
 					}
@@ -2078,7 +2080,7 @@ effects the display of the nav buttons only. should be run just after the handle
 				
 //Show one of the company pages. This function gets executed by showContent.
 //handleTemplateEvents gets executed in showContent, which should always be used to execute this function.
-// ** 201346 -> The company navlinks are now generated based on what articles are present and not disabled. built to allow for wizard to easily add new pages.
+//The company navlinks are generated based on what articles are present and not disabled. built to allow for wizard to easily add new pages.
 			showCompany : function(infoObj)	{
 				infoObj.show = infoObj.show || 'about'; //what page to put into focus. default to 'about us' page
 				var parentID = 'mainContentArea_company'; //this is the id that will be assigned to the companyTemplate instance.
@@ -2892,6 +2894,7 @@ else	{
 				},
 	
 			cartShipMethodSelect : function($ele,P)	{
+				p.preventDefault();
 				var $cart = $ele.closest("[data-template-role='cart']");
 				_app.ext.cco.calls.cartSet.init({'_cartid':$cart.data('cartid'),'want/shipping_id':$ele.val()},{},'immutable');
 				$cart.trigger('fetch',{'Q':'immutable'});
@@ -2922,10 +2925,12 @@ else	{
 				},
 			
 			faqDetailShow : function($ele,p)	{
+				p.preventDefault();
 				_app.ext.quickstart.a.showFAQbyTopic($ele.closest('[data-topicid]').data('topicid'));
 				},
 			
 			execOrder2Cart : function($ele,p)	{
+				p.preventDefault();
 				var orderID = $ele.closest("[data-orderid]").data('orderid');
 				if(orderID)	{
 					_app.ext.cco.u.appendOrderItems2Cart({orderid:orderID,cartid:_app.model.fetchCartID()},function(rd){
@@ -2943,10 +2948,12 @@ else	{
 				}, //execOrder2Cart
 
 			orderDetailShow : function($ele,p)	{
+				p.preventDefault();
 				_app.ext.quickstart.u.showOrderDetails($ele.closest("[data-app-role='orderLineitemContainer']"));
 				},
 
 			inlineProductPreviewShow : function($ele,p)	{
+				p.preventDefault();
 				_app.ext.quickstart.a.handleProdPreview($ele.closest("[data-pid]").data('pid'));
 				},
 
@@ -2984,8 +2991,10 @@ else	{
 					
 					}
 				else	{} //do nothing, the validation handles displaying the errors.
+				return false;
 				},
 			productAdd2List : function($ele,p)	{
+				p.preventDefault();
 				var pid = $ele.closest("[data-pid]").data('pid');
 				if($ele.data('listid') && pid)	{
 					_app.ext.quickstart.a.add2BuyerList({sku:pid,'listid':$ele.data('listid')});
@@ -2996,6 +3005,7 @@ else	{
 				},
 				
 			productPicsInModalShow : function($ele,p){
+				p.preventDefault();
 				_app.ext.store_product.u.showPicsInModal({"pid":$ele.closest("[data-pid]").data('pid')});
 				},
 
@@ -3011,6 +3021,7 @@ else	{
 				},
 
 			showBuyerAddressUpdate : function($ele,p)	{
+				p.preventDefault();
 				_app.ext.store_crm.u.showAddressEditModal({
 					'addressID' : $ele.closest("address").data('_id'),
 					'addressType' : $ele.closest("[data-app-addresstype]").data('app-addresstype')
@@ -3021,6 +3032,7 @@ else	{
 				}, //showBuyerAddressUpdate
 
 			showBuyerAddressAdd : function($ele,p)	{
+				p.preventDefault();
 				_app.ext.store_crm.u.showAddressAddModal({
 					'addressType' : $ele.closest("[data-app-addresstype]").data('app-addresstype')
 					},function(rd){
@@ -3029,7 +3041,9 @@ else	{
 					})
 				}, //showBuyerAddressAdd
 
+
 			quickviewShow : function($ele,p)	{
+				p.preventDefault();
 				var PID = $ele.data('pid') || $ele.closest('[data-pid]').attr('data-pid');
 				var templateID = $ele.data('loadstemplate');
 				if(PID && templateID)	{
@@ -3137,6 +3151,7 @@ later, it will handle other third party plugins as well.
 if(_gaq.push(['_setCustomVar',1,'gender',user.gender,1]))
 	dump(" -> fired a custom GA var for gender.");
 else
+
 	dump(" -> ARGH! GA custom var NOT fired. WHY!!!");
 
 
