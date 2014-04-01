@@ -1107,7 +1107,7 @@ or as a series of messages (_msg_X_id) where X is incremented depending on the n
 				carts.splice( $.inArray(cartID, carts), 1 );
 				_app.model.destroy('cartDetail|'+cartID);
 				this.dpsSet('app','carts',carts); //update localStorage.
-				//IE8
+				//support for browsers w/ localStorage disabled.
 				if(!$.support.localStorage)	{
 					_app.model.deleteCookie('cartid');
 					}
@@ -1646,6 +1646,7 @@ methods of getting data from non-server side sources, such as cookies, local or 
 */
 
 //location should be set to 'session' or 'local'.
+// WARNING! -> any changes to writeLocal should be tested in IE8 right away.
 		writeLocal : function (key,value,location)	{
 			location = location || 'local';
 			var r = false;
@@ -1685,6 +1686,7 @@ methods of getting data from non-server side sources, such as cookies, local or 
 				}
 			},
 
+// WARNING! -> any changes to readLocal should be tested in IE8 right away.
 		readLocal : function(key,location)	{
 			location = location || 'local';
 			if(!$.support[location+'Storage'])	{
@@ -1711,8 +1713,10 @@ methods of getting data from non-server side sources, such as cookies, local or 
 			}, //readLocal
 /*
 A note about cookies:
-	They're not particularly mobile friendly. All modern browsers support localStorage, even ie7, supports local/session storage, which is the main mechanism used by the model for persistent data storage.
+	They're not particularly mobile friendly. All modern browsers support localStorage, even ie7 supports local/session storage, which is the main mechanism used by the model for persistent data storage.
 	So the cookie functions are here (for now), but should probably be avoided.
+	They are used to store the session ID if localStorage is disabled.
+	Quickstart uses them to store the cartid.
 */
 		readCookie : function(c_name){
 			var i,x,y,ARRcookies=document.cookie.split(";");
@@ -1772,19 +1776,18 @@ A note about cookies:
 //for instance, in orders, what were the most recently selected filter criteria.
 //ext and namespace (ns) are required. reduces likelyhood of nuking entire preferences object.
 			dpsSet : function(ext,ns,varObj)	{
-//				dump("BEGIN dpsSet for ext: "+ext+" and ns: "+ns);
 				if(ext && ns && (varObj || varObj == 0))	{
-//					dump(" -> have all the vars for setting");
 					var DPS = this.readLocal('dps','local') || {}; //readLocal returns false if no data local.
 					if(typeof DPS[ext] === 'object'){
 						DPS[ext][ns] = varObj;
 						}
 					else	{
+						dump(" -> dps[ext] was not set");
 						DPS[ext] = {}; //each dataset in the extension gets a NameSpace. ex: orders.panelState
 						DPS[ext][ns] = varObj;
 						} //object  exists already. update it.
 //SANITY -> can't extend, must overwrite. otherwise, turning things 'off' gets obscene.					
-//					dump(" -> writeLocal returned: "+this.writeLocal('dps',DPS,'local')); //update the localStorage session var.
+					this.writeLocal('dps',DPS,'local');
 					}
 				else	{
 					_app.u.throwGMessage("Either extension ["+ext+"] or ns["+ns+"] or varObj ["+(typeof varObj)+"] not passed into admin.u.dpsSet.");
