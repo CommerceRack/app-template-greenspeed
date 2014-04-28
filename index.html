@@ -63,7 +63,7 @@ var myApp = {};
 $(document).ready(function(){
 
 	window.myApp = new initApp({
-		"release":"201402.041",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201403.28a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
@@ -337,7 +337,7 @@ remember to NOT put the button inside the 'onclick' container or two events will
 		</div>
 
 		<h5 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h5>
-		<span data-tlc="bind $var '.reviews.average'; if(is $var --notblank;) {{ apply --class='review_'; }}; if (is $var --notblank;) {{apply --add --class='review_'; apply --append;}};" class="reviewSprite floatRight"></span>
+		<span data-tlc="bind $var '.reviews.average'; if(is $var --notblank) {{format --prepend='review_'; apply --add --class=$var; }};" class="reviewSprite"></span>
 		<h6 data-tlc="bind $var '.%attribs.zoovy:base_price'; if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: '; apply --add --class='price'; apply --append;}};"></h6>
 		</a>
 	</div>
@@ -687,7 +687,9 @@ if you change these, you should move them above this comment so that when you (o
 <!-- .textContentArea is used as a selector in quickstart.js because article tag type isn't ie8 friendly -->
 		<div id="aboutArticle" class="textContentArea article">
 			<h1>About Us</h1>
-			<div data-tlc="bind $var '.zoovy:about'; render --wiki='quickstart'; if (is $var --notblank;) {{apply --append;}};" id="aboutUsContent"></div>
+			<div>
+			<!-- put your about us content here -->
+			</div>
 		</div>
 
 
@@ -709,7 +711,9 @@ if you change these, you should move them above this comment so that when you (o
 				<div class="alignRight"><input class="applyButton" value="Send Message" type="submit"></div>
 			</fieldset>
 			</form>
-			<div data-tlc="bind $var '.zoovy:contact'; render --wiki='quickstart'; if (is $var --notblank;) {{apply --append;}};" id="contactContent"></div>
+			<div>
+			<!-- add any additional contact information here -->
+			</div>
 		</div>
 
 

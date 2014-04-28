@@ -210,13 +210,14 @@ document.write = function(v){
 				
 				if(cartID)	{
 					_app.model.addDispatchToQ({"_cmd":"whoAmI",_cartid : cartID, "_tag":{"datapointer":"whoAmI",callback:function(rd){
-						_app.ext.quickstart.u.handleAppInit(); //checks url and will load appropriate page content. returns object {pageType,pageInfo}
+						myApp.router.init();//instantiates the router.
+						_app.ext.quickstart.u.handleAppInit(); //finishes loading RQ. handles some authentication based features.
 						_app.calls.refreshCart.init({'callback':'updateMCLineItems','extension':'quickstart'},'mutable');
 						_app.model.dispatchThis('mutable');
 						
 						_app.ext.quickstart.u.bindAppNav(); //adds click handlers for the next/previous buttons (product/category feature).
 	
-						if(typeof _app.u.appInitComplete == 'function'){_app.u.appInitComplete()}; //gets run after app has been init
+//						if(typeof _app.u.appInitComplete == 'function'){_app.u.appInitComplete()}; //gets run after app has been init
 						_app.ext.quickstart.thirdParty.init();
 						
 						}}},"mutable"); //used to determine if user is logged in or not.
@@ -329,7 +330,6 @@ document.write = function(v){
 
 // passing in unsanitized tagObj caused an issue with showPageContent
 				_app.ext.quickstart.u.buildQueriesFromTemplate($.extend(true, {}, tagObj));
-				dump(" ----> queries were just built");
 				_app.model.dispatchThis();
 				},
 			onError : function(responseData)	{
@@ -351,7 +351,7 @@ document.write = function(v){
 //					dump("BEGIN quickstart.callbacks.showPageContent ["+tagObj.navcat+"]");
 					tagObj.dataset = {};
 					//if no %page vars were requested, this datapointer won't be set and this would error.
-					if(_app.u.thisNestedExists("data.appPageGet|"+tagObj.navcat+".%page",_app))	{
+					if(_app.data["appPageGet|"+tagObj.navcat] && _app.data["appPageGet|"+tagObj.navcat]['%page'])	{
 						tagObj.dataset = {'%page' : _app.data['appPageGet|'+tagObj.navcat]['%page']};
 						}
 					//deep extend so any non-duplicates in %page are preserved.
@@ -379,7 +379,7 @@ document.write = function(v){
 					if(pData && pData['%attribs'] && pData['%attribs']['zoovy:grp_type'] == 'CHILD')	{
 						if(pData['%attribs']['zoovy:grp_parent'] && _app.data['appProductGet|'+pData['%attribs']['zoovy:grp_parent']])	{
 							dump(" -> this is a child product and the parent prod is available. Fetch child data for siblings.");
-							$("[data-app-role='childrenSiblingsContainer']",$(_app.u.jqSelector('#',tagObj.parentID))).show().tlc({'dataset':_app.data['appProductGet|'+pData['%attribs']['zoovy:grp_parent']]});
+							$("[data-app-role='childrenSiblingsContainer']",$(_app.u.jqSelector('#',tagObj.parentID))).show().tlc({'verb':'translate','dataset':_app.data['appProductGet|'+pData['%attribs']['zoovy:grp_parent']]});
 							}
 						else if(!pData['%attribs']['zoovy:grp_parent']) 	{
 							dump("WARNING! this item is a child, but no parent is set. Not a critical error.");
@@ -395,7 +395,8 @@ document.write = function(v){
 					}
 
 				tagObj.state = 'complete'; //needed for handleTemplateEvents.
-
+				_app.u.handleButtons(tagObj.jqObj);
+				_app.u.handleCommonPlugins(tagObj.jqObj);
 				_app.renderFunctions.handleTemplateEvents((tagObj.jqObj || $(_app.u.jqSelector('#',tagObj.parentID))),tagObj);
 				},
 			onError : function(responseData,uuid)	{
@@ -500,13 +501,24 @@ need to be customized on a per-ria basis.
 				}
 			}, //wiki
 
-
-		pageTransition : function($o,$n)	{
+// * 201403 -> infoObj now passed into pageTransition.
+		pageTransition : function($o,$n, infoObj)	{
 //if $o doesn't exist, the animation doesn't run and the new element doesn't show up, so that needs to be accounted for.
 //$o MAY be a jquery instance but have no length, so check both.
 			if($o instanceof jQuery && $o.length)	{
-				dump(" -> got here.  n.is(':visible'): "+$n.is(':visible'));
-				$o.fadeOut(1000, function(){$n.fadeIn(1000)}); //fade out old, fade in new.
+/* *** 201403 -> move the scroll to top into the page transition for 2 reasons:
+1. allows the animations to be performed sequentially, which will be less jittery than running two at the same time
+2. Puts control of this into custom page transitions.
+*/
+				if(infoObj.performJumpToTop && $('html, body').scrollTop() > 0)	{
+					//new page content loading. scroll to top.
+					$('html, body').animate({scrollTop : ($('header','#appView').length ? $('header','#appView').first().height() : 0)},500,function(){
+						$o.fadeOut(1000, function(){$n.fadeIn(1000)}); //fade out old, fade in new.
+						})
+					} 
+				else	{
+					$o.fadeOut(1000, function(){$n.fadeIn(1000)}); //fade out old, fade in new.
+					}
 				}
 			else if($n instanceof jQuery)	{
 				$n.fadeIn(1000);
@@ -523,12 +535,11 @@ need to be customized on a per-ria basis.
 			
 			searchbytag : function(data,thisTLC)	{
 				var argObj = thisTLC.args2obj(data.command.args,data.globals); //this creates an object of the args
-				var query = {"size":(argObj.size || 4),"mode":"elastic-native","filter":{"term":{"tags":argObj.tag}}};
+				var query = {"size":(argObj.size || 4),"mode":"elastic-search","filter":{"term":{"tags":argObj.tag}}};
 				_app.ext.store_search.calls.appPublicProductSearch.init(query,$.extend({'datapointer':'appPublicSearch|tag|'+argObj.tag,'templateID':argObj.templateid,'extension':'store_search','callback':'handleElasticResults','list':data.globals.tags[data.globals.focusTag]},argObj));
 				_app.model.dispatchThis('mutable');
 				return false; //in this case, we're off to do an ajax request. so we don't continue the statement.
 				}
-
 			},
 
 
@@ -573,22 +584,22 @@ need to be customized on a per-ria basis.
 //set bind-data to val: product(zoovy:prod_is_tags) which is a comma separated list
 //used for displaying a  series of tags, such as on the product detail page. Will show any tag enabled.
 //on bind-data, set maxTagsShown to 1 to show only 1 tag
-		tags : function($tag,data)	{
-			var whitelist = new Array('IS_PREORDER','IS_DISCONTINUED','IS_SPECIALORDER','IS_SALE','IS_CLEARANCE','IS_NEWARRIVAL','IS_BESTSELLER','IS_USER1','IS_USER2','IS_USER3','IS_USER4','IS_USER5','IS_USER6','IS_USER7','IS_USER8','IS_USER9','IS_FRESH','IS_SHIPFREE');
-//			var csv = data.value.split(',');
-			var L = whitelist.length;
-			var tagsDisplayed = 0;
-			var maxTagsShown = _app.u.isSet(data.bindData.maxTagsShown) ? data.bindData.maxTagsShown : whitelist.length; //default to showing all enabled tags.
-			var spans = ""; //1 or more span tags w/ appropriate tag class applied
-			for(var i = 0; i < L; i += 1)	{
-				if(data.value.indexOf(whitelist[i]) >= 0 && (tagsDisplayed <= maxTagsShown))	{
-					spans += "<span class='tagSprite "+whitelist[i].toLowerCase()+"'><\/span>";
-					tagsDisplayed += 1;
+			tags : function($tag,data)	{
+				var whitelist = new Array('IS_PREORDER','IS_DISCONTINUED','IS_SPECIALORDER','IS_SALE','IS_CLEARANCE','IS_NEWARRIVAL','IS_BESTSELLER','IS_USER1','IS_USER2','IS_USER3','IS_USER4','IS_USER5','IS_USER6','IS_USER7','IS_USER8','IS_USER9','IS_FRESH','IS_SHIPFREE');
+	//			var csv = data.value.split(',');
+				var L = whitelist.length;
+				var tagsDisplayed = 0;
+				var maxTagsShown = _app.u.isSet(data.bindData.maxTagsShown) ? data.bindData.maxTagsShown : whitelist.length; //default to showing all enabled tags.
+				var spans = ""; //1 or more span tags w/ appropriate tag class applied
+				for(var i = 0; i < L; i += 1)	{
+					if(data.value.indexOf(whitelist[i]) >= 0 && (tagsDisplayed <= maxTagsShown))	{
+						spans += "<span class='tagSprite "+whitelist[i].toLowerCase()+"'><\/span>";
+						tagsDisplayed += 1;
+						}
+					if(tagsDisplayed >= maxTagsShown)	{break;} //exit early once enough tags are displayed.
 					}
-				if(tagsDisplayed >= maxTagsShown)	{break;} //exit early once enough tags are displayed.
-				}
-			$tag.append(spans);
-			}, //tags
+				$tag.append(spans);
+				}, //tags
 
 //if first char is a !, hide that char, then render as text. used in breadcrumb
 //likely to be used in prodcats if/when it's built.s
@@ -601,19 +612,6 @@ need to be customized on a per-ria basis.
 				_app.renderFormats.text($tag,data);
 				},
 
-//### later, we could make this more advanced to actually search the attribute. add something like elasticAttr:prod_mfg and if set, key off that.
-			searchlink : function($tag,data){
-				if(data.value)	{
-					var keywords = data.value.replace(/ /g,"+"),
-					infoObj = {'KEYWORDS':keywords}
-					if(data.bindData.elasticAttr){
-						infoObj.ATTRIBUTES = data.bindData.elasticAttr.split(" ");
-						}
-					$tag.append("<span class='underline pointer'>"+data.value+"<\/span>").bind('click',function(){
-						showContent('search',infoObj)
-						});
-					}
-				}, //searchLink
 
 			cpsiawarning : function($tag,data)	{
 				if(data.value)	{
@@ -637,7 +635,7 @@ need to be customized on a per-ria basis.
 
 			addpicslider : function($tag,data)	{
 //				dump("BEGIN quickstart.renderFormats.addPicSlider: "+data.value);
-				if(typeof _app.data['appProductGet|'+data.value] == 'object')	{
+				if(data.value && typeof _app.data['appProductGet|'+data.value] == 'object')	{
 					var pdata = _app.data['appProductGet|'+data.value]['%attribs'];
 //if image 1 or 2 isn't set, likely there are no secondary images. stop.
 					if(_app.u.isSet(pdata['zoovy:prod_image1']) && _app.u.isSet(pdata['zoovy:prod_image2']))	{
@@ -653,7 +651,9 @@ need to be customized on a per-ria basis.
 
 //no click event is added to this. do that on a parent element so that this can be recycled.
 			youtubethumbnail : function($tag,data)	{
-				$tag.attr('src',"https://i3.ytimg.com/vi/"+data.value+"/default.jpg");
+				if(data.value)	{
+					$tag.attr('src',"https://i3.ytimg.com/vi/"+data.value+"/default.jpg");
+					}
 				return true;
 				}, //youtubeThumbnail
 
@@ -698,63 +698,68 @@ fallback is to just output the value.
 */
 
 			banner : function($tag, data)	{
+				if(data.value)	{
 //				dump("begin quickstart.renderFormats.banner");
-				var obj = _app.u.kvp2Array(data.value), //returns an object LINK, ALT and IMG
-				hash, //used to store the href value in hash syntax. ex: #company?show=return
-				pageInfo = {};
-				
-//if value starts with a #, then most likely the hash syntax is being used.
-				if(obj.LINK && obj.LINK.indexOf('#') == 0)	{
-					hash = obj.LINK;
-					pageInfo = _app.ext.quickstart.u.getPageInfoFromHash(hash);
-					}
-// Initially attempted to do some sort of validating to see if this was likely to be a intra-store link.
-//  && data.value.indexOf('/') == -1 || data.value.indexOf('http') == -1 || data.value.indexOf('www') > -1
-				else if(obj.LINK)	{
-					pageInfo = _app.ext.quickstart.u.detectRelevantInfoToPage(obj.LINK);
-					if(pageInfo.pageType)	{
-						hash = _app.ext.quickstart.u.getHashFromPageInfo(pageInfo);
+					var obj = _app.u.kvp2Array(data.value), //returns an object LINK, ALT and IMG
+					hash, //used to store the href value in hash syntax. ex: #company?show=return
+					pageInfo = {};
+					
+	//if value starts with a #, then most likely the hash syntax is being used.
+					if(obj.LINK && obj.LINK.indexOf('#') == 0)	{
+						hash = obj.LINK;
+						pageInfo = _app.ext.quickstart.u.getPageInfoFromHash(hash);
+						}
+	// Initially attempted to do some sort of validating to see if this was likely to be a intra-store link.
+	//  && data.value.indexOf('/') == -1 || data.value.indexOf('http') == -1 || data.value.indexOf('www') > -1
+					else if(obj.LINK)	{
+						pageInfo = _app.ext.quickstart.u.detectRelevantInfoToPage(obj.LINK);
+						if(pageInfo.pageType)	{
+							hash = _app.ext.quickstart.u.getHashFromPageInfo(pageInfo);
+							}
+						else	{
+							hash = obj.LINK
+							}
 						}
 					else	{
-						hash = obj.LINK
+						//obj.link is not set
 						}
-					}
-				else	{
-					//obj.link is not set
-					}
-				if(!_app.u.isSet(obj.IMG))	{$tag.remove()} //if the image isn't set, don't show the banner. if a banner is set, then unset, val may = ALT=&IMG=&LINK=
- 				else	{
-//if we don't have a valid pageInfo object AND a valid hash, then we'll default to what's in the obj.LINK value.
-					$tag.attr('alt',obj.ALT);
-//if the link isn't set, no href is added. This is better because no 'pointer' is then on the image which isn't linked.
-					if(obj.LINK)	{
-//						dump(" -> obj.LINK is set: "+obj.LINK);
-						var $a = $("<a />").addClass('bannerBind').attr({'href':hash,'title':obj.ALT});
-						if(pageInfo && pageInfo.pageType)	{
-							$a.click(function(){
-								return showContent('',pageInfo)
-								})
+					if(!_app.u.isSet(obj.IMG))	{$tag.remove()} //if the image isn't set, don't show the banner. if a banner is set, then unset, val may = ALT=&IMG=&LINK=
+					else	{
+	//if we don't have a valid pageInfo object AND a valid hash, then we'll default to what's in the obj.LINK value.
+						$tag.attr('alt',obj.ALT);
+	//if the link isn't set, no href is added. This is better because no 'pointer' is then on the image which isn't linked.
+						if(obj.LINK)	{
+	//						dump(" -> obj.LINK is set: "+obj.LINK);
+							var $a = $("<a />").addClass('bannerBind').attr({'href':hash,'title':obj.ALT});
+							if(pageInfo && pageInfo.pageType)	{
+								$a.click(function(){
+									return showContent('',pageInfo)
+									})
+								}
+							$tag.wrap($a);
 							}
-						$tag.wrap($a);
+						data.value = obj.IMG; //this will enable the image itself to be rendered by the default image handler. recycling is good.
+						_app.renderFormats.imageURL($tag,data);
 						}
-					data.value = obj.IMG; //this will enable the image itself to be rendered by the default image handler. recycling is good.
-					_app.renderFormats.imageURL($tag,data);
 					}
 				}, //banner
-				
+
 //could be used for some legacy upgrades that used the old textbox/image element combo to create a banner.
 			legacyurltoria : function($tag,data)	{
 				if(data.value == '#')	{
 					$tag.removeClass('pointer');
 					}
+				else if(data.value && data.value.indexOf('#!') == 0)	{
+					//link is formatted correctly. do nothing.
+					}
+				else if(data.value)	{
+					$tag.attrib('href',_app.ext.quickstart.u.getHashFromPageInfo(_app.ext.quickstart.u.detectRelevantInfoToPage(data.value)));
+					}
 				else	{
-					var pageInfo = _app.ext.quickstart.u.detectRelevantInfoToPage(data.value);
-					pageInfo.back = 0;
-					$tag.addClass('pointer').click(function(){
-						return _app.ext.quickstart.a.showContent('',pageInfo);
-						});
+					//data.value is not set. do nothing.
 					}
 				}, //legacyURLToRIA
+
 
 //use in a cart item spec.  When clicked, button will first add the item to the wishlist and then, if that's succesful, remove the item from the cart.
 // render format will also hide the button if the user is not logged in.
@@ -840,10 +845,7 @@ fallback is to just output the value.
 							})
 						}
 					else	{
-						$tag.on('click.detailsOrAdd',function(event){
-							event.preventDefault();
-							showContent('product',{'pid':pid}); 
-							})
+						$tag.attr({'data-hash':'#!product/'+pid,'data-app-click':'quickstart|showContent'});
 						}
 					}
 //				dump(" -> ID at end: "+$tag.attr('id'));
@@ -994,7 +996,7 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 // * changed from 'empty' to showLoading because empty could be a heavy operation if mainContentArea has a lot of content.
 							$('body').showLoading({'message':'Transferring to secure login'});							
 							var SSLlocation = _app.vars.secureURL+"?cartID="+_app.model.fetchCartID();
-							SSLlocation += "#customer?show="+infoObj.show
+							SSLlocation += "#!customer/"+infoObj.show
 							_gaq.push(['_link', SSLlocation]); //for cross domain tracking.
 							document.location = SSLlocation; //redir to secure url.
 							}
@@ -1016,7 +1018,7 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 // * use showloading instead of .html (which could be heavy)
 //							$('#mainContentArea').addClass('loadingBG').html("<h1>Transferring you to a secure session for checkout.<\/h1><h2>Our app will reload shortly...<\/h2>");
 							$('body').showLoading({'message':'Transferring you to a secure session for checkout'});
-							var SSLlocation = zGlobals.appSettings.https_app_url+"?cartID="+_app.model.fetchCartID()+"&_session="+_app.vars._session+"#checkout?show=checkout";
+							var SSLlocation = zGlobals.appSettings.https_app_url+"?cartID="+_app.model.fetchCartID()+"&_session="+_app.vars._session+"#!checkout";
 							_gaq.push(['_link', SSLlocation]); //for cross domain tracking.
 							document.location = SSLlocation;
 							}
@@ -1061,11 +1063,9 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 					}
 //this is low so that the individual 'shows' above can set a different default and if nothing is set, it'll default to true here.
 				infoObj.performJumpToTop = (infoObj.performJumpToTop === false) ? false : true; //specific instances jump to top. these are passed in (usually related to modals).
-
-				if(infoObj.performJumpToTop)	{$('html, body').animate({scrollTop : 0},1000)} //new page content loading. scroll to top.				
+		
 //transition appPreView out on init.
 				if($('#appPreView').is(':visible'))	{
-//					_app.ext.quickstart.pageTransition($('#appPreView'),$('#appView'));
 //appPreViewBG is an optional element used to create a layer between the preView and the view when the preView is loaded 'over' the view.
 					var $bg = $('#appPreViewBG');
 					if($bg.length)	{
@@ -1080,9 +1080,7 @@ for legacy browsers. That means old browsers will use the anchor to retain 'back
 				else if(infoObj.performTransition == false)	{
 					}
 				else if(typeof _app.ext.quickstart.pageTransition == 'function')	{
-
-//					dump(" -> parentID.length: "+$(_app.u.jqSelector('#',infoObj.parentID)).length);
-					_app.ext.quickstart.pageTransition($old,$new);
+					_app.ext.quickstart.pageTransition($old,$new,infoObj);
 					}
 				else if($new instanceof jQuery)	{
 //no page transition specified. hide old content, show new. fancy schmancy.
@@ -1372,7 +1370,8 @@ setTimeout(function(){
 				if($ele.length == 0)	{
 					$ele = $("<div />").attr('id','youtubeVideoModal').appendTo('body');
 					}
-				$ele.empty().append("<iframe style='z-index:1;' width='560' height='315' src='https://www.youtube.com/embed/"+videoid+"' frameborder='0' allowfullscreen></iframe>"); //clear any past videos.
+// * 201403 -> adding the ?rel=0 to the end of the URL will disable the suggested videos feature
+				$ele.empty().append("<iframe style='z-index:1;' width='560' height='315' src='https://www.youtube.com/embed/"+videoid+"?rel=0' frameborder='0' allowfullscreen></iframe>"); //clear any past videos.
 				$ele.dialog({
 					modal:true,
 					width:600,
@@ -1644,7 +1643,7 @@ $target.tlc({
 
 //executed on initial app load AND in some elements where user/merchant defined urls are present (banners).
 // Determines what page is in focus and returns appropriate object (r.pageType)
-// if no page content can be determined based on the url, the hash is examined and if appropriately formed, used (ex: #company?show=contact or #category?navcat=.something)
+// if no page content can be determined based on the url, the hash is examined and if appropriately formed, used (ex: #company/contact or #category/.something)
 // should be renamed getPageInfoFromURL
 			detectRelevantInfoToPage : function(URL)	{
 //				dump("BEGIN quickstart.u.detectRelevantInfoToPage. url: "+URL);
@@ -1748,20 +1747,20 @@ $target.tlc({
 //				dump("BEGIN quickstart.u.getHashFromPageInfo");
 				var r = false; //what is returned. either false if no match or hash (#company?show=contact)
 				if(this.thisPageInfoIsValid(infoObj))	{
-					if(infoObj.pageType == 'product' && infoObj.pid)	{r = '#product?pid='+infoObj.pid}
-					else if(infoObj.pageType == 'category' && infoObj.navcat)	{r = '#category?navcat='+infoObj.navcat}
-					else if(infoObj.pageType == 'homepage')	{r = ''}
-					else if(infoObj.pageType == 'cart')	{r = '#cart?show='+infoObj.show}
-					else if(infoObj.pageType == 'checkout')	{r = '#checkout?show='+infoObj.show}
+					if(infoObj.pageType == 'product' && infoObj.pid)	{r = '#!product/'+infoObj.pid}
+					else if(infoObj.pageType == 'category' && infoObj.navcat)	{r = '#!category/'+infoObj.navcat}
+					else if(infoObj.pageType == 'homepage')	{r = '#!home'}
+					else if(infoObj.pageType == 'cart')	{r = '#!cart'}
+					else if(infoObj.pageType == 'checkout')	{r = '#!checkout'}
 					else if(infoObj.pageType == 'search' && (infoObj.TAG || infoObj.KEYWORDS))	{
-						r = '#search?';
-						r += (infoObj.KEYWORDS) ? 'KEYWORDS='+infoObj.KEYWORDS : 'TAG='+infoObj.TAG;
+						r = '#!search/';
+						r += (infoObj.KEYWORDS) ? 'keywords/'+infoObj.KEYWORDS : 'tag/'+infoObj.TAG;
 						}
 					else if(infoObj.pageType == 'search' && infoObj.elasticsearch)	{
 						//r = '#search?KEYWORDS='+encodeURIComponent(infoObj.KEYWORDS);
-						r = '#search?elasticsearch='+encodeURIComponent(JSON.stringify(infoObj.elasticsearch));
+						r = '#!search/elasticsearch/'+encodeURIComponent(JSON.stringify(infoObj.elasticsearch));
 						}
-					else if(infoObj.pageType && infoObj.show)	{r = '#'+infoObj.pageType+'?show='+infoObj.show}
+					else if(infoObj.pageType && infoObj.show)	{r = '#!'+infoObj.pageType+'/'+infoObj.show}
 					else	{
 						//shouldn't get here because pageInfo was already validated. but just in case...
 						dump("WARNING! invalid pageInfo object passed into getHashFromPageInfo. infoObj: ");
@@ -1942,24 +1941,31 @@ $target.tlc({
 
 /*
 effects the display of the nav buttons only. should be run just after the handleAppNavData function in showContent.
+// ** 201403 -> appNav is now toggled on/off as well, using a class, so that in a responsive design, appnav height can be easily adjusted w/out impact when it's hidden.
 */
 			handleAppNavDisplay : function(infoObj)	{
 //				dump("BEGIN quickstart.u.handleNavButtonsForDetailPage");
 //				dump(" -> history of the world: "); dump(_app.ext.quickstart.vars.hotw[1]);
 
 				var r = false, //what is returned. true if buttons are visible. false if not.
-				$nextBtn = $("[data-app-role='prodDetailNextItemButton']","#appNav"),
-				$prevBtn = $("[data-app-role='prodDetailPrevItemButton']","#appNav");
+				$nav = $('#appNav'),
+				$nextBtn = $("[data-app-role='prodDetailNextItemButton']",$nav),
+				$prevBtn = $("[data-app-role='prodDetailPrevItemButton']",$nav);
 				
 //				dump(" -> $prevBtn.data('datapointer'): "+$prevBtn.data('datapointer'));
 				
 //The buttons are only shown on product detail pages. if no datapointer is set, no reason to show the buttons because there's no reference for what product would be 'next'.		
 				if(infoObj.pageType == 'product' && $prevBtn.data('datapointer'))	{
-					$nextBtn.show();
-					$prevBtn.show();
-					r = true;
+// * 201403 -> only show the buttons if more than 1 product is in the list.
+					if(_app.u.thisNestedExists("data."+$prevBtn.data('datapointer')+".@products",_app) && _app.data[$prevBtn.data('datapointer')]['@products'].length > 1)	{
+						$nav.removeClass('displayNone');
+						$nextBtn.show();
+						$prevBtn.show();
+						r = true;
+						}
 					}
 				else	{
+					$nav.addClass('displayNone');
 					$prevBtn.hide();
 					$nextBtn.hide();
 					} //no historical data yet. perfectly normal. make sure buttons are hidden.
@@ -2045,7 +2051,7 @@ effects the display of the nav buttons only. should be run just after the handle
 						var $tmp = $("<div \/>");
 						$tmp.tlc({templateid:infoObj.templateID,'verb':'template'});
 						$product = $tmp.children();
-						$product.attr('id',infoObj.parentID);
+						$product.attr('id',infoObj.parentID).data('pid',pid);
 						$product.addClass('displayNone').appendTo($('#mainContentArea')); //hidden by default for page transitions
 						_app.u.handleCommonPlugins($product);
 						var nd = 0; //Number of Dispatches.
@@ -2127,8 +2133,7 @@ effects the display of the nav buttons only. should be run just after the handle
 				
 				
 			showSearch : function(infoObj)	{
-//				dump("BEGIN quickstart.u.showSearch. infoObj follows: ");
-//				dump(infoObj);
+				dump("BEGIN quickstart.u.showSearch. infoObj follows: "); dump(infoObj);
 				infoObj.templateID = 'searchTemplate';
 				infoObj.parentID = 'mainContentArea_search';
 				infoObj.state = 'init';
@@ -2151,23 +2156,31 @@ effects the display of the nav buttons only. should be run just after the handle
 					}
 					
 //If raw elastic has been provided, use that.  Otherwise build a query.
-				var elasticsearch;
 				if(infoObj.elasticsearch){
 					elasticsearch = _app.ext.store_search.u.buildElasticRaw(infoObj.elasticsearch);
 					}
-				else if(infoObj.TAG)	{
-					elasticsearch = {"filter":{"term":{"tags":infoObj.TAG}}}
-					elasticsearch = _app.ext.store_search.u.buildElasticRaw(elasticsearch);
+				else if(infoObj.tag)	{
+					elasticsearch = _app.ext.store_search.u.buildElasticRaw({
+					   "filter":{
+						  "and" : [
+							 {"term":{"tags":infoObj.tag}},
+							 {"has_child":{"type":"sku","query": {"range":{"available":{"gte":100}}}}} //only return item w/ inventory
+							 ]
+						  }});
 					}
 				else if (infoObj.KEYWORDS) {
-					var qObj = {'query':infoObj.KEYWORDS} //what is submitted to the query generator.
-					if(infoObj.fields)	{qObj.fields = infoObj.fields}
-					elasticsearch = _app.ext.store_search.u.buildElasticSimpleQuery(qObj);
+					elasticsearch = _app.ext.store_search.u.buildElasticRaw({
+					   "filter":{
+						  "and" : [
+							 {"query":{"query_string":{"query":infoObj.KEYWORDS}}},
+							 {"has_child":{"type":"sku","query": {"range":{"available":{"gte":100}}}}} //only return item w/ inventory
+							 ]
+						  }});
 					}
 				else	{
 					
 					}
-				//dump(elasticsearch);
+				dump(elasticsearch);
 /*
 #####
 if you are going to override any of the defaults in the elasticsearch, such as size, do it here BEFORE the elasticsearch is added as data on teh $page.
@@ -2203,6 +2216,7 @@ elasticsearch.size = 50;
 				if(typeof infoObj != 'object'){var infoObj = {}}
 				infoObj.templateID = 'cartTemplate';
 				infoObj.parentID = 'mainContentArea_cart';
+				infoObj.trigger = '';
 				infoObj.state = 'init'; //needed for handleTemplateEvents.
 				
 				var $cart = $('#'+infoObj.parentID);
@@ -2212,12 +2226,12 @@ elasticsearch.size = 50;
 //only create instance once.
 				$cart = $('#mainContentArea_cart');
 				if($cart.length)	{
-					//show cart
-					$cart.hide().trigger('refresh');
-					infoObj.state = 'complete';
-					_app.renderFunctions.handleTemplateEvents($cart,infoObj);
+					//the cart has already been rendered.
+					infoObj.trigger = 'refresh';
+					$cart.hide();
 					}
 				else	{
+					infoObj.trigger = 'fetch';
 					infoObj.cartid = _app.model.fetchCartID();
 					$cart = _app.ext.cco.a.getCartAsJqObj(infoObj);
 					$cart.hide().on('complete',function(){
@@ -2230,11 +2244,9 @@ elasticsearch.size = 50;
 					}
 //This will load the cart from memory, if set. otherwise it will fetch it.
 //so if you need to update the cart, run a destroy prior to showCart.
-				$cart.trigger((_app.data['cartDetail|'+infoObj.cartid] ? 'refresh' : 'fetch'),{'Q':'mutable'});
-				_app.model.dispatchThis();
-
 				infoObj.state = 'complete'; //needed for handleTemplateEvents.
-				_app.renderFunctions.handleTemplateEvents($cart,infoObj);
+				$cart.trigger(infoObj.trigger,$.extend({'Q':'mutable'},infoObj));
+				_app.model.dispatchThis('mutable');
 				return $cart;
 				}, //showCart
 
@@ -2328,7 +2340,6 @@ either templateID needs to be set OR showloading must be true. TemplateID will t
 //already rendered the page and it's visible. do nothing. Orders is always re-rendered cuz the data may change.
 					if($article.data('isTranslated') && infoObj.show != 'orders')	{}
 					else	{
-					
 						switch(infoObj.show)	{
 							case 'help':
 								myApp.ext.quickstart.a.showBuyerCMUI();
@@ -2396,7 +2407,10 @@ either templateID needs to be set OR showloading must be true. TemplateID will t
 										populateBuyerProdlist(data[i].id,rd.jqObj)
 										}
 									_app.model.dispatchThis('mutable');
-									$('.applyAccordion',rd.jqObj).accordion({heightStyle: "content"});
+									//no sense putting 1 list into an accordion.
+									if(L > 1)	{
+										$('.applyAccordion',rd.jqObj).accordion({heightStyle: "content"});
+										}
 									}}},"mutable");
 								break;
 							case 'myaccount':
@@ -2630,9 +2644,7 @@ buyer to 'take with them' as they move between  pages.
 					infoObj.state = 'init';
 					var parentID = infoObj.parentID || infoObj.templateID+'_'+_app.u.makeSafeHTMLId(catSafeID);
 					var $parent = $(_app.u.jqSelector('#',parentID));
-					
-					dump(" -> $parent.length: "+$parent.length);
-					
+				
 					infoObj.parentID = parentID;
 					_app.renderFunctions.handleTemplateEvents($parent,infoObj);
 //only have to create the template instance once. showContent takes care of making it visible again. but the onComplete are handled in the callback, so they get executed here.
@@ -2689,7 +2701,7 @@ tagObj.lists = new Array(); // all the list id's needed.
 var bindArr = new tlc().getBinds(tagObj.templateID);
 
 if(tagObj.pid)	{
-	if($.inArray('%ATTRIBS.zoovy:grp_children',bindArr) >= 0 && _app.u.thisNestedExists("data.appProductGet|"+tagObj.pid+".%attribs",_app) && _app.data['appProductGet|'+tagObj.pid]['%attribs']['zoovy:grp_type'] == 'CHILD' && _app.data['appProductGet|'+tagObj.pid]['%attribs']['zoovy:grp_parent'])	{
+	if($.inArray('%attribs.zoovy:grp_children',bindArr) >= 0 && _app.u.thisNestedExists("data.appProductGet|"+tagObj.pid+".%attribs",_app) && _app.data['appProductGet|'+tagObj.pid]['%attribs']['zoovy:grp_type'] == 'CHILD' && _app.data['appProductGet|'+tagObj.pid]['%attribs']['zoovy:grp_parent'])	{
 		numRequests += _app.calls.appProductGet.init({'pid':_app.data['appProductGet|'+tagObj.pid]['%attribs']['zoovy:grp_parent']},{},'mutable');
 		}
 	}
@@ -2871,6 +2883,7 @@ else	{
 					_app.model.dispatchThis('immutable');
 					}
 				else	{} //validateForm will handle the error display.
+				return false;
 				},
 
 			accountPasswordRecoverSubmit : function($ele,p)	{
@@ -2891,14 +2904,16 @@ else	{
 					_app.model.dispatchThis('immutable');
 					}
 				else	{} //validateForm will handle the error display.
+				return false;
 				},
 	
 			cartShipMethodSelect : function($ele,P)	{
-				p.preventDefault();
+				P.preventDefault();
 				var $cart = $ele.closest("[data-template-role='cart']");
 				_app.ext.cco.calls.cartSet.init({'_cartid':$cart.data('cartid'),'want/shipping_id':$ele.val()},{},'immutable');
 				$cart.trigger('fetch',{'Q':'immutable'});
 				_app.model.dispatchThis('immutable');
+				return false;
 				},
 			
 			cartMessagePageSend : function($ele,p)	{
@@ -2918,15 +2933,18 @@ else	{
 						}
 					}},'passive');
 				_app.model.dispatchThis('passive');
+				return false;
 				},
 			
 			dialogCloseExec : function($ele,p)	{
 				$ele.closest('.ui-dialog-content').dialog('close');
+				return false;
 				},
 			
 			faqDetailShow : function($ele,p)	{
 				p.preventDefault();
 				_app.ext.quickstart.a.showFAQbyTopic($ele.closest('[data-topicid]').data('topicid'));
+				return false;
 				},
 			
 			execOrder2Cart : function($ele,p)	{
@@ -2945,16 +2963,30 @@ else	{
 				else	{
 					$('#globalMessaging').anymessage({'message':"In quickstart.e.execOrder2Cart, unable to determine orderID",'gMessage':true});
 					}
+				return false;
 				}, //execOrder2Cart
 
 			orderDetailShow : function($ele,p)	{
 				p.preventDefault();
 				_app.ext.quickstart.u.showOrderDetails($ele.closest("[data-app-role='orderLineitemContainer']"));
+				return false;
 				},
 
 			inlineProductPreviewShow : function($ele,p)	{
 				p.preventDefault();
 				_app.ext.quickstart.a.handleProdPreview($ele.closest("[data-pid]").data('pid'));
+				return false;
+				},
+
+			showContent : function($ele,p)	{
+				p.preventDefault();p
+				if($ele.data('hash'))	{
+					document.location.hash = $ele.data('hash');
+					}
+				else	{
+					$("#globalMessaging").anymessage({"message":"In quickstart.e.showContent, no data-hash set on trigger element.","gMessage":true});
+					}
+				return false;
 				},
 
 			passwordChangeSubmit : function($ele,p)	{
@@ -2963,6 +2995,7 @@ else	{
 					_app.ext.store_crm.u.handleChangePassword($ele,{'callback':'showMessaging','message':'Thank you, your password has been changed','jqObj':$ele});
 					}
 				else	{}
+				return false;
 				},
 
 			productAdd2Cart : function($ele,p)	{
@@ -2982,8 +3015,12 @@ else	{
 							$('#globalMessaging').anymessage({'message':rd});
 							}
 						else	{
-							_app.ext.quickstart.u.showCartInModal({'templateID':'cartTemplate'});
-							dump(" ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+							if($ele.data('show') == 'inline')	{
+								document.location.hash = '#!cart';
+								}
+							else	{
+								_app.ext.quickstart.u.showCartInModal({'templateID':'cartTemplate'});
+								}
 							cartMessagePush(cartObj._cartid,'cart.itemAppend',_app.u.getWhitelistedObject(cartObj,['sku','pid','qty','quantity','%variations']));
 							}
 						}},'immutable');
@@ -3002,22 +3039,29 @@ else	{
 				else	{
 					$('#globalMessaging').anymessage({"message":"In admin_crm.e.productAdd2List, unable to ascertain pid ["+pid+"] or data-listid was not set on trigger element.","gMessage":true});
 					}
+				return false;
 				},
 				
 			productPicsInModalShow : function($ele,p){
 				p.preventDefault();
 				_app.ext.store_product.u.showPicsInModal({"pid":$ele.closest("[data-pid]").data('pid')});
+				return false;
 				},
 
 			subscribeSubmit : function($ele,p)	{
 				p.preventDefault();
 				_app.ext.store_crm.u.handleSubscribe($ele.attr('id'));
+				return false;
 				},
 
 //add to form element. input name='KEYWORDS' is required for this simple search.
 			searchFormSubmit : function($ele,p)	{
 				p.preventDefault();
-				showContent('search',$ele.serializeJSON($ele));
+				var sfo = $ele.serializeJSON($ele);
+				if(sfo.KEYWORDS)	{
+					document.location.hash = '#!search/keywords/'+sfo.KEYWORDS;
+					}
+				return false;
 				},
 
 			showBuyerAddressUpdate : function($ele,p)	{
@@ -3029,6 +3073,7 @@ else	{
 					$('#mainContentArea_customer').empty().remove(); //kill so it gets regenerated. this a good idea?
 					showContent('customer',{'show':'myaccount'});
 					});
+				return false;
 				}, //showBuyerAddressUpdate
 
 			showBuyerAddressAdd : function($ele,p)	{
@@ -3038,9 +3083,9 @@ else	{
 					},function(rd){
 					$('#mainContentArea_customer').empty().remove(); //kill so it gets regenerated. this a good idea?
 					showContent('customer',{'show':'myaccount'});
-					})
+					});
+				return false;
 				}, //showBuyerAddressAdd
-
 
 			quickviewShow : function($ele,p)	{
 				p.preventDefault();
@@ -3052,6 +3097,7 @@ else	{
 				else	{
 					$('#globalMessaging').anymessage({"message":"In quickstart.e.quickviewShow, unable to ascertain PID ["+PID+"] or no data-loadstemplate set on trigger element.","gMessage":true});
 					}
+				return false;
 				}
 
 			}, // e/events
@@ -3071,7 +3117,7 @@ later, it will handle other third party plugins as well.
 		init : function()	{
 			dump("BEGIN quickstart.handleThirdParty.Init");
 
-			var uriParams = _app.u.kvp2Array(location.hash.substring(1));
+			var uriParams = _app.u.kvp2Array(location.hash.substring(1)) || {};
 			//landing on the admin app, having been redirected after logging in to google.
 			if(uriParams.trigger == 'googleAuth')	{
 				_app.calls.authAdminLogin.init({
@@ -3151,7 +3197,6 @@ later, it will handle other third party plugins as well.
 if(_gaq.push(['_setCustomVar',1,'gender',user.gender,1]))
 	dump(" -> fired a custom GA var for gender.");
 else
-
 	dump(" -> ARGH! GA custom var NOT fired. WHY!!!");
 
 
