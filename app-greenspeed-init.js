@@ -20,7 +20,7 @@ $("#productTemplate, #productTemplateQuickView").on('complete.dynimaging',functi
 		slideshow: false
 		});
 	});
-
+/*
 $("#productTemplateQuickView").on('complete.dynimaging',function(state,$ele,infoObj){
 	handleSrcSetUpdate($ele);
 	$('.prodDetailImagesContainer.dynimaging',$ele).imagegallery({
@@ -30,6 +30,7 @@ $("#productTemplateQuickView").on('complete.dynimaging',function(state,$ele,info
 		slideshow: false
 		});
 	});
+*/
 
 /*
 if(typeof window.matchMedia != "undefined" || typeof window.msMatchMedia != "undefined")    {}
@@ -126,6 +127,7 @@ myApp.u.showProgress = function(progress)	{
 		if(progress.passZeroResourcesLength == progress.passZeroResourcesLoaded)	{
 			//All pass zero resources have loaded.
 			//the app will handle hiding the loading screen.
+			myApp.u.appInitComplete();
 			}
 		else if(attempt > 150)	{
 			//hhhhmmm.... something must have gone wrong.
@@ -149,7 +151,48 @@ myApp.u.showProgress = function(progress)	{
 //will pass in the page info object. (pageType, templateID, pid/navcat/show and more)
 myApp.u.appInitComplete = function(P)	{
 	myApp.u.dump("Executing myAppIsLoaded code...");
-	
+
+	dump(" -> HEY! just a head's up, the default pageTransition was just overwritten from app-greenspeed-init.js");
+	myApp.ext.quickstart.pageTransition = function($o,$n,infoObj){
+		var $hotw = $('#hotwButton').show();
+		function transitionThePage()	{
+//if $o doesn't exist, the animation doesn't run and the new element doesn't show up, so that needs to be accounted for.
+//$o MAY be a jquery instance but have no length, so check both.
+			if($o instanceof jQuery && $o.length)	{
+				$('#mainContentArea').height($o.outerHeight()); //add a fixed height temporarily so that page doesn't 'collapse'
+				dump(" -> offsetleft: " + $('#mainContentArea').width());
+				$o.animate({'height':20,'width':20,'overflow':'hidden','left':$('#mainContentArea').width(),'top':-30},function(){
+					$('#mainContentArea').height('');
+					$o.hide().removeAttr('style');
+					$n.css({'position':'relative','z-index':10}); //
+					});
+				}
+			else	{
+				//if o isn't set, n needs to be reset to relative positioning or the display will be wonky.
+				$n.css({'position':'relative','z-index':10}); //
+				}
+			
+			}
+
+		$o.css({'position':'relative','z-index':'10'}); //make sure the old page is 'above' the new.
+//$n isn't populated yet, most likely. So instead of animating it, just show it. Then animate the old layer above it.
+		if($n instanceof jQuery)	{
+			$n.addClass('pageTemplateBG').css({position:'absolute','z-index':9,'left':0,'top':0,'right':0}).show();
+			}
+//only 'jump to top' if we are partially down the page.  Using the header height as > means if a link in the header is clicked, we don't jump down to the content area. feels natural that way.
+		if(infoObj.performJumpToTop && $(window).scrollTop() > $('header','#appView').height())	{
+			$('html, body').animate({scrollTop : ($('header','#appView').length ? $('header','#appView').first().height() : 0)},500,function(){
+				transitionThePage();
+				});
+			} //new page content loading. scroll to top.			
+		else	{
+			transitionThePage();
+			}
+
+		}
+
+
+
 	myApp.ext.order_create.checkoutCompletes.push(function(vars,$checkout){
 //append this to 
 		$("[data-app-role='thirdPartyContainer']",$checkout).append("<h2>What next?</h2><div class='ocm ocmFacebookComment pointer zlink marginBottom checkoutSprite  '></div><div class='ocm ocmTwitterComment pointer zlink marginBottom checkoutSprit ' ></div><div class='ocm ocmContinue pointer zlink marginBottom checkoutSprite'></div>");
@@ -196,5 +239,20 @@ myApp.router.appendInit({
 		}
 	});
 
-
-
+/*
+myApp.ext.myRIA.pageTransition = function($o,$n){
+	$('#hotwButton').show();
+	if($o.length){
+		var $newO=$o.clone().width($o.width()).css($o.offset()).css('position','absolute');
+		$newO.appendTo(document.body);
+		$o.hide();
+		$newO.animate({'height':20,'width':20,'overflow':'hidden','left':$('#hotwButton').offset().left,'top':$('#hotwButton').offset().top},'slow',function(){
+			$(this).hide().empty().remove();
+			});
+		$n.fadeIn(1000);
+		}
+	else{
+		$n.fadeIn(1000);
+		}
+	});
+*/
