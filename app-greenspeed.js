@@ -118,6 +118,59 @@ var greenspeed = function(_app) {
 
 			}, //Actions
 
+
+
+		tlcFormats : {
+			
+			//this tlcformat gets run AFTER the image has been appended/replaced. It needs the data-attributes set.
+			srcset : function(data,thisTLC)	{
+//				dump(" -> srcset data: "); dump(data,'dir');
+				if(data.value)	{
+					var argObj = thisTLC.args2obj(data.command.args,data.globals); //this creates an object of the args
+					var srcset = new Array();
+//					dump(" -> argObj"); dump(argObj,'dir');
+					if(argObj.views)	{
+//						dump(" -> argObj.views IS set");
+						var viewArr = argObj.views.split(','), L = viewArr.length;
+						for(var i = 0; i < L; i += 1)	{
+							var obj = _app.u.kvp2Array(viewArr[i]), string = '';
+							string = thisTLC.makeImageURL({'width':obj.w,'height':obj.h,'data-media':data.value,'data-bgcolor':'ffffff'});
+							if(obj.vp)	{string += " "+obj.vp;}
+							if(obj.dpi)	{string += " "+obj.dpi;}
+							srcset.push(string);
+							}
+						data.globals.binds[data.globals.focusBind] = srcset.join(',');
+						}
+					}
+				return true; //continue processing tlc
+				},
+			
+			prodthumbs : function(data,thisTLC)	{
+				
+				var attribs = data.value; //shortcut.
+				if(attribs['zoovy:prod_image2'])	{
+//					dump(" -> image 2 is set.");
+					var $ul = $("<ul>").addClass('prodDetailThumbs');
+					for(var i = 1; i <= 99; i++)	{
+						if(attribs['zoovy:prod_image'+i])	{
+							$ul.append("<li class='prodDetailThumb'><a href='"+thisTLC.makeImageURL({'data-media':attribs['zoovy:prod_image'+i],'data-bgcolor':'ffffff'})+"' data-gallery='gallery'><img src='"+thisTLC.makeImageURL({'width':50,'height':50,'data-media':attribs['zoovy:prod_image'+i],'data-bgcolor':'ffffff'})+"' alt=''  width='50' height='50' /></a></li>");
+							}
+						else	{
+							break; //once an break in the images is hit, end the loop (basically requires images to be consecutive)
+							//image not set.
+							}
+						}
+					data.globals.binds[data.globals.focusBind] = $ul;
+					}
+				else	{
+//					dump(" -> image 2 is NOT set.");
+					//if image2 isn't set, skip em all.
+					}
+				return true;
+				}		
+			
+			},
+
 ////////////////////////////////////   RENDERFORMATS    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 //renderFormats are what is used to actually output data.
@@ -131,105 +184,6 @@ var greenspeed = function(_app) {
 				data.bindData.h = $tag.attr('height');
 				data.bindData.tag = 0;
 				$tag.attr('href',_app.u.makeImage(data.bindData)); //passing in bindData allows for using
-				},
-
-			prodthumbs : function($tag,data)	{
-				var attribs = data.value['%attribs']; //shortcut.
-				if(attribs['zoovy:prod_image2'])	{
-//					dump(" -> image 2 is set.");
-					var $ul = $("<ul>").addClass('listStyleNone noPadOrMargin');
-					for(var i = 1; i <= 25; i++)	{
-						if(attribs['zoovy:prod_image'+i])	{
-							$ul.append("<li class='floatLeft marginRight marginBottom'><a href='"+_app.u.makeImage({'name':attribs['zoovy:prod_image'+i],'w':'','h':'','b':'ffffff','tag':0})+"' data-gallery='gallery'><img src='"+_app.u.makeImage({'name':attribs['zoovy:prod_image'+i],'w':75,'h':75,'b':'ffffff','tag':0})+"' alt=''  width='75' height='75' /></a></li>");
-							}
-						else	{
-							//image not set.
-							}
-						}
-					$tag.append($ul);
-					}
-				else	{
-//					dump(" -> image 2 is NOT set.");
-					//if image2 isn't set, skip em all.
-					}
-				//<a href='blank.gif' data-bind='var: product(zoovy:prod_image2); format:imageurlhref; h:; w:;' data-gallery="gallery"  ><img src='blank.gif' alt='' data-bind='var: product(zoovy:prod_image2); format:imageURL;' width='75' height='75' /></a>
-				},
-			
-			srcset : function($tag,data)	{
-//				dump('got into displayFunctions.image: "'+data.value+'" and range: '+data.bindData.range);
-				data.bindData.b = data.bindData.bgcolor || 'ffffff'; //default to white.
-				
-				if(data.bindData.isElastic) {
-					data.bindData.elasticImgIndex = data.bindData.elasticImgIndex || 0; //if a specific image isn't referenced, default to zero.
-					data.value = data.value[data.bindData.elasticImgIndex];
-					};
-				if(data.value)	{
-	//set some recommended/required params.
-					data.bindData.name = (data.bindData.valuePretext) ? data.bindData.valuePretext+data.value : data.value;
-					data.bindData.tag = 0;
-					
-					if(data.bindData.range == 'homeSearchResults')	{
-						//used for defaultimage.
-						data.bindData.w = 120;
-						data.bindData.h = 120;
-
-						var srcSet = new Array(
-							_app.u.makeImage(data.bindData)+" 1040w 1x",
-							_app.u.makeImage($.extend({},data.bindData,{h:240,w:240}))+" 1040w 2x", //double the default size. for high density screens.
-							_app.u.makeImage($.extend({},data.bindData,{h:220,w:220}))+" 1x",
-							_app.u.makeImage($.extend({},data.bindData,{h:440,w:440}))+" 2x"
-							)
-						}
-					else if(data.bindData.range == 'lineItemProdlist')	{
-						//used for defaultimage.
-						data.bindData.w = 100;
-						data.bindData.h = 100;
-
-						var srcSet = new Array(
-							_app.u.makeImage(data.bindData)+" 1040w 1x",
-							_app.u.makeImage($.extend({},data.bindData,{h:200,w:200}))+" 1040w 2x", //double the default size. for high density screens.
-							_app.u.makeImage($.extend({},data.bindData,{h:220,w:220}))+" 1x",
-							_app.u.makeImage($.extend({},data.bindData,{h:440,w:440}))+" 2x"
-							)
-						}
-					else if(data.bindData.range == 'homeCycle')	{
-						//used for defaultimage.
-						data.bindData.w = 280;
-						data.bindData.h = 220;
-//						dump(" -----------> data.bindData for srcset: "); dump(data.bindData,'debug');
-						var srcSet = new Array(
-							_app.u.makeImage(data.bindData)+" 800w 1x",
-							_app.u.makeImage($.extend({},data.bindData,{h:440,w:560}))+" 800w 2x", //double the default size. for high density screens.
-							_app.u.makeImage($.extend({},data.bindData,{h:220,w:360}))+" 1x",
-							_app.u.makeImage($.extend({},data.bindData,{h:440,w:720}))+" 2x",
-							_app.u.makeImage($.extend({},data.bindData,{h:220,w:500}))+" 1x",
-							_app.u.makeImage($.extend({},data.bindData,{h:440,w:1000}))+" 2x"
-							)
-						}
-					else if(data.bindData.range == 'prodDetailMainPic')	{
-						//used for defaultimage.
-						data.bindData.w = 260;
-						data.bindData.h = 260;
-
-						var srcSet = new Array(
-							_app.u.makeImage(data.bindData)+" 1025w 1x",
-							_app.u.makeImage($.extend({},data.bindData,{h:520,w:520}))+" 1025w 2x", //double the default size. for high density screens.
-							_app.u.makeImage($.extend({},data.bindData,{h:360,w:360}))+" 1x",
-							_app.u.makeImage($.extend({},data.bindData,{h:720,w:720}))+" 2x"
-							)
-						}
-					else	{
-						//use whatever is set on the image.
-						}
-
-
-					$tag.attr('src',_app.u.makeImage(data.bindData)); //passing in bindData allows for using
-					$tag.attr("srcset",srcSet.join(','));
-					
-					}
-				else	{
-	//				$tag.css('display','none'); //if there is no image, hide the src. 
-					}
 				}
 			}, //renderFormats
 ////////////////////////////////////   UTIL [u]   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

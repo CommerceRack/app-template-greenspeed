@@ -478,9 +478,9 @@ this will likely become more flexible in the future. ###
 	<div class="prodDetailImagesContainer">
 	
 		<div data-tlc="bind $var '.%attribs.zoovy:prod_is_tags'; quickstart#tags --legacy; if (is $var --notblank;) {{apply --append;}};" class="tagsContainer"></div>
-		<a data-tlc="bind $var '.%attribs.zoovy:prod_image1'; greenspeed#imageurlhref  --legacy;" href="blank.gif" data-gallery="gallery"><img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; greenspeed#srcset  --bgcolor='ffffff' --range='prodDetailMainPic' --legacy;" src="blank.gif" class="prodBigImage" alt=""></a>
+		<a data-tlc="bind $var '.%attribs.zoovy:prod_image1'; greenspeed#imageurlhref  --legacy;" href="blank.gif" data-gallery="gallery"><img class="prodBigImage" data-tlc="bind $var '.%attribs.zoovy:prod_image1'; if(is $var --notblank;){{apply --imageurl --media=$var --width=250 --height=250 --bgcolor='#ffffff' --attrib='src'; }}; bind $image '.%attribs.zoovy:prod_image1'; greenspeed#srcset --views='h=250&w=250&dpi=1x&vp=400w,h=350&w=350&dpi=1x&vp=1100w,h=500&w=500&dpi=1x&vp=1800w'; apply --attrib='srcset';" src="blank.gif" alt="" /></a>
 	
-		<div data-tlc="bind $var '.'; greenspeed#prodthumbs  --legacy;" data-legacy-useparentdata="true" class="marginTop"></div>
+		<div data-tlc="bind $var '.%attribs'; greenspeed#prodthumbs; apply --append;" data-legacy-useparentdata="true" class="marginTop"></div>
 	</div>
 
 	
@@ -519,7 +519,7 @@ this will likely become more flexible in the future. ###
 			<fieldset data-tlc="bind $var '.pid'; store_product#atcvariations  --legacy; apply --append;" class="borderNone"></fieldset>
 			<fieldset data-tlc="bind $var '.'; store_product#atcquantityinput  --defaultvalue='1' --legacy;" class="borderNone"></fieldset>
 	
-			<div class='marginBottom'><input data-tlc="bind $var '.pid'; store_product#addtocartbutton  --legacy;" value="Add to Cart" class="applyButton addtocartbutton displayNone" type="submit"></div>
+			<div class='marginBottom'><input data-tlc="bind $var '.pid'; store_product#addtocartbutton  --legacy;" value="Add to Cart" class="pointer addtocartbutton displayNone" data-text='true' data-icon-primary='ui-icon-cart' type="submit"></div>
 		</form>
 	
 		<div data-tlc="bind $var '.%attribs.zoovy:prod_cpsiawarning'; if(is $var --notblank) {{apply --add --class='marginBottom'}}; quickstart#cpsiawarning  --legacy;"></div>
