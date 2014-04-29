@@ -20,26 +20,6 @@ $("#productTemplate, #productTemplateQuickView").on('complete.dynimaging',functi
 		slideshow: false
 		});
 	});
-/*
-$("#productTemplateQuickView").on('complete.dynimaging',function(state,$ele,infoObj){
-	handleSrcSetUpdate($ele);
-	$('.prodDetailImagesContainer.dynimaging',$ele).imagegallery({
-		show: 'fade',
-		hide: 'fade',
-		fullscreen: false,
-		slideshow: false
-		});
-	});
-*/
-
-/*
-if(typeof window.matchMedia != "undefined" || typeof window.msMatchMedia != "undefined")    {}
-else{
-	dump(" -> media queries are NOT supported. use polyfill ");
-	myApp.rq.push(['script',0,myApp.vars.baseURL+'css3-mediaqueries.js']); //in zero pass in case product page is first page.
-    }
-*/
-
 
 
 myApp.rq.push(['script',0,(document.location.protocol == 'file:') ? myApp.vars.testURL+'jsonapi/config.js' : myApp.vars.baseURL+'jsonapi/config.js',function(){

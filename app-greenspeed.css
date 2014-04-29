@@ -318,11 +318,8 @@ so the displayNone class is used, then a .grpType_PARENT class is added if the i
 /* REVIEW LIST - on product detail page, used for product reviews. */
 #prodViewerReviews	{margin:0; padding:0;} /* parent ul containing all reviews, each review as an li */
 .reviewLineItem {margin:0 0 1em 0; padding:0 0 1em 0; display:block; clear:both; border-bottom:1px #cccccc dotted;} /* on the li of an individual review */
-.prodReviewInfo	{float:left; display:block; width:165px; list-style:none; margin:0 1em 0px 0; font-weight:normal; padding:0;} /* on the ul of the list containing the name, location, date, etc */
-.prodReviewInfo li	{display:block; clear:both;} /* applies to li for location, name, date, etc */
 .prodReviewTemplate li p	{font-weight:normal; margin:0; padding:0;}
 
-.reviewLineItem blockquote	{margin:0 0 0 185px; padding:0;}
 
 
 
@@ -619,6 +616,7 @@ body {
 h2, h3, h4, h5, h6	{font-weight:normal;}
 
 .hideForMobile	{display:none;}
+.clearBoth	{clear:both;}
 
 /*
 //////////			HEADER			\\\\\\\\\\\
@@ -807,8 +805,8 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 .price	{color:#000;}
 .reviewSprite	{width:74px;}
 
-
-
+.atcListItem	{display:block; margin:0 0 .3em 0; min-height:80px;} /* only shown at higher screen sizes */
+.atcListItemThumbContainer	{float:left; margin:0 .7em .3em 0;}
 
 
 /*
@@ -840,28 +838,33 @@ form.prodViewerAddToCartForm	{display:inline;}
 .prodDetailThumbs	{list-style:none; margin:0; padding:0;}
 .prodDetailThumb	{float:left; margin:0 .2em .2em 0;}
 .prodDetailImagesContainer a	{display:block; padding-top:10px;}
-	
-	
-/*
-//////////			MASONRY 		\\\\\\\\\\\
-note -> less variance at a smaller screen size. As screen size enlarges, more variation in sizes will appear.
+
+
+.productReviewsList	{list-style:none; margin:0; padding:0;}
+.reviewDetailCustomerName, 
+.reviewDetailCreateDate, 
+.reviewDetailCustomerLocation	{display:none;}	
+.prodReviewInfo	{min-height:20px; clear:both; display:block;}
+
+
+/* responsive video/youtube -> found here: http://avexdesigns.com/responsive-youtube-embed/ 
+doesn't respond quite as well once in a tab. will need media queries to adjust the height. ####TODO
 */
-
-.anyMasonry	{
-	width:49%; margin:0.5%; overflow:hidden;
+.videoContainer {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 30px; height: 0; overflow: hidden;
 	}
-.masonInnerContainer, 	{display:block;
-	width:100%; height:100%;
+ 
+.videoContainer iframe,
+.videoContainer object,
+.videoContainer embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 	}
-.anyMasonry .masonImageContainer	{width:100%;}
-.masonGeneratedImg	{margin:5px;}
-.anyMasonry.masonOne {height:148px; background-color:#f0f0f0;}
-.anyMasonry.masonTwo {height:148px; background-color:#e4e4e4;}
-.anyMasonry.masonThree {height:148px; background-color:#dedede;}
-.anyMasonry.masonFour  {height:148px; background-color:#d8d8d8;}
-
-
-
 
 
 
@@ -934,12 +937,20 @@ note -> less variance at a smaller screen size. As screen size enlarges, more va
 
 
 	.prodDetailImagesContainer	{display:block; position:relative; margin:0; width:350px; float:left; top:0; left:0;}
-	.prodDetailSummaryATC	{margin:0; width:100%; clear:none; position:relative; top:0; left:0; margin-left:375px;} /* shift element to right side instead of below */
+	.prodDetailSummaryATC	{clear:none; position:relative; top:0; left:0; margin-left:375px;} /* shift element to right side instead of below */
 	.ui-tabs-nav	{font-size:1em;}
 	.cycle-overlay	{font-size:1em;}
 
-	.anyMasonry	{width:19%;}
-	.anyMasonry.masonOne {height:305px; width:38%;} /* masonry works better if all widths to be increments of each other, it appears. so 38% instead of 39%. */
+	.atcListItem	{display: inline-block; width:33%}
+	.atcListItemThumbContainer	{float:none; display:block; margin:0 0em .3em 0;}
+
+	.reviewDetailCustomerName, 
+	.reviewDetailCreateDate, 
+	.reviewDetailCustomerLocation	{display:block;}	
+	.prodReviewInfo li	{display:block; clear:both;} /* applies to li for location, name, date, etc */
+	.prodReviewInfo	{float:left; display:block; width:165px; list-style:none; margin:0 1em 0px 0; font-weight:normal; padding:0;} /* on the ul of the list containing the name, location, date, etc */
+
+	.reviewLineItem blockquote	{margin:0 0 0 185px; padding:0;}
 
 	}
 
@@ -947,9 +958,12 @@ note -> less variance at a smaller screen size. As screen size enlarges, more va
 
 
 @media only screen and (min-width: 1040px) {
-	.prodDetailSummaryATC	{width:60%;} /* shift element to right side instead of below */
+	
+	.prodDetailImagesContainer	{width:500px; float:left; top:0; left:0;}
+	.prodDetailSummaryATC	{margin-left:525px;} /* shift element to right side instead of below */
+	
 	.responsiveProdlist li {height:270px;}
-	.anyMasonry.masonTwo {height:305px;}
+	.atcListItem	{display: inline-block; width:20%}
 	}
 	
 

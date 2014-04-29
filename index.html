@@ -350,25 +350,22 @@ remember to NOT put the button inside the 'onclick' container or two events will
 for product lists with addToCart feature (accessories, for example)
 container ul should have lineItemProdlist class on it instead of productList
 -->
-<li id="productListTemplateATC" class="loadingBG  ">
+<li id="productListTemplateATC" class="loadingBG atcListItem ">
 	<div data-tlc="bind $var '.pid'; apply --attrib='data-pid';">
 
-		<div class="prodThumbContainer floatLeft">
-		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=120 --height=120 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="" height="120" width="120">
+		<div class="atcListItemThumbContainer">
+		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; if(is $var --notblank;){{apply --imageurl --media=$var --width=75 --height=75 --bgcolor='#ffffff' --attrib='src'; }}; bind $image '.%attribs.zoovy:prod_image1'; greenspeed#srcset --views='h=75&w=75&dpi=1x&vp=600w,h=120&w=120&dpi=1x'; apply --attrib='srcset';" src="blank.gif" class="prodThumb" alt="" >
 		</div>
-
-		<h5 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h5>
-
-		<h6 data-tlc="bind $var '.%attribs.zoovy:base_price';  if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: ';  apply --append;}};"></h6>
-
-		<span data-tlc="bind $var '.reviews.average'; if(is $var --notblank) {{format --prepend='review_'; apply --add --class=$var; }};" class="reviewSprite"></span>
+		
+		<div class='marginBottom'>
+			<h5 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h5>
+			<h6 data-tlc="bind $var '.%attribs.zoovy:base_price';  if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: ';  apply --append;}};"></h6>
+			<span data-tlc="bind $var '.reviews.average'; if(is $var --notblank) {{format --prepend='review_'; apply --add --class=$var; }};" class="reviewSprite"></span>
+		</div>
 	
-		<form data-tlc="bind $var '.pid'; store_product#atcform  --legacy; apply --append;" class="prodViewerAddToCartForm clearfix" action="#" data-app-submit="quickstart|productAdd2Cart" data-show="modal">
-	
-			<fieldset data-tlc="bind $var '.pid'; store_product#atcvariations  --legacy; apply --append;" class="borderNone"></fieldset>
-			<fieldset data-tlc="bind $var '.'; store_product#atcquantityinput  --defaultvalue='0' --legacy;" class="borderNone"></fieldset>
-	
-			<input data-tlc="bind $var '.pid'; store_product#addtocartbutton  --legacy; apply --append;" value="Add to Cart" class="applyButton addtocartbutton displayNone" type="submit">
+		<form data-tlc="bind $var '.pid'; store_product#atcform  --legacy; apply --append;" class="smallButton" action="#" onsubmit="return false" data-app-submit="quickstart|productAdd2Cart" data-show="modal">
+			<input name="qty" value="1" type="hidden">
+			<button data-tlc="bind $var '.'; quickstart#addtocartbutton  --legacy; apply --append;" class='plAdd2Cart'>More Details</button>
 		</form>
 
 	</div>
@@ -478,7 +475,9 @@ this will likely become more flexible in the future. ###
 	<div class="prodDetailImagesContainer">
 	
 		<div data-tlc="bind $var '.%attribs.zoovy:prod_is_tags'; quickstart#tags --legacy; if (is $var --notblank;) {{apply --append;}};" class="tagsContainer"></div>
-		<a data-tlc="bind $var '.%attribs.zoovy:prod_image1'; greenspeed#imageurlhref  --legacy;" href="blank.gif" data-gallery="gallery"><img class="prodBigImage" data-tlc="bind $var '.%attribs.zoovy:prod_image1'; if(is $var --notblank;){{apply --imageurl --media=$var --width=250 --height=250 --bgcolor='#ffffff' --attrib='src'; }}; bind $image '.%attribs.zoovy:prod_image1'; greenspeed#srcset --views='h=250&w=250&dpi=1x&vp=400w,h=350&w=350&dpi=1x&vp=1100w,h=500&w=500&dpi=1x&vp=1800w'; apply --attrib='srcset';" src="blank.gif" alt="" /></a>
+		<a data-tlc="bind $var '.%attribs.zoovy:prod_image1'; greenspeed#imageurlhref  --legacy;" href="blank.gif" data-gallery="gallery">
+		<img class="prodBigImage" data-tlc="bind $var '.%attribs.zoovy:prod_image1'; if(is $var --notblank;){{apply --imageurl --media=$var --width=250 --height=250 --bgcolor='#ffffff' --attrib='src'; }}; bind $image '.%attribs.zoovy:prod_image1'; greenspeed#srcset --views='h=250&w=250&dpi=1x&vp=400w,h=350&w=350&dpi=1x&vp=1100w,h=500&w=500&dpi=1x&vp=1800w'; apply --attrib='srcset';" src="blank.gif" alt="" />
+		</a>
 	
 		<div data-tlc="bind $var '.%attribs'; greenspeed#prodthumbs; apply --append;" data-legacy-useparentdata="true" class="marginTop"></div>
 	</div>
@@ -521,6 +520,15 @@ this will likely become more flexible in the future. ###
 	
 			<div class='marginBottom'><input data-tlc="bind $var '.pid'; store_product#addtocartbutton  --legacy;" value="Add to Cart" class="pointer addtocartbutton displayNone" data-text='true' data-icon-primary='ui-icon-cart' type="submit"></div>
 		</form>
+
+		<menu data-tlc="bind $var '.pid'; apply --attrib='data-pid'; " class="CRMButtonMenu">
+	
+		<a href="#" data-app-click="store_crm|productReviewShow">Write Review</a>	|
+	
+		<a href="#" data-app-click="quickstart|productAdd2List" data-listid="wishlist">Add to Wishlist</a>
+	
+		</menu>
+
 	
 		<div data-tlc="bind $var '.%attribs.zoovy:prod_cpsiawarning'; if(is $var --notblank) {{apply --add --class='marginBottom'}}; quickstart#cpsiawarning  --legacy;"></div>
 		<div data-tlc="bind $var '.%attribs.zoovy:qty_price'; if(is $var --notblank) {{apply --add --class='marginBottom'}}; store_product#quantitydiscounts  --legacy;"></div>
@@ -530,13 +538,6 @@ this will likely become more flexible in the future. ###
 			<span data-tlc="bind $var '.reviews.total'; if (is $var --notblank;) {{format --prepend=' from ' --append=' reviews'; apply --append;}};" class='floatLeft'></span>
 		</section>
 	
-		<menu data-tlc="bind $var '.pid'; apply --attrib='data-pid'; " class="CRMButtonMenu">
-	
-		<a href="#" data-app-click="store_crm|productReviewShow">Write Review</a>	|
-	
-		<a href="#" data-app-click="quickstart|productAdd2List" data-listid="wishlist">Add to Wishlist</a>
-	
-		</menu>
 	
 	</div>
 
@@ -579,16 +580,18 @@ It's done this way because ID's hard coded into template are bad mojo (templates
 			<button class="applyButton" data-app-click="store_crm|productReviewShow">Write Review</button>
 		</div>
 
-		<ul data-tlc="bind $var '.reviews.@reviews'; controller#loop --templateid='productReviewsTemplateDetail'; if (is $var --notblank;) {{apply --append;}};" class="listStyleNone clearfix productReviewsList"></ul>
+		<ul data-tlc="bind $var '.reviews.@reviews'; controller#loop --templateid='productReviewsTemplateDetail'; if (is $var --notblank;) {{apply --append;}};" class="clearfix productReviewsList"></ul>
 
 	</div>
 
 	<div class="tabContent" data-anytab-content="prodVideo">
-		<div data-tlc="bind $var '.%attribs.youtube:videoid'; controller#youtubevideo --legacy; if (is $var --notblank;) {{apply --append;}};"></div>
+		<div class='videoContainer'>
+			<div data-tlc="bind $var '.%attribs.youtube:videoid'; controller#youtubevideo --legacy; if (is $var --notblank;) {{apply --append;}};"></div>
+		</div>
 	</div>
 
 	<div class="tabContent" data-anytab-content="prodAccessories">
-<ul data-tlc="bind $var '.%attribs.zoovy:accessory_products'; store_prodlist#productlist  --hidePagination='true' --hideSummary='true' --withReviews='1' --withInventory='1' --withVariations='1' --templateid='productListTemplateATC'  --legacy;" class="listStyleNone clearfix noPadOrMargin"></ul>
+<ul data-tlc="bind $var '.%attribs.zoovy:accessory_products'; store_prodlist#productlist  --hidePagination='true' --hideSummary='true' --withInventory='1' --withVariations='1' --templateid='productListTemplateATC'  --legacy;" class="listStyleNone clearfix noPadOrMargin"></ul>
 	</div>
 
 
@@ -1120,13 +1123,12 @@ used on a product layout. Some product have 'children' which may represent the s
 <!-- individual review template -->
 <ul>
 	<li id="productReviewsTemplateDetail" class="reviewLineItem clearfix">
-	<ul class="prodReviewInfo">
-		<li data-tlc="bind $var '.RATING'; if(is $var --notblank) {{format --prepend='review_'; apply --add --class=$var; }};" class="reviewSprite"></li>
-		<li data-tlc="bind $var '.CUSTOMER_NAME'; if (is $var --notblank;) {{apply --append;}};"></li>
-		<li data-tlc="bind $var '.LOCATION'; format --prepend='of '; if (is $var --notblank;) {{apply --append;}};"></li>
-		<li data-tlc="bind $var '.CREATED_GMT'; if (is $var --notblank;) {{datetime --out='mdy'; format --prepend='on '; apply --append;}};"></li>
-
-	</ul>
+	<div class="prodReviewInfo">
+		<span data-tlc="bind $var '.RATING'; if(is $var --notblank) {{format --prepend='review_'; apply --add --class=$var; }};" class="reviewSprite reviewDetailRating"></span>
+		<div class='reviewDetailCustomerName' data-tlc="bind $var '.CUSTOMER_NAME'; if (is $var --notblank;) {{apply --append;}};"></div>
+		<div class='reviewDetailCustomerLocation' data-tlc="bind $var '.LOCATION'; format --prepend='of '; if (is $var --notblank;) {{apply --append;}};"></div>
+		<div class='reviewDetailCreateDate' data-tlc="bind $var '.CREATED_GMT'; if (is $var --notblank;) {{datetime --out='mdy'; apply --append;}};"></div>
+	</div>
 	<blockquote>
 		<h2 data-tlc="bind $var '.SUBJECT'; if (is $var --notblank;) {{apply --append;}};"></h2>
 		<p data-tlc="bind $var '.MESSAGE'; if (is $var --notblank;) {{apply --append;}};"></p>
