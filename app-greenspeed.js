@@ -75,7 +75,7 @@ var greenspeed = function(_app) {
 	$('#hotwButton').button({icons: {primary: "ui-icon-circle-triangle-w"},text: false}).on('click',function(){
 		var
 			$menu = $('#hotwMenu').empty(),
-			hotw = _app.ext.myRIA.vars.hotw;
+			hotw = _app.ext.quickstart.vars.hotw;
 // SANITY -> hotw has a fixed length (15 by default).
 //start at spot 1. spot 0 is the page in focus.
 		for(var i = 1; i < 8; i += 1)	{

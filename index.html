@@ -32,6 +32,7 @@ document.getElementsByTagName('base')[0].href = baseURL;
 
 <link href='https://fonts.googleapis.com/css?family=Voltaire' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="app-greenspeed.css"><!-- quickstart.css is merged into this file along w/ the jquery ui theme -->
+
 <!-- IE8 does not support media queries, so a special stylesheet is present. -->
 <!--[if lte IE 8]>
 	<link rel="stylesheet" type="text/css" href="app-greenspeed_ie8.css" />
@@ -47,6 +48,7 @@ document.getElementsByTagName('base')[0].href = baseURL;
       document.createElement('aside');
       document.createElement('footer');
       document.createElement('menu');
+      document.createElement('template');
    </script>
 <![endif]-->
 
@@ -64,7 +66,7 @@ var myApp = {};
 $(document).ready(function(){
 
 	window.myApp = new initApp({
-		"release":"201403.30a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201403.0501a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
@@ -77,7 +79,6 @@ $(document).ready(function(){
 				myApp.u.showProgress(progress);
 				});
 			}
-
 		});
 	$(document.body).append("version: "+myApp.vars.release);
 	myApp.vars.initComplete();
@@ -107,8 +108,8 @@ $(document).ready(function(){
 					<li class='menuItem5'><a href='#!checkout'>checkout</a></li>
 				</ul>
 				<div class='searchContainer'>
-				<form name='headerSearchFrm' id='mastHeadSearchFrm' action='#' class='productSearchForm' method="get">
-					<input type='search' name='KEYWORDS' placeholder='product search' class="productSearchKeyword handleDefault" x-webkit-speech="x-webkit-speech" id='mastHeadKeywordsInput' />
+				<form name='headerSearchFrm' id='mastHeadSearchFrm' action='#' class='productSearchForm' method="get" data-app-submit='quickstart|searchFormSubmit'>
+					<input type='search' name='KEYWORDS' placeholder='product search' class="productSearchKeyword handleDefault" id='mastHeadKeywordsInput' />
 					<button id='mastHeadSearchButton' title='Product Search'><span class='ui-icon ui-icon-search'></span></button>
 				</form>
 				</div>
@@ -253,7 +254,7 @@ the homepageTemplate template is loaded into mainContentArea by default when the
 		</div>
 	</div>
 
-	<ul data-tlc="quickstart#searchbytag --tag='IS_BESTSELLER' --title='Best Sellers' --size='8' --templateid='productListTemplateResultsNoPreview';" class='listStyleNone fluidList clearfix noPadOrMargin responsiveProdlist'></ul>
+	<ul data-tlc="quickstart#searchbytag --tag='IS_BESTSELLER' --title='Best Sellers' --size='8' --templateid='productListTemplateResults';" class='clearfix responsiveProdlist'></ul>
 
 </div>
 
@@ -275,7 +276,7 @@ don't modify the 'data-templateid' unless you are changing template names and up
 
 	<ul data-tlc="bind $var '.@subcategoryDetail'; store_navcats#categorylist  --detail='max' --templateid='categoryListTemplate'  --legacy;" class="listStyleNone fluidList clearfix noPadOrMargin categoryList marginBottom"></ul><!-- outputs a list of subcategories -->
 
-	<ul data-tlc="bind $var '.@products'; prodlist_infinite#infiniteproductlist  --withReviews='1' --itemsPerPage='25' --templateid='productListTemplate'  --legacy;" class="listStyleNone responsiveProdlist clearfix noPadOrMargin"></ul><!-- outputs the product list -->
+	<ul data-tlc="bind $var '.@products'; prodlist_infinite#infiniteproductlist  --withReviews='1' --itemsPerPage='25' --templateid='productListTemplate'  --legacy;" class="responsiveProdlist clearfix"></ul><!-- outputs the product list -->
 
 	<p data-tlc="bind $var '.%page.description'; if (is $var --notblank;) {{render --wiki='quickstart'; apply --append;}};"></p>
 
@@ -287,9 +288,9 @@ don't modify the 'data-templateid' unless you are changing template names and up
 <!-- used to display a category within a 'list', usually in the body of a category or the homepage. -->
 <ul>
 <li id="categoryListTemplate">
-	<a data-tlc="bind $var '.'; store_routing#seoanchor --type='category' --seo; apply --attrib='href';">
+	<a data-tlc="bind $var '.'; store_routing#seoanchor --type='category' --seo; apply --attrib='href';" class='noUnderline'>
 	<div class="pointer">
-		<div class="thumbContainer floatLeft marginRight"><img data-tlc="bind $var '.%meta.CAT_THUMB'; if (is $var --notblank;) {{ apply --img --media=$var --width=35 --height=35 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="catThumb" alt="" height="35" width="35"></div>
+		<div class="thumbContainer floatLeft marginRight"><img data-tlc="bind $var '.%meta.CAT_THUMB'; if (is $var --notblank;) {{ apply --img --media=$var --width=45 --height=45 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="catThumb" alt="" height="45" width="45"></div>
 		<div class="catName"><span data-tlc="bind $var '.pretty'; quickstart#cattext  --legacy;"></span></div>
 	</div>
 	</a>
@@ -307,10 +308,12 @@ don't modify the 'data-templateid' unless you are changing template names and up
 
 
 <div class="slide" id="productListCycleTemplate">
+	<a data-tlc="bind $pid '.pid'; bind $seo '.%attribs.zoovy:prod_name'; bind $href ''; store_routing#productlink --pid=$pid --seo=$seo; apply --attrib='href';"  class='noUnderline'>
 	<div class="thumbContainer">
-	<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; greenspeed#srcset  --bgcolor='ffffff' --range='homeCycle' --legacy;" src="blank.gif" class="prodThumb" alt="">
+	<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=280 --height=240 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="" width'300' height='240'>
 	</div>
 	<div data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};" class="cycle-overlay"></div>
+	</a>
 </div>
 
 
@@ -327,14 +330,14 @@ Used for the product in a product list (prodlist), usually in the body of a cate
 the loadingBG class is removed (must be that classname) when the template is translated.
 remember to NOT put the button inside the 'onclick' container or two events will occur onclick.
 -->
-<li id="productListTemplate" class="loadingBG  " onmouseover="$('.quickView',$(this)).show();" onmouseout="$('.quickView').hide();">
+<li id="productListTemplate" class="loadingBG plListItem " onmouseover="$('.quickView',$(this)).show();" onmouseout="$('.quickView').hide();">
 	
 	<button class="floatRight pointer quickView displayNone" data-app-click="quickstart|quickviewShow" data-loadstemplate="productTemplateQuickView">Quickview</button>
 
 	<div data-tlc="bind $var '.pid'; apply --attrib='data-pid'; ">
-		<a data-tlc="bind $pid '.pid'; bind $seo '.%attribs.zoovy:prod_name'; bind $href ''; store_routing#productlink --pid=$pid --seo=$seo; apply --attrib='href';" class="blockLink">
+		<a data-tlc="bind $pid '.pid'; bind $seo '.%attribs.zoovy:prod_name'; bind $href ''; store_routing#productlink --pid=$pid --seo=$seo; apply --attrib='href';"  class='noUnderline'>
 		<div class="prodThumbContainer">
-		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; greenspeed#srcset  --bgcolor='ffffff' --range='homeSearchResults' --legacy;" src="blank.gif" class="prodThumb" alt="">
+		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=100 --height=100 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="">
 		</div>
 
 		<h5 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h5>
@@ -355,7 +358,7 @@ container ul should have lineItemProdlist class on it instead of productList
 	<div data-tlc="bind $var '.pid'; apply --attrib='data-pid';">
 
 		<div class="atcListItemThumbContainer">
-		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; if(is $var --notblank;){{apply --imageurl --media=$var --width=75 --height=75 --bgcolor='#ffffff' --attrib='src'; }}; bind $image '.%attribs.zoovy:prod_image1'; greenspeed#srcset --views='h=75&w=75&dpi=1x&vp=600w,h=120&w=120&dpi=1x'; apply --attrib='srcset';" src="blank.gif" class="prodThumb" alt="" >
+		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=75 --height=75 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="" >
 		</div>
 		
 		<div class='marginBottom'>
@@ -373,18 +376,18 @@ container ul should have lineItemProdlist class on it instead of productList
 </li>
 
 
-<li id="productListTemplateBuyerList" class="loadingBG clearfix">
+<li id="productListTemplateBuyerList" class="loadingBG">
 	<div data-tlc="bind $var '.pid'; apply --attrib='data-pid';">
 
 		<div class="prodThumbContainer floatLeft">
 			<div class="ui-widget ui-widget-content ui-corner-all">
 				<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=160 --height=160 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="" height="160" width="160">
-				<div class="buttonList ui-widget ui-widget-header ui-corner-all alignCenter">
+				<div class="smallButtonList ui-widget ui-widget-header ui-corner-all alignCenter">
 
-<a data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';" class='applyButton' data-text='true' data-icon-primary='ui-icon-cart'>Add To Cart</a>
-<a href='#' data-app-click="quickstart|quickviewShow" class='applyButton' data-text='true' data-icon-primary='ui-icon-info'>Details</a>
-<a href='#' data-app-click="store_crm|productReviewShow" class='applyButton' data-text='true' data-icon-primary='ui-icon-star'>Write Review</a>
-<a href='#' data-app-click="store_crm|productBuyerListRemoveExec" class='applyButton' data-text='true' data-icon-primary='ui-icon-trash'>Remove From List</a>
+<a data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';" class='applyButton' data-text='false' data-icon-primary='ui-icon-cart'>Add To Cart</a>
+<a href='#' data-app-click="quickstart|quickviewShow" class='applyButton' data-text='false' data-icon-primary='ui-icon-info'>Details</a>
+<a href='#' data-app-click="store_crm|productReviewShow" class='applyButton' data-text='false' data-icon-primary='ui-icon-star'>Write Review</a>
+<a href='#' data-app-click="store_crm|productBuyerListRemoveExec" class='applyButton' data-text='false' data-icon-primary='ui-icon-trash'>Remove From List</a>
 
 				</div>
 			</div>
@@ -412,35 +415,20 @@ container ul should have lineItemProdlist class on it instead of productList
 Used for the product in a product list (prodlist), usually in the body of a category or the homepage.
 the loadingBG class is removed (must be that classname) when the template is translated.
 remember to NOT put the button inside the 'onclick' container or two events will occur onclick.
-
-SANITY -> if you change the height and width of this image, change the .minimalMode .searchResultsProduct in qs_styles.css to match
 -->
-<li id="productListTemplateResults" class="searchResultsProduct ">
-	<div data-app-click="quickstart|inlineProductPreviewShow" class="pointer">
-		<div class="prodThumbContainer">
-		<img data-tlc="bind $var '.images.0'; apply --img --media=$var --width=120 --height=120 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="" height="120" width="120">
-		</div>
-
-		<h5 data-tlc="bind $var '.prod_name'; if (is $var --notblank;) {{apply --append;}};" class="hideInMinimalMode"></h5>
-
-		<h6 data-tlc="bind $var '.base_price';  if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: ';  apply --append;}};" class="hideInMinimalMode"></h6>
-		
-	</div>
-	<a class="hideInMinimalMode pointer moreDetails" data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';">more details</a>
-</li>
-
-<li id="productListTemplateResultsNoPreview" class="searchResultsProduct ">
-	<a data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';" class="pointer">
-		<div class="prodThumbContainer">
+<li id="productListTemplateResults" class="searchResultsProduct plListItem">
+	
+		<div class="prodThumbContainer"><a data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';" class="pointer">
 		<img data-tlc="bind $var '.images.0'; if (is $var --notblank;) {{apply --img --media=$var --width=120 --height=120 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodThumb" alt="" height="120" width="120">
-		</div>
+		</a></div>
 
 		<h5 data-tlc="bind $var '.prod_name'; if (is $var --notblank;) {{apply --append;}};" class="hideInMinimalMode"></h5>
 
 		<h6 data-tlc="bind $var '.base_price';  if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: ';  apply --append;}};" class="hideInMinimalMode"></h6>
-	</a>
+	
 	<a class="hideInMinimalMode pointer moreDetails" data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';">more details</a>
 </li>
+
 </ul>
 
 
@@ -602,7 +590,7 @@ It's done this way because ID's hard coded into template are bad mojo (templates
 
 
 <div class="prodlistRelatedContainer">
-	<ul data-tlc="bind $var '.%attribs.zoovy:related_products'; store_prodlist#productlist  --hidePagination='true' --hideSummary='true' --withReviews='1' --templateid='productListTemplate'  --legacy;" class="listStyleNone responsiveProdlist clearfix noPadOrMargin"></ul>
+	<ul data-tlc="bind $var '.%attribs.zoovy:related_products'; store_prodlist#productlist  --hidePagination='true' --hideSummary='true' --withReviews='1' --templateid='productListTemplate'  --legacy;" class="responsiveProdlist clearfix"></ul>
 </div>
 
 
@@ -679,14 +667,6 @@ if you change these, you should move them above this comment so that when you (o
 
 <div id="companyTemplate" class="clearfix">
 
-	<div class="sideline">
-<nav id="companyNav">
-<ul class="listStyleNone noPadOrMargin">
-<!-- these are generated via javascript, based on the quickstart.pages object. -->
-</ul>
-</nav>
-	</div>
-
 	<div class="mainColumn">
 <!-- .textContentArea is used as a selector in quickstart.js because article tag type isn't ie8 friendly -->
 		<div id="aboutArticle" class="textContentArea article">
@@ -724,7 +704,7 @@ if you change these, you should move them above this comment so that when you (o
 
 		<div id="faqArticle" class="displayNone textContentArea">
 			<h1>Frequently Asked Questions</h1>
-			<div id="faqContent" class=" ui-accordion ui-widget ui-helper-reset ui-accordion-icons appAccordianesque"></div>
+			<div id="faqContent" class='appAccordianesque' data-tlc="bind $var '.@topics'; controller#loop --templateid='faqTopicTemplate'; if (is $var --notblank;) {{apply --append;}};" ></div>
 		</div>
 
 
@@ -791,6 +771,15 @@ if you change these, you should move them above this comment so that when you (o
 			<div data-tlc="bind $var '.zoovy:shipping_policy'; render --wiki='quickstart'; if (is $var --notblank;) {{apply --append;}};" id="shippingContent"></div>
 		</div>
 
+	</div>
+
+
+	<div class="sideline">
+		<nav id="companyNav">
+		<ul class="listStyleNone noPadOrMargin">
+		<!-- these are generated via javascript, based on the quickstart.pages object. -->
+		</ul>
+		</nav>
 	</div>
 
 </div><!-- /companyTemplate -->
@@ -1069,13 +1058,13 @@ Cart template
 
 <!-- cart line-item template -->
 <ul>
-	<li id="productListTemplateCart" class="padMargBorderBottom clearfix">
+	<li id="productListTemplateCart" class="padMargBorderBottom clearfix smallButtonList">
 
 		<button data-tlc="cco#cartitemremovebutton  --legacy;" class="floatRight removeButton" data-bind="format:cartitemremovebutton; extension:cco; useParentData:true;" data-app-click="cco|cartItemRemove">Remove Item From Cart</button>
-		<button data-tlc="quickstart#movetowishlistbutton  --legacy;" class="floatRight moveToWishlist marginRight" data-bind="format:moveToWishlistButton; extension:quickstart; useParentData:true;">Move to Wishlist</button>
+		<button data-tlc="quickstart#movetowishlistbutton  --legacy;" class="floatRight moveToWishlist" data-bind="format:moveToWishlistButton; extension:quickstart; useParentData:true;">Move to Wishlist</button>
 
 
-		<div class="floatLeft"><img data-tlc="bind $var '.%attribs.zoovy:prod_thumb'; if(is $var --blank;){{bind $var '.%attribs.zoovy:prod_image1';}}; if(is $var --notblank;){{apply --img --media=$var --width=75 --height=75 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodThumb" alt="" height="75" width="75"></div>
+		<div class="floatLeft marginRight marginBottom"><img data-tlc="bind $var '.%attribs.zoovy:prod_thumb'; if(is $var --blank;){{bind $var '.%attribs.zoovy:prod_image1';}}; if(is $var --notblank;){{apply --img --media=$var --width=75 --height=75 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodThumb" alt="" height="75" width="75"></div>
 
 		<h4 data-tlc="bind $var '.prod_name'; if (is $var --notblank;) {{apply --append;}};"></h4>
 
@@ -1260,7 +1249,7 @@ used for store_crm.js
 	<span data-tlc="bind $var '.TOPIC_TITLE'; if (is $var --notblank;) {{apply --append;}};"></span>
 	</div>
 
-	<div data-tlc="bind $var '.TOPIC_ID'; apply --attrib='id'; if (is $var --notblank;) {{apply --append;}};" class="ui-accordion-content ui-helper-reset ui-widget-content displayNone"></div>
+	<div data-tlc="bind $var '.TOPIC_ID'; format --prepend='faqDetails4Topic_'; apply --attrib='id';" class="ui-accordion-content ui-helper-reset ui-widget-content displayNone"></div>
 
 </section>
 

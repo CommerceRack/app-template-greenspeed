@@ -3261,8 +3261,12 @@ $tmp.empty().remove();
 			
 			},
 */
-
-
+//for tlc compatibility (doesn't accept formats w/ mixed case)
+		processlist : function($tag,data)	{
+			dump(data);
+			data.bindData.loadsTemplate = data.bindData.templateid;
+			this.processList($tag,data);
+			},
 //This should be used for all lists going forward that don't require special handling (such as stufflist, prodlist, etc).
 //everthing that's in the data lineitem gets passed as first param in transmogrify, which will add each key/value as data-key="value"
 //at this time, prodlist WON'T use this because each pid in the list needs/makes an API call.
@@ -3329,8 +3333,11 @@ $tmp.empty().remove();
 					}
 				
 				}
-			else	{
+			else if(typeof data.value === 'object')	{
 				$tag.anymessage({'message':'Unable to render list item - no loadsTemplate specified.','persistent':true});
+				}
+			else	{
+				$tag.anymessage({'message':'Unable to render list item - data.value is not an object.','persistent':true});
 				}
 			}
 			

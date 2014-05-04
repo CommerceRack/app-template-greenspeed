@@ -60,7 +60,7 @@ var quickstart = function(_app) {
 			'billAddressTemplate',
 			'shipAddressTemplate'],
 		"sotw" : {}, //state of the world. set to most recent page info object.
-		"hotw" : new Array(15), //history of the world. contains 15 most recent sotw objects.
+		"hotw" : new Array(), //history of the world. contains 15 most recent sotw objects.
 		"session" : {
 			"recentSearches" : [],
 			"recentlyViewedItems" : [],
@@ -1424,7 +1424,7 @@ setTimeout(function(){
 
 //assumes the faq are already in memory.
 			showFAQbyTopic : function(topicID)	{
-				dump("BEGIN showFAQbyTopic ["+topicID+"]");
+//				dump("BEGIN showFAQbyTopic ["+topicID+"]");
 				var templateID = 'faqQnATemplate'
 				
 				if(!topicID)	{
@@ -1439,13 +1439,13 @@ setTimeout(function(){
 					if($target.children().length)	{} //if children are present, this faq topic has been opened before or is empty. no need to re-render content.
 					else	{
 						var L = _app.data['appFAQs']['@detail'].length;
-						dump(" -> total #faq: "+L);
+//						dump(" -> total #faq: "+L);
 						for(var i = 0; i < L; i += 1)	{
 							if(_app.data['appFAQs']['@detail'][i]['TOPIC_ID'] == topicID)	{
-								dump(" -> faqid matches topic: "+_app.data['appFAQs']['@detail'][i]['ID']);
+//								dump(" -> faqid matches topic: "+_app.data['appFAQs']['@detail'][i]['ID']);
 //								$target.append(_app.renderFunctions.transmogrify({'id':topicID+'_'+_app.data['appFAQs']['@detail'][i]['ID'],'data-faqid':+_app.data['appFAQs']['@detail'][i]['ID']},templateID,_app.data['appFAQs']['@detail'][i]))
 $target.tlc({
-	dataAttribs : {'id':topicID+'_'+_app.data['appFAQs']['@detail'][i]['ID'],'data-faqid':+_app.data['appFAQs']['@detail'][i]['ID']},
+//	dataAttribs : {'id':topicID+'_'+_app.data['appFAQs']['@detail'][i]['ID'],'data-faqid':+_app.data['appFAQs']['@detail'][i]['ID']},
 	templateid : templateID,
 	dataset : _app.data['appFAQs']['@detail'][i]
 	})
@@ -1537,7 +1537,10 @@ $target.tlc({
 				infoObj.dateObj = new Date(); //milliseconds timestamp
 				_app.ext.quickstart.vars.sotw = infoObj;
 				_app.ext.quickstart.vars.hotw.unshift(infoObj);
-				_app.ext.quickstart.vars.hotw.pop(); //remove last entry in array. is created with array(15) so this will limit the size.
+				if(_app.ext.quickstart.vars.hotw.length > 15)	{
+					_app.ext.quickstart.vars.hotw.slice(0,14);
+					}
+//				_app.ext.quickstart.vars.hotw.pop(); //remove last entry in array. is created with array(15) so this will limit the size.
 				},
 
 			showtransition : function(infoObj,$old)	{
@@ -1737,6 +1740,7 @@ $target.tlc({
 #########################################     FUNCTIONS FOR DEALING WITH pageInfo obj and/or HASH
 
 */
+
 
 //pass in a pageInfo object and a valid hash will be returned.
 // EX:  pass: {pageType:company,show:contact} and return: #company?show=contact

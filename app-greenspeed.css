@@ -4,6 +4,19 @@ CSS defaults for a small screen, then uses media queries to support larger.
 This optimizes the load experience for mobile devices, which are more bandwidth-sensitive
 */
 
+
+
+/*
+*** 201403 -> here to fix a bug in jqueryUI. the dialogs, when attempting to move, would jump away from the cursor in FF. This fixed it.
+Put this high in the doc as a reminder to occassionally re-check if it can be removed
+*/
+.ui-dialog {
+    position: fixed;
+	}
+
+
+
+
 /*
 jquery-ui-1.10.3.custom.min.css
 */
@@ -30,7 +43,7 @@ The media queries are located at the bottom of this file.
 
 */
 
-body,html	{font-size:85%;} /* increased for non mobile devices w/ a media query */
+body,html	{font-size:100%;} /* increased for non mobile devices w/ a media query */
 
 #appTemplates {display:none;} /* container for all templates. should be hidden */
 
@@ -71,6 +84,14 @@ td.valignMiddle	{vertical-align: middle;}
 
 /* feel free to delete these or override in your own .css file */
 h1, h2, h3, h4, h5, h6	{padding:0; margin:0;}
+
+h1	{font-size:1.4em; line-height:1.0em; margin-bottom:.4em;}
+h2	{font-size:1.3em;line-height:1.0em; margin-bottom:.4em;}
+h3	{font-size:1.2em;line-height:1.0em; margin-bottom:.3em;}
+h4	{font-size:1.1em;line-height:1.0em; margin-bottom:.2em;}
+h5	{font-size:1.0em;line-height:.9em; margin-bottom:.2em;}
+h6	{font-size:.9em;line-height:.8em; margin-bottom:.2em;}
+
 
 /* some optional form styling
 <label><span class='prompt'>prompt</span><input class='alignInput'></label> w/ alignedForm class around it on form, fieldset, whatever 
@@ -190,8 +211,8 @@ and offMenu is toggle off, hiding the change button.
 
 /* pages like  company and/or customer are in a two column format. by default, a narrow right w/ nav and the main column w/ content. */
 
-.mainColumn	{width:75%;}
-.sideline	{float:right; width:20%; margin:0 0 2em 0;}
+.mainColumn	{width:75%; float:left;}
+.sideline	{float:right; width:20%;}
 .sideline a	{padding:1em 0; text-decoration:none; display:block;} /* recommend at least 5px vert padding for mobile/pad */
 
 
@@ -222,7 +243,7 @@ a.blockLink {border:none; display:block;}
 
 /* over rides - height and width ensure each row is the same height. percentages could be used for width */
 .productList > li	{width:150px; height:250px; position:relative;}
-.lineItemProdlist > li	{position:relative; display:block; padding:1em 0; width:100% !important; height:auto !important; border-bottom:1px dotted #efefef;} /* single column product list - used in cart, checkout, etc. productList class is also defined in these cases. */
+.lineItemProdlist > li	{position:relative; display:block; float:none; width:auto; padding:1em 0; height:auto !important; border-bottom:1px dotted #efefef;} /* single column product list - used in cart, checkout, etc. productList class is also defined in these cases. */
 
 .lineItemProdlist .prodThumb	{margin-right:1em;}
 
@@ -409,14 +430,6 @@ SEARCH RESULTS PAGE
 
 .resultsMenuContainer .ui-menu-icon	{float:left;} /* make sure > icon in menu's floats to the left when subnav is avail. */
 
-.minimalMode .hideInMinimalMode	{display:none;}
-.minimalMode .searchResultsProduct	{
-	height:120px; width:120px; overflow:hidden; margin:0 .5em .5em 0;
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
-	box-sizing: border-box;
-	}
-
 /*
 
 HELP PAGES
@@ -443,7 +456,7 @@ CART
 
 */
 
-.cartStuffContainer	{width:100%; margin:0 0 1em 0;}
+.cartStuffContainer	{width:auto; margin:0 0 1em 0;}
 #cartStuffList	{list-style:none; margin:0; padding:0; font-size:.85em;}
 #cartStuffList li	{display:block; margin:0 0 1em 0;}
 .cartButtons	{text-align:center;}
@@ -535,14 +548,8 @@ CHECKOUT
 
 
 
-/* cart product list */
-@media only screen and (min-width: 400px) {
-	body,html	{font-size:100%;}
-	}
-
-
-
 @media only screen and (min-width: 750px) {
+	body,html	{font-size:100%;}
 	/* invoice address get aligned on the same row now that space allows for it. the container around the addresses will handle the margin now. */
 	.invoiceAddressContainer .billAddress, .invoiceAddressContainer .shipAddress	{float:left;  margin-bottom:0;}
 	.invoiceAddressContainer .billAddress	{margin-right:2em;}
@@ -596,11 +603,10 @@ li.loadingBG, .wait	{background:url(wait.gif) no-repeat top center !important; m
 
 .contrastUI	{background-color: #9eca37;}
 a	{color: #9eca37;}
-a:hover	{color:#FF0;}
+a:hover	{color:#000;}
 
 body {
 	font-family: 'Voltaire', sans-serif;
-	font-size:90%;
 	background-color: #ececec;
 	margin: 0;
 	padding: 0;
@@ -609,7 +615,7 @@ body {
 
 /* wraps around everything */
 .container {
-	width: 90%;
+	width: auto; /* on mobile, span the entire width. this % goes down as screen size increases */
 	margin: 0 auto; /* the auto value on the sides, coupled with the width, centers the layout. It is not needed if you set the .container's width to 100%. */
 	}
 
@@ -777,7 +783,9 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 .categoryList li {
     font-size:1em;
 	}
-.catName	{padding-top:.3em; font-size:1em;}
+.catName	{padding-top:.3em; font-size:1em; color:#333;}
+.catName:hover	{text-decoration:underline; color:#000;}
+.noUnderline	{text-decoration:none;}
 
 
 /*
@@ -789,12 +797,17 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 	}
 
 .quickView	{background-color:#9eca37; border:0; color:#FFF; font-size:1em; padding:.2em .4em; left:0;}
-.responsiveProdlist li	{
-	height: 180px; width:48%;
+.responsiveProdlist	{
+	margin:0; padding:0;
+	list-style:none;
+	}
+
+.plListItem	{
+	height: 210px; width:48%;
 	display:block; float:left;
 	overflow:hidden;
 	position:relative;
-	margin:1%;
+	margin:0 1% 1em 0;
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
 	webkit-box-sizing:border-box;
@@ -898,7 +911,7 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 
 
 @media only screen and (min-width: 640px) {
-	body	{font-size:1em;}
+
 	#mastHead .logo {width:20%;}
 	#mastHead .menuAndSearch	{width:80%;}
 	#mastHead .mainMenu li	{width:25%;}
@@ -918,12 +931,11 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	.cartButtons span	{float:right; margin:0 0 .4em .4em;}
 	.cartButtons .continueShoppingSpan	{float:left; margin:0;}
 
+	.container	{width:94%;} /* will give a little grey border around content area */
 
-
-	.responsiveProdlist li	{
-		margin:0 .5% .5em .5%;
-		width:19%;
-		height: 180px;
+	.plListItem	{
+		width:18%;
+		margin-right:2%;
 		}
 	
 	.categoryList > li {
@@ -958,12 +970,15 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 
 
 @media only screen and (min-width: 1040px) {
-	
+	body, html	{font-size:110%;}
 	.prodDetailImagesContainer	{width:500px; float:left; top:0; left:0;}
 	.prodDetailSummaryATC	{margin-left:525px;} /* shift element to right side instead of below */
-	
-	.responsiveProdlist li {height:270px;}
+
 	.atcListItem	{display: inline-block; width:20%}
+	.plListItem	{
+		width: 220px;
+		height: 300px;
+		}
 	}
 	
 

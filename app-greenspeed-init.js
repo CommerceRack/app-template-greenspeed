@@ -134,7 +134,10 @@ myApp.u.appInitComplete = function(P)	{
 
 	dump(" -> HEY! just a head's up, the default pageTransition was just overwritten from app-greenspeed-init.js");
 	myApp.ext.quickstart.pageTransition = function($o,$n,infoObj){
-		var $hotw = $('#hotwButton').show();
+		//showing the before before anything shows up in the dropdown when it is clicked is not user friendly.
+		if(myApp.ext.quickstart.vars.hotw.length > 1)	{
+			$('#hotwButton').show();
+			}
 		function transitionThePage()	{
 //if $o doesn't exist, the animation doesn't run and the new element doesn't show up, so that needs to be accounted for.
 //$o MAY be a jquery instance but have no length, so check both.
@@ -143,7 +146,7 @@ myApp.u.appInitComplete = function(P)	{
 				dump(" -> offsetleft: " + $('#mainContentArea').width());
 				$o.animate({'height':20,'width':20,'overflow':'hidden','left':$('#mainContentArea').width(),'top':-30},function(){
 					$('#mainContentArea').height('');
-					$o.hide().removeAttr('style');
+					$o.removeAttr('style').hide();
 					$n.css({'position':'relative','z-index':10}); //
 					});
 				}
@@ -156,6 +159,7 @@ myApp.u.appInitComplete = function(P)	{
 
 		$o.css({'position':'relative','z-index':'10'}); //make sure the old page is 'above' the new.
 //$n isn't populated yet, most likely. So instead of animating it, just show it. Then animate the old layer above it.
+		if($n instanceof jQuery && $o instanceof jQuery && ($n.attr('id') == $o.attr('id')))	{} //old and new match. do nothing.
 		if($n instanceof jQuery)	{
 			$n.addClass('pageTemplateBG').css({position:'absolute','z-index':9,'left':0,'top':0,'right':0}).show();
 			}
