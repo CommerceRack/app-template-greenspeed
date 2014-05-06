@@ -66,7 +66,7 @@ var myApp = {};
 $(document).ready(function(){
 
 	window.myApp = new initApp({
-		"release":"201403.0501a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201403.0506a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
@@ -109,7 +109,7 @@ $(document).ready(function(){
 				</ul>
 				<div class='searchContainer'>
 				<form name='headerSearchFrm' id='mastHeadSearchFrm' action='#' class='productSearchForm' method="get" data-app-submit='quickstart|searchFormSubmit'>
-					<input type='search' name='KEYWORDS' placeholder='product search' class="productSearchKeyword handleDefault" id='mastHeadKeywordsInput' />
+					<input type='search' name='KEYWORDS' placeholder='search' class="productSearchKeyword handleDefault" id='mastHeadKeywordsInput' />
 					<button id='mastHeadSearchButton' title='Product Search'><span class='ui-icon ui-icon-search'></span></button>
 				</form>
 				</div>
@@ -806,22 +806,38 @@ if you change these, you should move them above this comment so that when you (o
 <!-- .textContentArea is used as a selector because IE8 doesn't play well  with tag type article as a selector -->
 
 <!--
-newsletterArticle is used for buyers who are not logged in or do not have an account.
-subscribeListsArticle is used for authenticated buyers
+newsletterArticle is intended for buyers who are not logged in or do not have an account.
 -->
 		<div id="newsletterArticle" class="displayNone textContentArea">
 			<h1>Subscribe to our Newsletter and Save!</h1>
-			<div data-tlc="bind $var '.'; transmogrify --dataset=$var --templateid='subscribeFormTemplate'; apply --append;"></div>
+			<form action="#" name="subscribeFrm" data-app-submit="quickstart|subscribeSubmit" class='alignedForm'>
+				<fieldset class="userInfo borderNone">
+					<label>
+					<input placeholder="email address" maxlength="50" size="30" required name="login" value="" type="email" data-tlc="bind $var '.customer.login'; if(is $var --notblank;) {{apply --select=$var;}};">
+					</label>
+				
+					<label>
+					<input placeholder="full name" maxlength="50" size="30" required name="fullname" value="" type="text" data-tlc="bind $var '.bill.fullname'; if(is $var --notblank;) {{apply --select=$var;}};">
+					</label>
+				</fieldset>
+				
+				<fieldset data-tlc="apply --empty; bind $var '.@lists'; controller#loop --templateid='subscriberListItemTemplate'; apply --append;" class="borderNone subscriberLists"></fieldset>
+			
+				<input class="applyButton" value="Subscribe" type="submit">
+			
+			</form>
 		</div>
-
+<!--
+subscribeListsArticle is used for authenticated buyers.
+-->
 		<div id="subscriberListsArticle" class="displayNone textContentArea">
 			<h1>Manage your Subscriptions</h1>
-<!-- save onchange -->
-<form action="#" name="subscribeFrm">
 
-<fieldset data-tlc="bind $var '.@lists'; store_crm#subscribecheckboxes  --legacy; apply --append;" class="borderNone subscriberLists"></fieldset>
-
-</form>
+			<form action="#" name="subscribeFrm" data-app-submit="store_crm|buyerUpdate" class='alignedForm' onSubmit="return false">
+				<!-- buyer is logged in. Don't need email/name inputs -->
+				<fieldset data-update-verb='tags' data-tlc="apply --empty; bind $tags '.%info.@tags'; bind $var '.@lists'; controller#loop --templateid='subscriberListItemTemplate'; apply --append;" class="borderNone subscriberLists"></fieldset>
+				<input class="applyButton" value="Subscribe" type="submit">
+			</form>
 
 		</div>
 
@@ -1476,7 +1492,7 @@ The 'data-action' attribute is used to assign an onclick.
 	</td>
 	<td>
 <form name='headerSearchFrm' action='#' class='productSearchForm marginLeft' method="get" data-app-submit='quickstart|searchFormSubmit'>
-	<input type='search' name='KEYWORDS' placeholder='product search' class="productSearchKeyword handleDefault" />
+	<input type='search' name='KEYWORDS' placeholder='search' class="productSearchKeyword handleDefault" />
 	<button>Search</button>
 </form>
 	</td>
