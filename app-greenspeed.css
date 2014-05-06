@@ -205,7 +205,7 @@ and offMenu is toggle off, hiding the change button.
 .hint	{font-weight:normal; font-size:.8em;}
 
 /* used in order history and faq (possibly other places) in a format similar to an accordian, but more than one panel can be open. */
-.appAccordianesque .ui-accordion-header {padding:.5em 2em;}
+.appAccordianesque .ui-accordion-header {padding:.5em}
 
 
 
@@ -437,8 +437,9 @@ HELP PAGES
 */
 
 
-/* FAQ /
-### TODO -> why is this commented out?
+/* FAQ */
+#faqContent .ui-accordion-header	{cursor:pointer; margin-top:.3em;} /* margin is on top so there's no separation between header and content once content is open */
+#faqContent .ui-accordion-content	{padding:.5em;}
 .faqQuestion:before, .faqAnswer:before	{font-size:1.4em; font-weight:bold; padding-right:10px; color:#CCCCCC; display:inline-block;}
 .faqQuestion:before	{content:"Q: ";}
 .faqAnswer:before	{content:"A: ";}
@@ -979,6 +980,7 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 		width: 220px;
 		height: 300px;
 		}
+	#hotwButton	{top:.1em; right:.1em; padding:.2em;}
 	}
 	
 

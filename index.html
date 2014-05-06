@@ -66,7 +66,7 @@ var myApp = {};
 $(document).ready(function(){
 
 	window.myApp = new initApp({
-		"release":"201403.0506a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201403.0506b",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
@@ -254,7 +254,7 @@ the homepageTemplate template is loaded into mainContentArea by default when the
 		</div>
 	</div>
 
-	<ul data-tlc="quickstart#searchbytag --tag='IS_BESTSELLER' --title='Best Sellers' --size='8' --templateid='productListTemplateResults';" class='clearfix responsiveProdlist'></ul>
+	<ul data-tlc="quickstart#searchbytag --tag='IS_BESTSELLER' --title='Best Sellers' --size='12' --templateid='productListTemplateResults';" class='clearfix responsiveProdlist'></ul>
 
 </div>
 
@@ -385,7 +385,7 @@ container ul should have lineItemProdlist class on it instead of productList
 				<div class="smallButtonList ui-widget ui-widget-header ui-corner-all alignCenter">
 
 <a data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';" class='applyButton' data-text='false' data-icon-primary='ui-icon-cart'>Add To Cart</a>
-<a href='#' data-app-click="quickstart|quickviewShow" class='applyButton' data-text='false' data-icon-primary='ui-icon-info'>Details</a>
+<a href='#' data-app-click="quickstart|quickviewShow" class='applyButton' data-text='false' data-icon-primary='ui-icon-info' data-loadstemplate='productTemplate'>Details</a>
 <a href='#' data-app-click="store_crm|productReviewShow" class='applyButton' data-text='false' data-icon-primary='ui-icon-star'>Write Review</a>
 <a href='#' data-app-click="store_crm|productBuyerListRemoveExec" class='applyButton' data-text='false' data-icon-primary='ui-icon-trash'>Remove From List</a>
 
