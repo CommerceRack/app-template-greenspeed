@@ -669,7 +669,6 @@ an existing user gets a list of previous addresses they've used and an option to
 					$("[data-app-role='addressExists']",$fieldset).hide();
 					$("[data-app-role='addressNew']",$fieldset).show();
 					$("[data-app-role='billToShipContainer']").hide(); //though locked below, we hide this to avoid confusion.
-
 					$("[name='want/bill_to_ship']",$fieldset).attr({'disabled':'disabled'}).removeAttr('checked'); //set val 
 					//name is provided by paypal and can't be changed.
 					$("[name='bill/firstname'], [name='bill/lastname']",$fieldset).attr('disabled','disabled');
@@ -1166,8 +1165,13 @@ _app.u.handleButtons($chkContainer); //will handle buttons outside any of the fi
 							
 								}
 							else	{
-								_app.u.dump("Not 1PC.");
-								_app.u.dump(" -> [data-app-role='paymentMessaging'],$checkout).length: "+("[data-app-role='paymentMessaging']",$checkout).length);
+//								_app.u.dump("Not 1PC.");
+//								_app.u.dump(" -> [data-app-role='paymentMessaging'],$checkout).length: "+("[data-app-role='paymentMessaging']",$checkout).length);
+								
+								//MUST destroy the cart. it has data-cartid set that would point to the wrong cart.
+								$('#modalCart').empty().remove(); 
+								$('#mainContentArea_cart').empty().remove();
+
 								//the code below is to disable any links in the payment messaging for apps. there may be some legacy links depending on the message.
 								$("[data-app-role='paymentMessaging'] a",$checkout).on('click',function(event){
 									event.preventDefault();

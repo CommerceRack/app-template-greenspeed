@@ -154,6 +154,7 @@ var tlc = function()	{
 		return r;
 		}
 
+//This is used for a '<template>' which is INSIDE of an element that is being translated.
 	this.handleTemplates = function($target)	{
 		$("template",$target).each(function(index){
 			//for a <template>, the content makes up the template itself. adding <template> back onto the DOM wouldn't accomplish much.
@@ -547,15 +548,15 @@ This one block should get called for both img and imageurl but obviously, imageu
 				if(Number(p1) === Number(p2)){ r = true;} break;
 			case "intne":
 				if(Number(p1) != Number(p2)){ r = true;} break;
+// for gt, gte, lt and lte, undefined == 0.
 			case "gt":
-				if(Number(p1) > Number(p2)){r = true;} break;
+				if(Number(p1 || 0) > Number(p2)){r = true;} break;
 			case "gte":
-				if(Number(p1) >= Number(p2)){r = true;} break;
+				if(Number(p1 || 0) >= Number(p2)){r = true;} break;
 			case "lt":
-				if(Number(p1) < Number(p2)){r = true;} break;
+				if(Number(p1 || 0) < Number(p2)){r = true;} break;
 			case "lte":
-				dump(" -> p1: "+p1); dump(" -> p2: "+p2);
-				if(Number(p1) <= Number(p2)){r = true;} dump(" -> LTE: "+r); break;
+				if(Number(p1 || 0) <= Number(p2)){r = true;} break;
 			case "true":
 				if(p1){r = true}; break;
 			case "false":
