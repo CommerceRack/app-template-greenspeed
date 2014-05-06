@@ -21,6 +21,14 @@ $("#productTemplate, #productTemplateQuickView").on('complete.dynimaging',functi
 		});
 	});
 
+//stops the video from playing when a user leaves the detail page (or quickview)
+$("#productTemplate, #productTemplateQuickView").on('depart.youtubeReset',function(state,$ele,infoObj){
+	var $iframe = $("[data-app-role='videoContainer']:first",$ele).find('iframe:first');
+	var video = $iframe.attr('src');
+	$iframe.attr('src',''); //this stops the video.
+	$iframe.attr('src',$iframe.src); //set the src so if the page is visited again, the video is present. 
+	});
+
 
 myApp.rq.push(['script',0,(document.location.protocol == 'file:') ? myApp.vars.testURL+'jsonapi/config.js' : myApp.vars.baseURL+'jsonapi/config.js',function(){
 //in some cases, such as the zoovy UI, zglobals may not be defined. If that's the case, certain vars, such as jqurl, must be passed in via P in initialize:
