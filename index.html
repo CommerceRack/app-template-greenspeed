@@ -815,11 +815,11 @@ newsletterArticle is intended for buyers who are not logged in or do not have an
 					<label>
 					<input placeholder="email address" maxlength="50" size="30" required name="login" value="" type="email" data-tlc="bind $var '.customer.login'; if(is $var --notblank;) {{apply --select=$var;}};">
 					</label>
-				
+<!--				
 					<label>
 					<input placeholder="full name" maxlength="50" size="30" required name="fullname" value="" type="text" data-tlc="bind $var '.bill.fullname'; if(is $var --notblank;) {{apply --select=$var;}};">
 					</label>
-				</fieldset>
+-->				</fieldset>
 				
 				<fieldset data-tlc="apply --empty; bind $var '.@lists'; controller#loop --templateid='subscriberListItemTemplate'; apply --append;" class="borderNone subscriberLists"></fieldset>
 			
