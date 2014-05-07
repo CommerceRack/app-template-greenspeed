@@ -2938,7 +2938,7 @@ return $r;
 				infoObj = infoObj || {};
 				if($ele instanceof jQuery && infoObj.state)	{
 					dump(" -> being handleTemplateEvents for "+infoObj.state);
-					if($.inArray(infoObj.state,['init','complete','depart']) >= 0)	{
+					if($.inArray(infoObj.state,['init','begin','complete','depart']) >= 0)	{
 						if($ele.attr('data-app-'+infoObj.state))	{
 							//the following code is also in _app.u.addEventDelegation(). It was copied (tsk, tsk. i know) because at the time, DE was in a plugin.
 							// ### FUTURE -> since delegated events are back in the controller, see about getting these code bases unified.
