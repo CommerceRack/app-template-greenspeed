@@ -1,4 +1,2 @@
-[
 { "type":"legend","content":"Account Creation Form" },
 { "ignore":0,"required":1,"id":"email","type":"text","label":"Email","customer":"INFO.EMAIL" }
-]
