@@ -1136,7 +1136,6 @@ the ui also helps the buyer show the merchant what they're looking at and, optio
 					if($inputs.length)	{
 						$inputs.each(function(){
 							var obj = _app.ext.store_product.u.buildCartItemAppendObj($(this).closest('form'));
-
 							if(obj)	{
 								_app.ext.cco.calls.cartItemAppend.init(obj,{});
 								}

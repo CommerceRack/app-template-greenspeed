@@ -66,11 +66,11 @@ var myApp = {};
 $(document).ready(function(){
 
 	window.myApp = new initApp({
-		"release":"201403.0506b",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201403.0507a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
-		"testURL":"http://www.sporks.zoovy.com/", //used ONLY if protocol is file: (for testing)
+		"testURL":"http://app.sporks.zoovy.com/", //used ONLY if protocol is file: (for testing)
 		"addjQueryPointer" : true,
 		"initComplete" : function(t){
 			myApp.u.loadScript('app-greenspeed-init.js',function(){
@@ -1046,13 +1046,13 @@ Cart template
 		</div>
 		<div class="ui-state-default cartButtons stdPadding clearfix">
 			<!-- spans are set around the buttons so each element has one consitent tag type around it -->
-			<span class="continueShoppingSpan thisButton"><button class="applyButton continueShoppingButton" data-app-click="quickstart|dialogClose">Continue Shopping</button></span>
+			<span class="continueShoppingSpan thisButton"><button class="applyButton continueShoppingButton" data-app-click="quickstart|dialogCloseExec">Continue Shopping</button></span>
 	
-			<span id="inStoreCheckoutButton" class='thisButton' title="proceed to secure checkout">
+			<span id="inStoreCheckoutButton" class='thisButton' title="proceed to secure checkout" data-tlc="bind $count '.sum.items_count'; if(is $count --lt='1';) {{apply --hide;}};">
 				<a class="applyButton ui-state-highlight checkoutButton" href='#!checkout'>Store Checkout</a>
 			</span>
 	
-			<span data-tlc="bind $var '.cart.cartid'; cco#paypalecbutton  --legacy;" id="paypalecbutton" class="thisButton"></span>
+			<span data-tlc="bind $count '.sum.items_count'; if(is $count --lt='1';) {{apply --hide;}}; bind $var '.cart.cartid'; cco#paypalecbutton  --legacy;" id="paypalecbutton" class="thisButton"></span>
 	
 		</div>
 
