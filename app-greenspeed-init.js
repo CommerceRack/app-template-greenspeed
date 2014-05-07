@@ -10,6 +10,14 @@ $("#categoryTemplate").on('complete.infinitescroll',function(state,$ele,infoObj)
 	$(window).off('scroll.infiniteScroll'); 
 	});
 
+$("#categoryTemplate").on('init.test',function(state,$ele,infoObj){
+	dump(" ------> WOOOOOT! - init");
+	});
+
+$("#cartTemplate").on('complete.test',function(state,$ele,infoObj){
+	dump(" ------> WOOOOOT! - complete");
+	});
+
 
 $("#productTemplate, #productTemplateQuickView").on('complete.dynimaging',function(state,$ele,infoObj){
 	handleSrcSetUpdate($ele);

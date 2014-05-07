@@ -171,10 +171,12 @@ document.write = function(v){
 				var cartID = false;
 //				_app.u.dump("BEGIN quickstart.callbacks.addCart2CM.onSuccess");
 				if(_rtag.datapointer == 'appCartExists' && _app.data[_rtag.datapointer].exists)	{
-					_app.u.dump(" -> existing cart is valid. add to cart manager"); 
+//					_app.u.dump(" -> existing cart is valid. add to cart manager"); 
+//					dump(" -> _rtag:"); dump(_rtag);
+					cartID = _rtag.cartid;
+					_app.model.addCart2Session(cartID);
+//					dump(" -> cart id is valid. added the cart to the session is "+_app.model.addCart2Session(cartID)); //this function updates _app.vars.carts
 					if($('#cartMessenger').length)	{
-						cartID = _rtag.cartid;
-						_app.model.addCart2Session(cartID); //this function updates _app.vars.carts
 						_app.ext.cart_message.u.initCartMessenger(cartID,$('#cartMessenger')); //starts the cart message polling
 						$('#cartMessenger').tlc({'verb':'translate','dataset':_app.data['cartDetail|'+cartID]}).attr('data-cartid',cartID);
 						$("textarea[name='message']",'#cartmessenger').on('keypress',function(event){
@@ -1944,7 +1946,7 @@ effects the display of the nav buttons only. should be run just after the handle
 // ** 201403 -> appNav is now toggled on/off as well, using a class, so that in a responsive design, appnav height can be easily adjusted w/out impact when it's hidden.
 */
 			handleAppNavDisplay : function(infoObj)	{
-				dump("BEGIN quickstart.u.handleNavButtonsForDetailPage");
+//				dump("BEGIN quickstart.u.handleNavButtonsForDetailPage");
 //				dump(" -> history of the world: "); dump(_app.ext.quickstart.vars.hotw[1]);
 
 				var r = false, //what is returned. true if buttons are visible. false if not.
@@ -2047,9 +2049,6 @@ effects the display of the nav buttons only. should be run just after the handle
 					infoObj.parentID = parentID;
 					
 					var $product = $(_app.u.jqSelector('#',parentID));
-					
-					_app.renderFunctions.handleTemplateEvents($product,infoObj);
-	
 //no need to render template again.
 					if(!$product.length){
 //						dump(" -> product is NOT on the DOM yet. Add it.");
@@ -2058,6 +2057,7 @@ effects the display of the nav buttons only. should be run just after the handle
 						$product = $tmp.children();
 						$product.attr('id',infoObj.parentID).data('pid',pid);
 						$product.addClass('displayNone').appendTo($('#mainContentArea')); //hidden by default for page transitions
+						_app.renderFunctions.handleTemplateEvents($product,infoObj); //init event triggered.
 						_app.u.handleCommonPlugins($product);
 						var nd = 0; //Number of Dispatches.
 
@@ -2076,11 +2076,12 @@ effects the display of the nav buttons only. should be run just after the handle
 						_app.model.dispatchThis();
 						}
 					else	{
+						_app.renderFunctions.handleTemplateEvents($product,infoObj); //init
 						dump(" -> product is already on the DOM. bring it into focus");
 						infoObj.datapointer = 'appProductGet|'+infoObj.pid; //here so datapoitner is available in renderFunctions.
 //typically, the onComplete get handled as part of the request callback, but the template has already been rendered so the callback won't get executed.
 						infoObj.state = 'complete'; //needed for handleTemplateEvents.
-						_app.renderFunctions.handleTemplateEvents($product,infoObj);
+						_app.renderFunctions.handleTemplateEvents($product,infoObj); //complete
 						}
 
 
