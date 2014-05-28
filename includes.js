@@ -49,7 +49,7 @@ if (!Array.prototype.map) {
       //   This step can be combined with c
       // c. If kPresent is true, then
       if (k in O) {
-
+		try	{
         // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
         kValue = O[Pk];
 
@@ -66,6 +66,10 @@ if (!Array.prototype.map) {
 
         // For best browser support, use the following:
         A[Pk] = mappedValue;
+		}
+		catch(e)	{
+			throw new TypeError(e);
+			}
       }
       // d. Increase k by 1.
       k++;
