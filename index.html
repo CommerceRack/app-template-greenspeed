@@ -66,7 +66,7 @@ var myApp = {};
 $(document).ready(function(){
 
 	window.myApp = new initApp({
-		"release":"201403.0507b",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201404.0526a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
@@ -342,7 +342,7 @@ remember to NOT put the button inside the 'onclick' container or two events will
 
 		<h5 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h5>
 		<span data-tlc="bind $var '.reviews.average'; if(is $var --notblank) {{format --prepend='review_'; apply --add --class=$var; }};" class="reviewSprite"></span>
-		<h6 data-tlc="bind $var '.%attribs.zoovy:base_price'; if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: '; apply --add --class='price'; apply --append;}};"></h6>
+		<h6 data-tlc="bind $var '.%attribs.zoovy:base_price'; if (is $var --notblank;) {{format --currency='USD'; apply --add --class='price'; apply --append;}};"></h6>
 		</a>
 	</div>
 
@@ -363,7 +363,7 @@ container ul should have lineItemProdlist class on it instead of productList
 		
 		<div class='marginBottom'>
 			<h5 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h5>
-			<h6 data-tlc="bind $var '.%attribs.zoovy:base_price';  if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: ';  apply --append;}};"></h6>
+			<h6 data-tlc="bind $var '.%attribs.zoovy:base_price';  if (is $var --notblank;) {{format --currency='USD'; apply --append;}};"></h6>
 			<span data-tlc="bind $var '.reviews.average'; if(is $var --notblank) {{format --prepend='review_'; apply --add --class=$var; }};" class="reviewSprite"></span>
 		</div>
 	
@@ -396,7 +396,7 @@ container ul should have lineItemProdlist class on it instead of productList
 
 		<h5 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h5>
 
-		<h6 data-tlc="bind $var '.%attribs.zoovy:base_price';  if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: ';  apply --append;}};"></h6>
+		<h6 data-tlc="bind $var '.%attribs.zoovy:base_price';  if (is $var --notblank;) {{format --currency='USD'; apply --append;}};"></h6>
 
 
 	</div>
@@ -424,7 +424,7 @@ remember to NOT put the button inside the 'onclick' container or two events will
 
 		<h5 data-tlc="bind $var '.prod_name'; if (is $var --notblank;) {{apply --append;}};" class="hideInMinimalMode"></h5>
 
-		<h6 data-tlc="bind $var '.base_price';  if (is $var --notblank;) {{format --currency='USD'; format --prepend='Our Price: ';  apply --append;}};" class="hideInMinimalMode"></h6>
+		<h6 data-tlc="bind $var '.base_price';  if (is $var --notblank;) {{math --div='100'; format --currency='USD'; apply --append;}};" class="hideInMinimalMode"></h6>
 	
 	<a class="hideInMinimalMode pointer moreDetails" data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';">more details</a>
 </li>
@@ -1213,8 +1213,6 @@ used for store_crm.js
 
 <label><span class="prompt">Subject</span><input maxlength="60" name="SUBJECT" type="text" class='alignInput'></label>
 
-<label><span class="prompt">Review</span><textarea required name="MESSAGE" class='alignInput'></textarea></label>
-
 <label>
 	<span class="prompt">Score</span>
 	<select name="RATING" id="reviewsRating">
@@ -1230,6 +1228,9 @@ used for store_crm.js
 		<option value="1">.5</option>
 	</select>
 </label>
+
+<label><span class="prompt">Review</span><textarea required name="MESSAGE" class='alignInput' rows='6'></textarea></label>
+
 
 <button class="applyButton floatRight marginTop">Submit Review</button>
 
