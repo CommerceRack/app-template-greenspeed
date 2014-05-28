@@ -66,7 +66,7 @@ var myApp = {};
 $(document).ready(function(){
 
 	window.myApp = new initApp({
-		"release":"201404.0526b",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201404.0526c",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
@@ -107,10 +107,8 @@ $(document).ready(function(){
 		</div>
 		<div id='appPreViewProgressText'>0% Complete</div>
 	</div>
-	<div id="clickToLoad" class="displayNone pointer">
-		Click here to load your shopping experience!
-	</div>
 	<div class='appMessaging'></div>
+	<div class='appVersion'></div>
 	</td>
 </tr>
 </table>
