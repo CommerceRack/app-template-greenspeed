@@ -80,7 +80,7 @@ $(document).ready(function(){
 				});
 			}
 		});
-	$(document.body).append("version: "+myApp.vars.release);
+	$('.appVersion').append("v"+myApp.vars.release);
 	myApp.vars.initComplete();
 	myCreole = new Parse.Simple.Creole();
 	});
@@ -89,6 +89,35 @@ $(document).ready(function(){
 </head>
 
 <body>
+
+
+<div class="ui-widget-overlay ui-front" id='appPreViewBG'></div>
+<!-- what is displayed onLoad until the view is loaded -->
+<div id='appPreView'>
+<table>
+<tr>
+	<td><!-- put logo here. do NOT link it. --></td>
+	<td>
+
+	<div id="loader">
+		<h3>One moment please.</h3>
+
+		<div class='alignCenter'>
+		<progress id="appPreViewProgressBar" max="100" value="0"></progress><br>
+		</div>
+		<div id='appPreViewProgressText'>0% Complete</div>
+	</div>
+	<div id="clickToLoad" class="displayNone pointer">
+		Click here to load your shopping experience!
+	</div>
+	<div class='appMessaging'></div>
+	</td>
+</tr>
+</table>
+</div>
+
+
+
 
 <div class="container" id='appView'>
 	<section id='mastHead'>
@@ -151,7 +180,7 @@ $(document).ready(function(){
 
 <div class='container clearfix footer'>
 	<span class='floatLeft'>Copyright &copy; All Rights Reserved.</span>
-	<span class='floatRight'>eCommerce by <a href='http://www.anycommerce.com' target='_blank'>anyCommerce</a></span>
+	<span class='floatRight'>eCommerce by <a href='http://www.anycommerce.com' target='_blank'>anyCommerce</a>.</span>
 </div>
 
 

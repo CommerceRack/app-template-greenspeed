@@ -596,6 +596,11 @@ greenspeed.css (contains a lot of the responsive code)
 
 
 #appView	{background-color: #FFF;}
+#appPreView	{
+	position:absolute; top:100px; margin-left:25%; z-index:101; background:#ffffff; padding:2em;
+	-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
+	}
+#appVersion	{font-weight:normal;}
 
 
 .loadingBG	{background-image:url(loading.gif) !important; background-repeat: no-repeat !important; background-position: center center; min-height:100px !important; min-width:100px;}
