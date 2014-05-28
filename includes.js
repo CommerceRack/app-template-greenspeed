@@ -6,7 +6,8 @@
 if (!Array.prototype.map) {
 
   Array.prototype.map = function (callback, thisArg) {
-
+	  //encapsulated in a try because otherwise the throw will cause an error in IE8.
+	try	{
     var T, A, k;
 
     if (this == null) {
@@ -49,7 +50,7 @@ if (!Array.prototype.map) {
       //   This step can be combined with c
       // c. If kPresent is true, then
       if (k in O) {
-		try	{
+
         // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
         kValue = O[Pk];
 
@@ -66,10 +67,6 @@ if (!Array.prototype.map) {
 
         // For best browser support, use the following:
         A[Pk] = mappedValue;
-		}
-		catch(e)	{
-			throw new TypeError(e);
-			}
       }
       // d. Increase k by 1.
       k++;
@@ -77,6 +74,10 @@ if (!Array.prototype.map) {
 
     // 9. return A
     return A;
+	}
+	catch(e)	{
+		
+		}
   };
 }
 
