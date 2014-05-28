@@ -170,11 +170,6 @@ myApp.u.appInitComplete = function(P)	{
 			}
 		}]);
 	
-	//the default behavior for an itemAppend is to show the chat portion of the dialog. that's an undesired behavior from the buyer perspective (chat only works if admin is actively listening).
-	myApp.cmr.push(['cart.itemAppend',function(message,$context)	{
-		$("[data-app-role='messageHistory']",$context).append("<p class='cart_item_append'>"+message.FROM+" has added item "+message.sku+" to the cart.<\/p>");
-		}]);
-	
 	myApp.cmr.push(['goto',function(message,$context){
 		var $history = $("[data-app-role='messageHistory']",$context);
 		$P = $("<P>")
