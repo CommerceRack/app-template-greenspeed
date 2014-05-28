@@ -118,7 +118,8 @@ myApp.u.appInitComplete = function(P)	{
 	dump(" -> HEY! just a head's up, the default pageTransition was just overwritten from app-greenspeed-init.js");
 	myApp.ext.quickstart.pageTransition = function($o,$n,infoObj){
 		//showing the before before anything shows up in the dropdown when it is clicked is not user friendly.
-		if(myApp.ext.quickstart.vars.hotw.length > 1)	{
+		//the array has a fixed number of positions, so length would return a false positive.
+		if(!$.isEmptyObject(myApp.ext.quickstart.vars.hotw[1]))	{
 			$('#hotwButton').show();
 			}
 		function transitionThePage()	{
