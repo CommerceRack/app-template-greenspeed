@@ -1,5 +1,4 @@
 $("#homepageTemplate").on('complete.cycle',function(state,$ele,infoObj){
-	dump(" -> executed homepage.complete");
 	$('.productSlideshow',$ele).cycle();
 	});
 
@@ -8,13 +7,6 @@ $("#homepageTemplate").on('complete.cycle',function(state,$ele,infoObj){
 //NOTE! if infinite prodlist is used on other pages, remove run this on that template as well.
 $("#categoryTemplate").on('complete.infinitescroll',function(state,$ele,infoObj){
 	$(window).off('scroll.infiniteScroll'); 
-	});
-
-$("#customerTemplate").on('init.test',function(state,$ele,infoObj){
-	dump(" ------> WOOOOOT! - init");
-	});
-$("#customerTemplate").on('complete.test',function(state,$ele,infoObj){
-	dump(" ------> WOOOOOT! - complete");
 	});
 
 
@@ -84,31 +76,6 @@ myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/jquery.image-gallery.jt.
 
 
 
-
-//Cart Messaging Responses.
-
-myApp.cmr.push(['chat.join',function(message){
-	var $ui = myApp.ext.quickstart.a.showBuyerCMUI();
-	$("[data-app-role='messageInput']",$ui).show();
-	$("[data-app-role='messageHistory']",$ui).append("<p class='chat_join'>"+message.FROM+" has joined the chat.<\/p>");
-	$('.show4ActiveChat',$ui).show();
-	$('.hide4ActiveChat',$ui).hide();
-	}]);
-
-myApp.cmr.push(['goto',function(message,$context){
-	var $history = $("[data-app-role='messageHistory']",$context);
-	$P = $("<P>")
-		.addClass('chat_post')
-		.append("<span class='from'>"+message.FROM+"<\/span> has sent over a "+(message.vars.pageType || "")+" link for you within this store. <span class='lookLikeLink'>Click here<\/span> to view.")
-		.on('click',function(){
-			showContent(myApp.ext.quickstart.u.whatAmIFor(message.vars),message.vars);
-			});
-	$history.append($P);
-	$history.parent().scrollTop($history.height());
-	}]);
-
-
-
 //gets executed from app-admin.html as part of controller init process.
 //progress is an object that will get updated as the resources load.
 /*
@@ -127,6 +94,7 @@ myApp.u.showProgress = function(progress)	{
 		else if(attempt > 150)	{
 			//hhhhmmm.... something must have gone wrong.
 			clearTimeout(progress.passZeroTimeout); //end the resource loading timeout.
+			$('.appMessaging','#appPreView').anymessage({'message':'Init failed to load all the resources within a reasonable number of attempts.','gMessage':true,'persistent':true});
 			}
 		else	{
 			var percentPerInclude = (100 / progress.passZeroResourcesLength);
@@ -189,8 +157,34 @@ myApp.u.appInitComplete = function(P)	{
 			}
 
 		}
-
-
+	
+	//Cart Messaging Responses.
+	myApp.cmr.push(['chat.join',function(message){
+		if(message.FROM == 'ADMIN')	{
+			var $ui = myApp.ext.quickstart.a.showBuyerCMUI();
+			$("[data-app-role='messageInput']",$ui).show();
+			$("[data-app-role='messageHistory']",$ui).append("<p class='chat_join'>"+message.FROM+" has joined the chat.<\/p>");
+			$('.show4ActiveChat',$ui).show();
+			$('.hide4ActiveChat',$ui).hide();
+			}
+		}]);
+	
+	//the default behavior for an itemAppend is to show the chat portion of the dialog. that's an undesired behavior from the buyer perspective (chat only works if admin is actively listening).
+	myApp.cmr.push(['cart.itemAppend',function(message,$context)	{
+		$("[data-app-role='messageHistory']",$context).append("<p class='cart_item_append'>"+message.FROM+" has added item "+message.sku+" to the cart.<\/p>");
+		}]);
+	
+	myApp.cmr.push(['goto',function(message,$context){
+		var $history = $("[data-app-role='messageHistory']",$context);
+		$P = $("<P>")
+			.addClass('chat_post')
+			.append("<span class='from'>"+message.FROM+"<\/span> has sent over a "+(message.vars.pageType || "")+" link for you within this store. <span class='lookLikeLink'>Click here<\/span> to view.")
+			.on('click',function(){
+				showContent(myApp.ext.quickstart.u.whatAmIFor(message.vars),message.vars);
+				});
+		$history.append($P);
+		$history.parent().scrollTop($history.height());
+		}]);
 
 	myApp.ext.order_create.checkoutCompletes.push(function(vars,$checkout){
 //append this to 
@@ -214,6 +208,8 @@ myApp.u.appInitComplete = function(P)	{
 
 //this will trigger the content to load on app init. so if you push refresh, you don't get a blank page.
 //it'll also handle the old 'meta' uri params.
+//this will trigger the content to load on app init. so if you push refresh, you don't get a blank page.
+//it'll also handle the old 'meta' uri params.
 myApp.router.appendInit({
 	'type':'function',
 	'route': function(v){
@@ -222,7 +218,11 @@ myApp.router.appendInit({
 	'callback':function(f,g){
 		dump(" -> triggered callback for appendInit");
 		g = g || {};
-		if(document.location.hash)	{
+		if(g.uriParams.seoRequest){
+			showContent(g.uriParams.pageType, g.uriParams);
+			}
+		else if(document.location.hash)	{	
+			myApp.u.dump('triggering handleHash');
 			myApp.router.handleHashChange();
 			}
 		else	{
@@ -237,21 +237,3 @@ myApp.router.appendInit({
 			}
 		}
 	});
-
-/*
-myApp.ext.myRIA.pageTransition = function($o,$n){
-	$('#hotwButton').show();
-	if($o.length){
-		var $newO=$o.clone().width($o.width()).css($o.offset()).css('position','absolute');
-		$newO.appendTo(document.body);
-		$o.hide();
-		$newO.animate({'height':20,'width':20,'overflow':'hidden','left':$('#hotwButton').offset().left,'top':$('#hotwButton').offset().top},'slow',function(){
-			$(this).hide().empty().remove();
-			});
-		$n.fadeIn(1000);
-		}
-	else{
-		$n.fadeIn(1000);
-		}
-	});
-*/
