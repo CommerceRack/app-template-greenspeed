@@ -54,11 +54,11 @@ document.getElementsByTagName('base')[0].href = baseURL;
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-<script src="controller.js"></script>
-<script src="model.js"></script>
+<script data-apptimize="embed" src="controller.js"></script>
+<script data-apptimize="embed" src="model.js"></script>
 
-<script src="srcset-polyfill-1.1.1-jt.js"></script>
-<script type="text/javascript" src="includes.js"></script>
+<script data-apptimize="embed" src="srcset-polyfill-1.1.1-jt.js"></script>
+<script data-apptimize="embed" type="text/javascript" src="includes.js"></script>
 
 
 <script type="text/javascript">
@@ -66,7 +66,7 @@ var myApp = {};
 $(document).ready(function(){
 
 	window.myApp = new initApp({
-		"release":"201404.0526e",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201404.0526f",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
@@ -1497,7 +1497,15 @@ The 'data-action' attribute is used to assign an onclick.
 
 
 
-
+<script data-apptimize="embed" src="extensions/cart_checkout_order.js"></script>
+<script data-apptimize="embed" src="extensions/prodlist_infinite.js"></script>
+<script data-apptimize="embed" src="extensions/store_crm.js"></script>
+<script data-apptimize="embed" src="extensions/store_navcats.js"></script>
+<script data-apptimize="embed" src="extensions/store_prodlist.js"></script>
+<script data-apptimize="embed" src="extensions/store_product.js"></script>
+<script data-apptimize="embed" src="extensions/store_routing.js"></script>
+<script data-apptimize="embed" src="extensions/store_search.js"></script>
+<script data-apptimize="embed" src="extensions/app-greenspeed.js"></script>
 
 
 
