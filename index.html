@@ -667,12 +667,20 @@ if you change these, you should move them above this comment so that when you (o
 
 <div id="companyTemplate" class="clearfix">
 
+	<div class="sideline">
+<nav id="companyNav">
+<ul class="listStyleNone noPadOrMargin">
+<!-- these are generated via javascript, based on the quickstart.pages object. -->
+</ul>
+</nav>
+	</div>
+
 	<div class="mainColumn">
 <!-- .textContentArea is used as a selector in quickstart.js because article tag type isn't ie8 friendly -->
 		<div id="aboutArticle" class="textContentArea article">
 			<h1>About Us</h1>
 			<div>
-			<!-- put your about us content here -->
+			<!-- ::: add your about us information here -->
 			</div>
 		</div>
 
@@ -691,27 +699,26 @@ if you change these, you should move them above this comment so that when you (o
 				<label><span class="prompt">Email Address</span><input name="sender" required type="email" class='alignInput'></label>
 				<label><span class="prompt">Subject</span><input name="subject" required type="text" class='alignInput'></label>
 				<label><span class="prompt">Order ID</span><input name="OID" type="text" class='alignInput'></label>
-				<label><span class="prompt">Message</span><textarea name="body" required class='alignInput'></textarea></label>
+				<label><span class="prompt">Message</span><textarea name="body" required rows='6' class='alignInput'></textarea></label>
 				<div class="alignRight"><input class="applyButton" value="Send Message" type="submit"></div>
 			</fieldset>
 			</form>
-			<div>
-			<!-- add any additional contact information here -->
-			</div>
 		</div>
 
 
-
+		<!-- faq are generated through the faq manager in the admin UI. do not add content in the faqContent area -->
 		<div id="faqArticle" class="displayNone textContentArea">
 			<h1>Frequently Asked Questions</h1>
-			<div id="faqContent" class='appAccordianesque' data-tlc="bind $var '.@topics'; controller#loop --templateid='faqTopicTemplate'; if (is $var --notblank;) {{apply --append;}};" ></div>
+			<div id="faqContent" class=" ui-accordion ui-widget ui-helper-reset ui-accordion-icons appAccordianesque"></div>
 		</div>
 
 
 
 		<div class="displayNone textContentArea" id="paymentArticle">
 			<h1>Payment Policy</h1>
-			<div data-tlc="bind $var '.zoovy:payment_policy'; render --wiki='quickstart'; if (is $var --notblank;) {{apply --append;}};" id="paymentContent"></div>
+			<div>
+			<!-- ::: add your payment policy here ::: -->
+			</div>
 		</div>
 
 
@@ -761,38 +768,32 @@ if you change these, you should move them above this comment so that when you (o
 
 		<div class="displayNone textContentArea" id="returnArticle">
 			<h1>Return Policy</h1>
-			<div data-tlc="bind $var '.zoovy:return_policy'; render --wiki='quickstart'; if (is $var --notblank;) {{apply --append;}};" id="returnContent"></div>
+			<div>
+			<!-- ::: add your return policy here ::: -->
+			</div>
 		</div>
 
 
 
 		<div class="displayNone textContentArea" id="shippingArticle">
 			<h1>Shipping Information</h1>
-			<div data-tlc="bind $var '.zoovy:shipping_policy'; render --wiki='quickstart'; if (is $var --notblank;) {{apply --append;}};" id="shippingContent"></div>
+			<div>
+			<!-- ::: add your shipping information here ::: -->
+			</div>
 		</div>
 
-	</div>
-
-
-	<div class="sideline">
-		<nav id="companyNav">
-		<ul class="listStyleNone noPadOrMargin">
-		<!-- these are generated via javascript, based on the quickstart.pages object. -->
-		</ul>
-		</nav>
 	</div>
 
 </div><!-- /companyTemplate -->
 
 
 
-<div id="customerTemplate" class="clearfix">
+<div id="customerTemplate" class="clearfix smallButton">
 
 	<div class="sideline">
 	<nav id="customerNav">
 	<ul class="listStyleNone noPadOrMargin">
-<!-- before restoring this, test cuz news form on left was causing some conflicts
-		<li><a href='#customer?show=subscriberLists'>Newsletter Subscription</a></li> -->
+		<li><a href='#!customer/subscriberLists'>Newsletter Subscription</a></li>
 		<li><a href="#!customer/myaccount">My Account</a></li>
 		<li><a href="#!customer/changepassword">Change Password</a></li>
 		<li><a href="#!customer/orders">Order History</a></li>
@@ -815,11 +816,7 @@ newsletterArticle is intended for buyers who are not logged in or do not have an
 					<label>
 					<input placeholder="email address" maxlength="50" size="30" required name="email" value="" type="email" data-tlc="bind $var '.customer.login'; if(is $var --notblank;) {{apply --select=$var;}};">
 					</label>
-<!--				
-					<label>
-					<input placeholder="full name" maxlength="50" size="30" required name="fullname" value="" type="text" data-tlc="bind $var '.bill.fullname'; if(is $var --notblank;) {{apply --select=$var;}};">
-					</label>
--->				</fieldset>
+				</fieldset>
 				
 				<fieldset data-tlc="apply --empty; bind $var '.@lists'; controller#loop --templateid='subscriberListItemTemplate'; apply --append;" class="borderNone subscriberLists"></fieldset>
 			
@@ -851,7 +848,7 @@ subscribeListsArticle is used for authenticated buyers.
 		<button class="floatRight applyButton" data-icon-primary="ui-icon-plus" data-app-click="quickstart|showBuyerAddressAdd">New Billing Address</button>
 		<h2>Billing Address(es)</h2>
 	</div>
-	<div data-tlc="bind $var '.@bill'; controller#loop --templateid='billAddressTemplate'; if (is $var --notblank;) {{apply --append;}};" class="billAddresses"></div>
+	<div data-tlc="bind $var '.@bill'; controller#loop --templateid='billAddressTemplate'; if (is $var --notblank;) {{apply --empty; apply --append;}};" class="billAddresses"></div>
 </div>
 
 <div class="shipAddressContainer" data-app-role="addressContainer" data-app-addresstype="ship">
@@ -859,7 +856,7 @@ subscribeListsArticle is used for authenticated buyers.
 		<button class="floatRight applyButton" data-icon-primary="ui-icon-plus" data-app-click="quickstart|showBuyerAddressAdd">New Shipping Address</button>
 		<h2>Shipping Address(es)</h2>
 	</div>
-	<div data-tlc="bind $var '.@ship'; controller#loop --templateid='shipAddressTemplate'; if (is $var --notblank;) {{apply --append;}};" class="shipAddresses"></div>
+	<div data-tlc="bind $var '.@ship'; controller#loop --templateid='shipAddressTemplate'; if (is $var --notblank;) {{apply --empty; apply --append;}};" class="billAddresses"></div>
 </div>
 
 
@@ -879,6 +876,8 @@ subscribeListsArticle is used for authenticated buyers.
 			<div data-tlc="bind $var '.'; transmogrify --dataset=$var --templateid='invoiceTemplate'; apply --append;" data-bind="format:loadsTemplate; loadsTemplate: invoiceTemplate; useParentData:true;"></div>
 		</div>
 
+
+
 		<div id="changepasswordArticle" class="displayNone textContentArea">
 			<h1>Change Password</h1>
 			<form action="#" name="changePasswordForm" data-app-submit="quickstart|passwordChangeSubmit" class='alignedForm'>
@@ -891,7 +890,6 @@ subscribeListsArticle is used for authenticated buyers.
 			</fieldset>
 			</form>
 		</div>
-
 
 		<div id="listsArticle" class="displayNone textContentArea">
 			<h1>List Manager</h1>
@@ -912,13 +910,25 @@ subscribeListsArticle is used for authenticated buyers.
 </div>
 
 
+<ul>
+
+<li id='subscriberListItemTemplate'>
+	<label data-tlc="bind $var '.EXEC_SUMMARY'; apply --attrib='title';" >
+	<input type='checkbox'  data-tlc="bind $id '.ID'; format --prepend='USER#SUB'; apply --attrib='name'; set $checked ''; store_crm#buyersubscribe --id=$id; if(is $checked --notblank;) {{ apply --attrib='checked';}};" />
+	<span data-tlc="bind $var '.NAME'; apply --append;"></span>
+</li>
+
+</ul>
 
 <h2 id='buyerListTemplate' data-tlc="bind $id '.id'; apply --append; bind $items '.items'; if (is $items --notblank;) {{format --prepend=' (' --append=')'; apply --append;}};"></h2>
 
 
 
-<div id='buyerListProdlistContainerTemplate' data-tlc="bind $id '.id'; apply --attrib='data-buyerlistid';">
-	<!-- the UL is generated automatically because the tlc bind is specific to the list id. trying to use tlc to generate tlc would probably get me committed -->
+<div id='buyerListProdlistContainerTemplate' class='buyerList' data-tlc="bind $id '.id'; apply --attrib='data-buyerlistid';">
+	<!--
+	the UL is generated automatically because the tlc bind is specific to the list id. trying to use tlc to generate tlc would probably get me committed.
+	the div is NOT added dynamically so the accordion can be generated.
+	-->
 </div>
 
 
@@ -963,8 +973,9 @@ onclicks are recursive, so only add it to the parent element.
 	<li>
 
 	<a href="#" onclick="return false;">
-	<span data-tlc="bind $var '.page_in_focus'; format --prepend='page '; if (is $var --notblank;) {{apply --append;}};"></span>
-	<span data-tlc="bind $var '.total_page_count'; format --prepend='of '; if (is $var --notblank;) {{apply --append;}};"></span>	</a>
+		<span data-tlc="bind $var '.page_in_focus'; format --prepend='page '; if (is $var --notblank;) {{apply --append;}};"></span>
+		<span data-tlc="bind $var '.total_page_count'; format --prepend='of '; if (is $var --notblank;) {{apply --append;}};"></span>
+	</a>
 	<ul data-tlc="bind $var '.total_page_count'; store_prodlist#mppagesaslistitems  --legacy; apply --append;" class="ui-widget-content ui-corner-bottom"></ul>
 	</li>
 </ul>
@@ -988,8 +999,23 @@ onclicks are recursive, so only add it to the parent element.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--
 Cart template
+This is the template used both within a dialog and inline, unless implicitly overridden in showContent params.
 -->
 
 <div id="cartTemplate" class="clearfix"><!-- template role gets added by the myApp. don't add it yourself -->
@@ -1031,7 +1057,7 @@ Cart template
 
 	<div class="cartZipCodeContainer marginBottom">
 		<label>Zip/Postal Code:
-		<input data-tlc="bind $var '.ship.postal'; if(is $var --blank) {{bind $var '.bill.postal'; }}; apply --select=$var; " size="6" name="ship/postal" value="" maxlength="10" data-app-blur="cco|cartZipUpdateExec" type="text"></label>
+		<input data-tlc="bind $var '.ship.postal'; if(is $var --blank) {{bind $var '.bill.postal'; }}; apply --select=$var; " size="6" name="ship/postal" value="" maxlength="10" data-app-keypress="quickstart|triggerBlurOnEnter" data-app-blur="cco|cartZipUpdateExec" type="text"></label>
 	</div>
 
 	<ul data-tlc="order_create#shipmethodsasradiobuttons  --legacy;" class="noPadOrMargin listStyleNone" data-bind="useParentData:true; format:shipmethodsasradiobuttons; extension: order_create;" data-app-role="shipMethodsUL"></ul>
@@ -1046,13 +1072,13 @@ Cart template
 		</div>
 		<div class="ui-state-default cartButtons stdPadding clearfix">
 			<!-- spans are set around the buttons so each element has one consitent tag type around it -->
-			<span class="continueShoppingSpan thisButton"><button class="applyButton continueShoppingButton" data-app-click="quickstart|dialogCloseExec">Continue Shopping</button></span>
+			<span class="continueShoppingSpan thisButton"><button class="applyButton continueShoppingButton" data-app-click="myRIA|dialogCloseExec">Continue Shopping</button></span>
 	
-			<span id="inStoreCheckoutButton" class='thisButton' title="proceed to secure checkout" data-tlc="bind $count '.sum.items_count'; if(is $count --lt='1';) {{apply --hide;}};">
+			<span id="inStoreCheckoutButton" class='thisButton' title="proceed to secure checkout">
 				<a class="applyButton ui-state-highlight checkoutButton" href='#!checkout'>Store Checkout</a>
 			</span>
 	
-			<span data-tlc="bind $count '.sum.items_count'; if(is $count --lt='1';) {{apply --hide;}}; bind $var '.cart.cartid'; cco#paypalecbutton  --legacy;" id="paypalecbutton" class="thisButton"></span>
+			<span data-tlc="bind $var '.cart.cartid'; cco#paypalecbutton  --legacy;" id="paypalecbutton" class="thisButton"></span>
 	
 		</div>
 
@@ -1074,13 +1100,13 @@ Cart template
 
 <!-- cart line-item template -->
 <ul>
-	<li id="productListTemplateCart" class="padMargBorderBottom clearfix smallButtonList">
+	<li id="productListTemplateCart" class="padMargBorderBottom clearfix">
 
 		<button data-tlc="cco#cartitemremovebutton  --legacy;" class="floatRight removeButton" data-bind="format:cartitemremovebutton; extension:cco; useParentData:true;" data-app-click="cco|cartItemRemove">Remove Item From Cart</button>
-		<button data-tlc="quickstart#movetowishlistbutton  --legacy;" class="floatRight moveToWishlist" data-bind="format:moveToWishlistButton; extension:quickstart; useParentData:true;">Move to Wishlist</button>
+		<button data-tlc="quickstart#movetowishlistbutton  --legacy;" class="floatRight moveToWishlist marginRight" data-bind="format:moveToWishlistButton; extension:quickstart; useParentData:true;">Move to Wishlist</button>
 
 
-		<div class="floatLeft marginRight marginBottom"><img data-tlc="bind $var '.%attribs.zoovy:prod_thumb'; if(is $var --blank;){{bind $var '.%attribs.zoovy:prod_image1';}}; if(is $var --notblank;){{apply --img --media=$var --width=75 --height=75 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodThumb" alt="" height="75" width="75"></div>
+		<div class="floatLeft"><img data-tlc="bind $var '.%attribs.zoovy:prod_thumb'; if(is $var --blank;){{bind $var '.%attribs.zoovy:prod_image1';}}; if(is $var --notblank;){{apply --img --media=$var --width=75 --height=75 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodThumb" alt="" height="75" width="75"></div>
 
 		<h4 data-tlc="bind $var '.prod_name'; if (is $var --notblank;) {{apply --append;}};"></h4>
 
@@ -1089,8 +1115,8 @@ Cart template
 		<div>
 		qty: <input data-tlc="cco#cartitemqty  --legacy;" class="qtyInput numberInput" data-app-change="cco|cartItemUpdateExec" data-bind="format:cartItemQty;extension:cco;useParentData:true;" name="quantity" type="number">
 		<button class="displayNone">update</button><!-- here to stop 'enter' in input above from closing modal -->
-		<span data-tlc="bind $var '.price'; format --prepend='x '; format --currency='USD'; if (is $var --notblank;) {{apply --append;}};"></span>
-		<span data-tlc="bind $var '.extended'; format --prepend='= '; format --currency='USD'; if (is $var --notblank;) {{apply --append;}};"></span>
+		<span data-tlc="bind $var '.price'; if (is $var --notblank;) {{ format --currency='USD'; format --prepend=' x '; apply --append;}};"></span>
+		<span data-tlc="bind $var '.extended'; if (is $var --notblank;) {{format --currency='USD';  format --prepend='= '; apply --append;}};"></span>
 
 		</div>
 
@@ -1107,6 +1133,7 @@ used on a product layout. Some product have 'children' which may represent the s
 -->
 
 <table>
+
 <tbody><tr id="productListTemplateChildren">
 	<td><img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=45 --height=45 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="" height="45" width="45"></td>
 	<td data-tlc="bind $var '.%attribs.amz:grp_varvalue'; if(is $var --blank) {{bind $var 'product(zoovy:prod_name)';}}; if (is $var --notblank;) {{apply --append;}};"></td>
@@ -1129,12 +1156,13 @@ used on a product layout. Some product have 'children' which may represent the s
 <!-- individual review template -->
 <ul>
 	<li id="productReviewsTemplateDetail" class="reviewLineItem clearfix">
-	<div class="prodReviewInfo">
-		<span data-tlc="bind $var '.RATING'; if(is $var --notblank) {{format --prepend='review_'; apply --add --class=$var; }};" class="reviewSprite reviewDetailRating"></span>
-		<div class='reviewDetailCustomerName' data-tlc="bind $var '.CUSTOMER_NAME'; if (is $var --notblank;) {{apply --append;}};"></div>
-		<div class='reviewDetailCustomerLocation' data-tlc="bind $var '.LOCATION'; format --prepend='of '; if (is $var --notblank;) {{apply --append;}};"></div>
-		<div class='reviewDetailCreateDate' data-tlc="bind $var '.CREATED_GMT'; if (is $var --notblank;) {{datetime --out='mdy'; apply --append;}};"></div>
-	</div>
+	<ul class="prodReviewInfo">
+		<li data-tlc="bind $var '.RATING'; if(is $var --notblank) {{format --prepend='review_'; apply --add --class=$var; }};" class="reviewSprite"></li>
+		<li data-tlc="bind $var '.CUSTOMER_NAME'; if (is $var --notblank;) {{apply --append;}};"></li>
+		<li data-tlc="bind $var '.LOCATION'; format --prepend='of '; if (is $var --notblank;) {{apply --append;}};"></li>
+		<li data-tlc="bind $var '.CREATED_GMT'; if (is $var --notblank;) {{datetime --out='mdy'; format --prepend='on '; apply --append;}};"></li>
+
+	</ul>
 	<blockquote>
 		<h2 data-tlc="bind $var '.SUBJECT'; if (is $var --notblank;) {{apply --append;}};"></h2>
 		<p data-tlc="bind $var '.MESSAGE'; if (is $var --notblank;) {{apply --append;}};"></p>
@@ -1207,31 +1235,6 @@ used for store_crm.js
 
 </form>
 </div>
-
-
-
-
-
-<div id="subscribeFormTemplate">
-<form action="#" name="subscribeFrm" data-app-submit="quickstart|subscribeSubmit">
-
-<fieldset class="userInfo borderNone">
-<div>
-<input placeholder="email address" maxlength="50" size="30" required name="login" value="" type="email">
-</div>
-
-<div>
-<input placeholder="full name" maxlength="50" size="30" required name="fullname" value="" type="text">
-</div>
-</fieldset>
-
-<fieldset data-tlc="bind $var '.@lists'; store_crm#subscribecheckboxes  --legacy; apply --append;" class="borderNone subscriberLists"></fieldset>
-
-<input class="applyButton" value="Subscribe" type="submit">
-
-</form>
-</div>
-
 
 
 
@@ -1333,7 +1336,7 @@ The 'data-action' attribute is used to assign an onclick.
 		<button data-app-click="quickstart|execOrder2Cart" class="applyButton" data-text="false" data-icon-primary="ui-icon-arrowrefresh-1-w">Re-order</button>
 		<button data-app-click="order_create|execInvoicePrint" class="applyButton" data-text="false" data-icon-primary="ui-icon-print">Print Invoice</button>
 		</div>
-	
+		<h2 data-tlc="bind $var '.order.our.orderid'; if (is $var --notblank;) {{apply --append;}};"></h2>
 		<h3 data-tlc="bind $var '.order.flow.pool'; format --prepend='Order Status: '; if (is $var --notblank;) {{apply --append;}};"></h3>
 		<h5 data-tlc="bind $var '.order.sum.order_total'; format --prepend='Order Total: '; format --currency='USD'; if (is $var --notblank;) {{apply --append;}};" class="orderTotal"></h5>
 		<h5 data-tlc="bind $var '.order.sum.balance_due_total'; format --prepend='Balance Due: '; format --currency='USD'; if (is $var --notblank;) {{apply --append;}};" class="balanceDue"></h5>
@@ -1375,7 +1378,7 @@ The 'data-action' attribute is used to assign an onclick.
 	</section>
 
 	<section class="orderContentsProdlistContainer">
-	<ul data-tlc="bind $var '.order.tracking'; store_crm#ordertrackinglinks --legacy; apply --append;" class="displayNone noListStyle marginBottom"></ul>
+	<ul data-tlc="bind $var '.order.tracking'; store_crm#ordertrackinglinks  --legacy; apply --append;" class="displayNone noListStyle marginBottom"></ul>
 	<table class="listStyleNone lineItemProdlist">
 		<tbody data-tlc="bind $var '.order.@ITEMS'; controller#loop --templateid='chkoutInvoiceItemTemplate'; if (is $var --notblank;) {{apply --append;}};"></tbody>
 	</table>
@@ -1467,39 +1470,7 @@ The 'data-action' attribute is used to assign an onclick.
 
 
 
-<div class='debug displayNone seoStrip'>
-<table>
-<tr>
-	<td>
-<ul class='debugQuickLinks'>
-	<li>Store Links
-	<ul>
-		<li><a href='#!home'>Homepage</a></li>
-		<li><a href='#!customer/orders'>Orders</a></li>
-		<li><a href='#!cart' >Cart</a></li>
-		<li><a href='#!company'>Returns</a></li>
-		<li><a href='#!company/privacy'>Privacy</a></li>
-		<li><a href='#' onClick="return quickView('category',{'navcat':'.air_fresheners','templateID':'categoryTemplate'});">Cat in Modal</a></li>
-	</ul>
-	</li>
-	<li><a href='#' onClick="myApp.ext.quickstart.a.showBuyerCMUI();">Messaging UI</a>
-	<li>Some JS test links
-	<ul>
-		<li><a href='#' onClick="localStorage.clear();">Clear Local Storage</a></li>
-	</ul>
-	</li>
-</ul>
-	</td>
-	<td>
-<form name='headerSearchFrm' action='#' class='productSearchForm marginLeft' method="get" data-app-submit='quickstart|searchFormSubmit'>
-	<input type='search' name='KEYWORDS' placeholder='search' class="productSearchKeyword handleDefault" />
-	<button>Search</button>
-</form>
-	</td>
-</tr>
-</table>
 
-</div>
 
 
 
