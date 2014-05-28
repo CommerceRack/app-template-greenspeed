@@ -127,7 +127,7 @@ myApp.u.appInitComplete = function(P)	{
 //$o MAY be a jquery instance but have no length, so check both.
 			if($o instanceof jQuery && $o.length)	{
 				$('#mainContentArea').height($o.outerHeight()); //add a fixed height temporarily so that page doesn't 'collapse'
-				dump(" -> offsetleft: " + $('#mainContentArea').width());
+//				dump(" -> offsetleft: " + $('#mainContentArea').width());
 				$o.animate({'height':20,'width':20,'overflow':'hidden','left':$('#mainContentArea').width(),'top':-30},function(){
 					$('#mainContentArea').height('');
 					$o.removeAttr('style').hide();

@@ -602,7 +602,7 @@ It's done this way because ID's hard coded into template are bad mojo (templates
 
 	<div class="tabContent" data-anytab-content="prodVideo">
 		<div class='videoContainer'>
-			<div data-tlc="bind $var '.%attribs.youtube:videoid'; controller#youtubevideo --legacy; if (is $var --notblank;) {{apply --append;}};"></div>
+			<div data-tlc="bind $var '.%attribs.youtube:videoid'; controller#youtubevideo --legacy; if (is $var --notblank;) {{apply --append;}};" data-app-role='videoContainer'></div>
 		</div>
 	</div>
 
