@@ -144,10 +144,10 @@ var tlc = function()	{
 
 		var r; //what is returned. either a jquery instance of the template OR false (invalid template)
 		if(templateid && $._app.templates[templateid])	{
-			r = $._app.templates[templateid].clone(true);
+			r = $._app.templates[templateid].clone();
 			}
 		else if(this.createTemplate(templateid))	{ //createTemplate returns a boolean.
-			r = $._app.templates[templateid].clone(true);
+			r = $._app.templates[templateid].clone();
 			}
 		else	{r = false} //invalid template.
 		this.element = r; //create a global reference to the element that's being translated. allows bind ~tag to be scoped.
