@@ -410,7 +410,8 @@ This is used to get add an array of skus, most likely for a product list.
 									$form.anymessage({'message':rd});
 									}
 								else	{
-									$form.anymessage(_app.u.successMsgObject("Thank you, you are now subscribed."));
+//* 201404 -> to customize the 'success' message, add a hidden input w/ name of 'message' and set the value to what you want displayed.
+									$form.anymessage(_app.u.successMsgObject(sfo.message || "Thank you, you are now subscribed."));
 									}
 								}
 							};
@@ -520,7 +521,7 @@ This is used to get add an array of skus, most likely for a product list.
 // ** 201403 -> need to pass in a blank dataset so translation occurs. required for country dropdown.
 					$editor.tlc({'templateid':(vars.addressType == 'ship') ? 'chkoutAddressShipTemplate' : 'chkoutAddressBillTemplate','dataset':{}});
 //the address id should be at the bottom of the form, not the top. isn't that important or required.
-					$editor.append("<input type='text' maxlength='6' data-minlength='6' name='shortcut' placeholder='address id (6 characters)' \/>");
+					$editor.append("<input type='text' maxlength='6' data-minlength='6' name='shortcut' placeholder='address id (6 characters)' \/> <span class='hint'>A shortcut to identify this address (ex: office, myhome, etc)");
 					$editor.wrapInner('<form \/>'); //needs this for serializeJSON later.
 
 //if the placeholder attribute on an input is not supported (thx IE8), then add labels.
@@ -561,9 +562,9 @@ This is used to get add an array of skus, most likely for a product list.
 								
 								if(_app.u.validateForm($form))	{
 									$form.showLoading('Adding Address');
-									var serializedForm = $form.serializeJSON();
+									var sfo = $form.serializeJSON();
 //save and then refresh the page to show updated info.
-									_app.model.addDispatchToQ({
+									_app.model.addDispatchToQ($.extend({},sfo,{
 										'_cmd':'buyerAddressAddUpdate',
 										'_tag':	{
 											'callback':function(rd){
@@ -572,7 +573,7 @@ This is used to get add an array of skus, most likely for a product list.
 													$form.anymessage({'message':rd});
 													}
 												else if(typeof onSuccessCallback === 'function')	{
-													onSuccessCallback(rd,serializedForm);
+													onSuccessCallback(rd,sfo);
 													$editor.dialog('close');
 													}
 												else	{
@@ -581,7 +582,7 @@ This is used to get add an array of skus, most likely for a product list.
 													}
 												}
 											}
-										},'mutable');
+										}),'mutable');
 									_app.model.dispatchThis('mutable');
 //dump data in memory and local storage. get new copy up updated address list for display.
 									_app.model.destroy('buyerAddressList');

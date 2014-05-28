@@ -189,7 +189,7 @@ P.query = { 'and':{ 'filters':[ {'term':{'profile':'E31'}},{'term':{'tags':'IS_S
 
 //this gets run whether there are results or not. It is the events responsibility to make sure results were returned. 
 // That way, it can handle a no-results action.
-				$list.trigger('listcomplete');
+				$list.trigger('listcomplete',_rtag);
 				}
 			}
 		}, //callbacks
@@ -480,7 +480,7 @@ P.parentID - The parent ID is used as the pointer in the multipage controls obje
 				es.type = 'product';
 				es.mode = 'elastic-search';
 				es.size = 250;
-				es.sort = [{'prod_name.raw':'asc'}] //here for testing. prod_name is tokenized, so the .raw field must be used for sorting.
+//				es.sort = [{'prod_name.raw':'asc'}] //here for testing. prod_name is tokenized, so the .raw field must be used for sorting.
 				return es;
 				},
 			

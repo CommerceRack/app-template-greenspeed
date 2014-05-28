@@ -280,7 +280,7 @@ If the data is not there, or there's no data to be retrieved (a Set, for instanc
 						this.dispatch(obj,_tag,Q);
 						}
 //if the product record is in memory BUT the inventory is zero, go get updated record in case it's back in stock.
-					else if(_app.ext.store_product && (_app.ext.store_product.u.getProductInventory(obj.pid) === 0))	{
+					else if(_app.ext.store_product && (_app.ext.store_product.u.getProductInventory(_app.data[_tag.datapointer]) === 0))	{
 						r = 1;
 						this.dispatch(obj,_tag,Q);
 						}
@@ -932,7 +932,7 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 					}
 		//this would get added at end of INIT. that way, init can modify the hash as needed w/out impacting.
 				if (window.addEventListener) {
-					console.log(" -> addEventListener is supported and added for hash change.");
+					dump(" -> addEventListener is supported and added for hash change.");
 					window.addEventListener("hashchange", _app.router.handleHashChange, false);
 					$(document.body).data('isRouted',true);
 					}
@@ -1361,7 +1361,7 @@ will load everything in the RQ will a pass <= [pass]. so pass of 10 loads everyt
 //What was the plugin was split into two pieces, the app-event based delegation is here.  The form based is in anyForm
 			addEventDelegation : function($t,vars)	{
 				vars = vars || {};
-				var supportedEvents = new Array("click","change","focus","blur","submit","keyup");
+				var supportedEvents = new Array("click","change","focus","blur","submit","keyup","keypress");
 
 				function destroyEvents($ele)	{
 					for(var i = 0; i < supportedEvents.length; i += 1)	{
@@ -2937,8 +2937,7 @@ return $r;
 			handleTemplateEvents : function($ele,infoObj)	{
 				infoObj = infoObj || {};
 				if($ele instanceof jQuery && infoObj.state)	{
-					dump(" -> being handleTemplateEvents for "+infoObj.state);
-					if($.inArray(infoObj.state,['init','begin','complete','depart']) >= 0)	{
+					if($.inArray(infoObj.state,['init','complete','depart']) >= 0)	{
 						if($ele.attr('data-app-'+infoObj.state))	{
 							//the following code is also in _app.u.addEventDelegation(). It was copied (tsk, tsk. i know) because at the time, DE was in a plugin.
 							// ### FUTURE -> since delegated events are back in the controller, see about getting these code bases unified.
@@ -2957,7 +2956,6 @@ return $r;
 								}						
 
 							}
-						
 						$ele.trigger(infoObj.state,[$ele,infoObj]);
 						}
 					else	{
@@ -3119,10 +3117,10 @@ $tag.append($tmp.html());
 $tmp.empty().remove();
 			},
 		
-		truncText : function($tag,data){
+		trunctext : function($tag,data){
 			var o = _app.u.truncate(data.value,data.bindData.numCharacters);
 			$tag.text(o);
-			}, //truncText
+			}, //trunctext
 
 //used in a cart or invoice spec to display which options were selected for a stid.
 		selectedoptionsdisplay : function($tag,data)	{
