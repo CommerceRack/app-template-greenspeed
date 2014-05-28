@@ -67,7 +67,8 @@ var greenspeed = function(_app) {
 	//.menu adds some formatting for the HTOW dropdown.
 	$('#hotwMenu').menu().width('200').on('click','li',function(){
 		$('#hotwButton').addClass('ui-state-hover');
-		showContent('',$(this).data());
+		document.location.hash = _app.ext.quickstart.u.getHashFromPageInfo($(this).data());
+//		showContent('',$(this).data());
 		//do not return false here. if so, the 'one' click added to the body won't get triggered by clicking a sotw.
 		});
 
