@@ -28,7 +28,7 @@ var quickstart = function(_app) {
 //if this is a custom extension and you are loading system extensions (prodlist, etc), then load ALL templates you'll need here.
 		"templates" : [
 //the list of templates that are commonly edited (same order as they appear in appTemplates
-			'homepageTemplate',	'categoryTemplate',
+/*			'homepageTemplate',	'categoryTemplate',
 			'categoryListTemplate',
 			'categoryListTemplateRootCats',
 			'productListTemplate',
@@ -57,7 +57,7 @@ var quickstart = function(_app) {
 			'faqTopicTemplate',
 			'faqQnATemplate',
 			'billAddressTemplate',
-			'shipAddressTemplate'],
+			'shipAddressTemplate' */],
 		"sotw" : {}, //state of the world. set to most recent page info object.
 		"hotw" : new Array(15), //history of the world. contains 15 most recent sotw objects.
 		"session" : {

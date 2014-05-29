@@ -6506,7 +6506,6 @@ function fixDefaultChecked( elem ) {
 
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		
 		var destElements, node, clone, i, srcElements,
 			inPage = jQuery.contains( elem.ownerDocument, elem );
 
@@ -6550,9 +6549,7 @@ jQuery.extend({
 		}
 
 		// Preserve script evaluation history
-		destElements = getAll( clone, "script" ); //this where the error is occuring?
-		dump("-0-----------------------------------0-");
-		dump(destElements,'debug');
+		destElements = getAll( clone, "script" );
 		if ( destElements.length > 0 ) {
 			setGlobalEval( destElements, !inPage && getAll( elem, "script" ) );
 		}
