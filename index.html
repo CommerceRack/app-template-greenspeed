@@ -54,11 +54,14 @@ document.getElementsByTagName('base')[0].href = baseURL;
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+
+<script type="text/javascript" src="includes.js"></script>
+
+
+
 <script data-apptimize="embed" src="controller.js"></script>
 <script data-apptimize="embed" src="model.js"></script>
 <script data-apptimize="embed" src="srcset-polyfill-1.1.1-jt.js"></script>
-<script data-apptimize="embed" type="text/javascript" src="includes.js"></script>
-
 <script data-apptimize="embed" src="extensions/cart_checkout_order.js"></script>
 <script data-apptimize="embed" src="extensions/prodlist_infinite.js"></script>
 <script data-apptimize="embed" src="extensions/store_crm.js"></script>
@@ -77,7 +80,7 @@ var myApp = {};
 $(document).ready(function(){
 
 	window.myApp = new initApp({
-		"release":"201404.0529a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+		"release":"201404.0529b",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
 		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 		"baseURL":baseURL, //used in non-local mode.
 		"checkoutAuthMode" : "active",//can be passive, active or required
@@ -281,23 +284,23 @@ COMMONLY EDITED TEMPLATES
 the homepageTemplate template is loaded into mainContentArea by default when the application loads
 -->
 <div id="homepageTemplate" class="homeTemplate">
-
-</div>
-
-
-<!--
 	<div class="bannerContainer clearfix marginBottom">
-		<div class="mainBanner"></div>
+		<div class="mainBanner"><!-- banner can go here --></div>
 		<div class="productSlideshowContainer">
 			<div data-tlc="bind $var '.@products'; store_prodlist#productlist  --hideSummary='1' --itemsPerPage='5' --templateid='productListCycleTemplate'  --legacy;" class="productSlideshow" data-cycle-log="false" data-cycle-fx="scrollHorz" data-cycle-timeout="5000" data-cycle-speed="5000" data-cycle-slides="div.slide" data-cycle-swipe="true" data-cycle-prev=".prev" data-cycle-next=".next" data-cycle-pause-on-hover="true">
 	
 				<nav class="cycle-pager"></nav>
+				<!-- slides will get added for product list here -->
 			</div>
 		</div>
 	</div>
 
 	<ul data-tlc="quickstart#searchbytag --tag='IS_BESTSELLER' --title='Best Sellers' --size='12' --templateid='productListTemplateResults';" class='clearfix responsiveProdlist'></ul>
--->
+
+</div>
+
+
+
 
 
 
