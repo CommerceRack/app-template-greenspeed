@@ -2151,6 +2151,7 @@ VALIDATION
 
 
 
+
 //used frequently to throw errors or debugging info at the console.
 //called within the throwError function too
 		dump : function(msg,type)	{
@@ -2760,8 +2761,13 @@ $r.find('[data-bind]').addBack('[data-bind]').each(function()	{
 				value = bindRules['defaultValue']
 //				_app.u.dump(' -> used defaultValue ("'+bindRules.defaultValue+'") because var had no value.');
 				}
+	//					_app.u.dump(' -> used defaultVar because var had no value. new value = '+value);
+				}
+			if(!_app.u.isSet(value) && bindRules.defaultValue)	{
+				value = bindRules['defaultValue']
+//				_app.u.dump(' -> used defaultValue ("'+bindRules.defaultValue+'") because var had no value.');
+				}
 			}
-		}
 
 
 

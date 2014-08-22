@@ -655,8 +655,8 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 .menuItem5	{background:#d8d8d8;}
 
 
-#mastHeadSearchFrm	{position:relative; margin-top:8px; text-align:center;}
-#mastHeadKeywordsInput	{width:98%; margin:0; padding:.3em 0; border:0; font-size:.8em; text-indent:.3em;}
+#mastHeadSearchFrm	{position:relative; margin-top:6px; text-align:center;}
+#mastHeadKeywordsInput	{width:99%; margin:0; padding:.3em 0; border:0; font-size:.8em; text-indent:.3em;}
 #mastHeadSearchButton	{position:absolute; top:0px; right:1%; border:0; background-color:#fff; padding:0;}
 
 
