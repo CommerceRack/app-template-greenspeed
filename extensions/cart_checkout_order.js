@@ -318,15 +318,15 @@ left them be to provide guidance later.
 					}
 				}
 			},
-
+//  TODO - deprecate google checkout
 		proceedToGoogleCheckout : {
 			onSuccess : function(tagObj)	{
 				_app.u.dump('BEGIN cco.callbacks.proceedToGoogleCheckout.onSuccess');
 //code for tracking the google wallet payment in GA as a conversion.
-				_gaq.push(function() {
-					var pageTracker = _gaq._getAsyncTracker();
-					setUrchinInputCode(pageTracker);
-					});
+				//_gaq.push(function() {
+				//	var pageTracker = _gaq._getAsyncTracker();
+				//	setUrchinInputCode(pageTracker);
+				//	});
 //getUrchinFieldValue is defined in the ga_post.js file. It's included as part of the google analytics plugin.
 				document.location= _app.data[tagObj.datapointer].URL +"&analyticsdata="+getUrchinFieldValue();
 				},
@@ -1258,7 +1258,7 @@ in a reorder, that data needs to be converted to the variations format required 
 						}
 					}
 				else if(zGlobals.checkoutSettings.googleCheckoutMerchantId)	{
-					_app.u.dump("zGlobals.checkoutSettings.googleCheckoutMerchantId is set, but _gaq is not defined (google analytics not loaded but required)",'warn');
+					_app.u.dump("zGlobals.checkoutSettings.googleCheckoutMerchantId is set, but ga is not defined (google analytics not loaded but required)",'warn');
 					}
 				else	{
 					$tag.addClass('displayNone');

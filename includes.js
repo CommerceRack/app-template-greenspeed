@@ -7,8 +7,7 @@ if (!Array.prototype.map)
   Array.prototype.map = function(fun /*, thisArg */)
   {
     "use strict";
-	var res = false;
-try	{
+
     if (this === void 0 || this === null)
       throw new TypeError();
 
@@ -17,7 +16,7 @@ try	{
     if (typeof fun !== "function")
       throw new TypeError();
 
-    res = new Array(len);
+    var res = new Array(len);
     var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
     for (var i = 0; i < len; i++)
     {
@@ -29,10 +28,7 @@ try	{
       if (i in t)
         res[i] = fun.call(thisArg, t[i], i, t);
     }
-}
-catch(e)	{
-	dump(e);
-	}
+
     return res;
   };
 }

@@ -78,6 +78,10 @@ function controller(_app)	{
 			_app.u.dump = function(){};
 			}
 		
+		if (_app.u.getParameterByName('apidomain')) {
+			// ?apidomain=www.domain.com will set jqurl to an alternate source (ex: testing)
+			_app.vars.jqurl = "https://"+_app.u.getParameterByName('apidomain')+":9000/jsonapi/";
+			}
 
 		//needs to be after the 'flush' above, or there's no way to flush the cart/session.
 		_app.vars.carts = _app.model.dpsGet('app','carts'); //get existing carts. Does NOT create one if none exists. that's app-specific behavior. Don't default to a blank array either. fetchCartID checks memory first.
@@ -339,7 +343,7 @@ If the data is not there, or there's no data to be retrieved (a Set, for instanc
 				_app.u.dump("Attempting to log in");
 				obj._cmd = 'authAdminLogin';
 				obj.authid = obj.password;
-				obj.authtype = 'password';
+				obj.authtype = obj.authtype || 'password';
 // ** 201402 -> md5 is no longer used for login. 
 /*				if(obj.authtype == 'md5')	{
 					_app.vars.userid = obj.userid.toLowerCase();	 // important!
@@ -964,6 +968,7 @@ ex: whoAmI call executed during app init. Don't want "we have no idea who you ar
 				if(routeObj)	{
 					routeObj.hash = location.hash;
 					routeObj.hashParams = (location.hash.indexOf('?') >= 0 ? _app.u.kvp2Array(location.hash.split("?")[1]) : {});
+					window[_app.vars.analyticsPointer]('send', 'screenview', {'screenName' : routeObj.hash} );
 					_app.router._executeCallback(routeObj);
 					}
 				else	{
@@ -1413,6 +1418,19 @@ will load everything in the RQ will a pass <= [pass]. so pass of 10 loads everyt
 						if(_app.ext[AEF[0]] && _app.ext[AEF[0]].e[AEF[1]] && typeof _app.ext[AEF[0]].e[AEF[1]] === 'function')	{
 							//execute the app event.
 							r = _app.ext[AEF[0]].e[AEF[1]]($CT,ep);
+							//Track event execution
+							var eventObj = {
+								'hitType' : 		'event',
+								'eventCategory' :	AEF[0],
+								'eventAction' :		AEF[1],
+								};
+							if($CT.attr('data-ga-label')){
+								eventObj.eventLabel = $CT.attr('data-ga-label');
+								}
+							if(Number($CT.attr('data-ga-value'))){
+								eventObj.eventValue = Number($CT.attr('data-ga-label'));
+								}
+							window[_app.vars.analyticsPointer]('send', eventObj);
 							}
 						else	{
 							$('#globalMessaging').anymessage({'message':"In _app.u._executeEvent, extension ["+AEF[0]+"] and function["+AEF[1]+"] both passed, but the function does not exist within that extension.",'gMessage':true})
