@@ -104,7 +104,7 @@ $(document).ready(function(){
 			"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
 			"baseURL":baseURL, //used in non-local mode.
 			"checkoutAuthMode" : "active",//can be passive, active or required
-			"testURL":"http://www.onlineformals.com/", //used ONLY if protocol is file: (for testing)
+			"testURL":"http://app.sporks.zoovy.com/", //used ONLY if protocol is file: (for testing)
 			"addjQueryPointer" : true,
 			"analyticsPointer" : "ga",
 			"initComplete" : function(){
@@ -319,9 +319,10 @@ the homepageTemplate template is loaded into mainContentArea by default when the
 -->
 <div id="homepageTemplate" class="homeTemplate">
 	<div class="bannerContainer clearfix marginBottom">
-		<div class="mainBanner"><!-- banner can go here --></div>
+		<div class="mainBanner"><p class="homepagePlaceholder">Main banner goes here.</p><!-- banner can go here --></div>
 		<div class="productSlideshowContainer">
-			<div data-tlc="bind $var '.@products'; store_prodlist#productlist  --hideSummary='1' --itemsPerPage='5' --templateid='productListCycleTemplate'  --legacy;" class="productSlideshow" data-cycle-log="false" data-cycle-fx="scrollHorz" data-cycle-timeout="5000" data-cycle-speed="5000" data-cycle-slides="div.slide" data-cycle-swipe="true" data-cycle-prev=".prev" data-cycle-next=".next" data-cycle-pause-on-hover="true">
+			<p class="homepagePlaceholder" data-tlc="bind $var '.@products'; if (is $var --notblank;) {{apply --hide;}};">Product carousel goes here.</p>
+            <div data-tlc="bind $var '.@products'; store_prodlist#productlist  --hideSummary='1' --itemsPerPage='5' --templateid='productListCycleTemplate'  --legacy;" class="productSlideshow" data-cycle-log="false" data-cycle-fx="scrollHorz" data-cycle-timeout="5000" data-cycle-speed="5000" data-cycle-slides="div.slide" data-cycle-swipe="true" data-cycle-prev=".prev" data-cycle-next=".next" data-cycle-pause-on-hover="true">
 	
 				<nav class="cycle-pager"></nav>
 				<!-- slides will get added for product list here -->
@@ -330,8 +331,8 @@ the homepageTemplate template is loaded into mainContentArea by default when the
 	</div>
 
 	
-    <ul data-tlc="quickstart#searchbytag --tag='IS_BESTSELLER' --title='Best Sellers' --size='12' --templateid='productListTemplateResults';" class='clearfix responsiveProdlist'></ul>
-
+    <p data-tlc="bind $var '.$app_best_sellers.@products'; if (is $var --notblank;) {{apply --hide;}};">BEST SELLERS</p>
+    <ul class="listStyleNone fluidList noPadOrMargin productList" data-tlc="bind $var '.$app_best_sellers.@products'; prodlist_infinite#infiniteproductlist --withReviews='1' --withInventory='1' --withVariations='1' --templateid='productListTemplate' --legacy;" style="margin-right: 0px;">
 </div>
 
 
@@ -406,14 +407,14 @@ Used for the product in a product list (prodlist), usually in the body of a cate
 the loadingBG class is removed (must be that classname) when the template is translated.
 remember to NOT put the button inside the 'onclick' container or two events will occur onclick.
 -->
-<li id="productListTemplate" class="loadingBG plListItem " onmouseover="$('.quickView',$(this)).show();" onmouseout="$('.quickView').hide();">
+<li id="productListTemplate" class="loadingBG plListItem" onmouseover="$('.quickView',$(this)).show();" onmouseout="$('.quickView').hide();">
 	
 	<button class="floatRight pointer quickView displayNone" data-app-click="quickstart|quickviewShow" data-loadstemplate="productTemplateQuickView">Quickview</button>
 
 	<div data-tlc="bind $var '.pid'; apply --attrib='data-pid'; ">
 		<a data-tlc="bind $pid '.pid'; bind $seo '.%attribs.zoovy:prod_name'; bind $href ''; store_routing#productlink --pid=$pid --seo=$seo; apply --attrib='href';"  class='noUnderline'>
 		<div class="prodThumbContainer">
-		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=100 --height=100 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="">
+		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=200 --height=200 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="">
 		</div>
 
 		<h5 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h5>
