@@ -496,7 +496,7 @@ remember to NOT put the button inside the 'onclick' container or two events will
 <li id="productListTemplateResults" class="searchResultsProduct plListItem">
 	
 		<div class="prodThumbContainer"><a data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';" class="pointer">
-		<img data-tlc="bind $var '.images.0'; if (is $var --notblank;) {{apply --img --media=$var --width=120 --height=120 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodThumb" alt="" height="120" width="120">
+		<img data-tlc="bind $var '.images.0'; if (is $var --notblank;) {{apply --img --media=$var --width=200 --height=200 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodThumb" alt="" height="200" width="200">
 		</a></div>
 
 		<h5 data-tlc="bind $var '.prod_name'; if (is $var --notblank;) {{apply --append;}};" class="hideInMinimalMode"></h5>

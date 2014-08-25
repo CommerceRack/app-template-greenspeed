@@ -989,6 +989,15 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	.plListItem h5{
 		text-align: center;
 	}
+	.plListItem h6{
+		text-align: center;
+		margin-top:10px;
+	}
+	.moreDetails{
+		display: block;
+		text-align: center;
+		width: 100%;
+	}
 	
 	.categoryList > li {
 		width: 49%; float:left; margin:0 1% .5em 0;
@@ -1029,7 +1038,7 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	.atcListItem	{display: inline-block; width:20%}
 	.plListItem	{
 		width: 220px;
-		height: 300px;
+		height: 350px;
 		}
 	#hotwButton	{top:.1em; right:.1em; padding:.2em;}
 	}
