@@ -808,7 +808,7 @@ SANITY -> cycle will add a z-index of 100 to each slide.
     font-size:1em;
 	}
 .catName	{padding-top:.3em; font-size:1em; color:#333;}
-.catName:hover	{text-decoration:underline; color:#000;}
+.catName:hover	{text-decoration:underline; color:#9eca37;}
 .noUnderline	{text-decoration:none;}
 
 
@@ -831,6 +831,9 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 	top: 6px;
     width: 75px;
 }
+ul.responsiveProdlist .quickView	{
+	right: 14px;
+}
 .responsiveProdlist	{
 	margin:0; padding:0;
 	list-style:none;
@@ -849,9 +852,14 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 .prodThumbContainer{border: 6px solid #9a9a9a; width: 200px;}
 	
 
-.responsiveProdlist .prodThumbContainer	{margin-bottom:.3em; overflow:hidden; width:100%; height:120px;}
+.responsiveProdlist .prodThumbContainer	{
+	height: 200px;
+    margin-bottom: 0.3em;
+    overflow: hidden;
+    width: 200px;
+}
 
-.price	{color:#000;}
+.price	{color:#000; text-align: center;}
 .reviewSprite	{
 	display: block;
     margin-left: auto;
@@ -977,7 +985,10 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	.plListItem	{
 		width:18%;
 		margin-right:2%;
-		}
+	}
+	.plListItem h5{
+		text-align: center;
+	}
 	
 	.categoryList > li {
 		width: 49%; float:left; margin:0 1% .5em 0;
