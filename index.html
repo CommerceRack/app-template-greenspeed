@@ -15,9 +15,29 @@
 <meta name=viewport content="width=device-width, initial-scale=1">
 
 <base href='' /><!-- leave blank so it works for a local file. updated to / if protocol is not file: -->
+
+
+
 <script type="text/javascript">
-var _gaq = _gaq || {'push':function(){}} //here for testing. REPLACE BEFORE DEPLOYMENT!
 var myCreole, baseURL;
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+// Replace the UA number below with the UA property to send tracking info to.
+ga('create', 'UA-XXXX-Y', 'auto');
+ga('require','linker');
+ga('require','ecommerce', 'ecommerce.js');
+ga('set', {
+	// Replace name below
+	'appName' : 'MyAppName',
+	'appID' : 'ZMVC',
+	'appVersion' : '201405'
+	});
+ga('send','pageview');
+ga('send','screenview');
 
 //set base url so images, css, js, etc all load from appropriate location once deployed.
 //baseURL as blank lets loadScript function run off local copy when testing locally.
@@ -76,27 +96,30 @@ document.getElementsByTagName('base')[0].href = baseURL;
 
 
 <script type="text/javascript">
-var myApp = {};
 $(document).ready(function(){
-
-	window.myApp = new initApp({
-		"release":"201404.0529f",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
-		"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
-		"baseURL":baseURL, //used in non-local mode.
-		"checkoutAuthMode" : "active",//can be passive, active or required
-		"testURL":"http://app.sporks.zoovy.com/", //used ONLY if protocol is file: (for testing)
-		"addjQueryPointer" : true,
-		"initComplete" : function(t){
-			myApp.u.loadScript('app-greenspeed-init.js',function(){
+	var paramStr = window.location.href.replace(window.location.hash, '').split('?')[1];
+	if(!paramStr || paramStr.indexOf('_escaped_fragment_') < 0){
+		window.myApp = new initApp({
+			"release":"201405.a",  //increment this with each change. should solve caching issues. format: YYYYMMDDHHMMSS
+			"_clientid":"zmvc", //zmvc for store app, 1pc for one page checkout.
+			"baseURL":baseURL, //used in non-local mode.
+			"checkoutAuthMode" : "active",//can be passive, active or required
+			"testURL":"http://app.sporks.zoovy.com/", //used ONLY if protocol is file: (for testing)
+			"addjQueryPointer" : true,
+			"analyticsPointer" : "ga",
+			"initComplete" : function(){
+				
 				dump(" -> callback for greenspeed init executed");
+				myApp.u.loadScript('app-greenspeed-init.js',function(){
 				var progress = myApp.u.loadResources(); //the object returns by loadResources will get updated as the resources finish loading.
 				myApp.u.showProgress(progress);
 				});
+			$('#appversion').text(myApp.vars.release);
 			}
 		});
-	$('.appVersion').append("v"+myApp.vars.release);
-	myApp.vars.initComplete();
-	myCreole = new Parse.Simple.Creole();
+		myApp.vars.initComplete();
+		myCreole = new Parse.Simple.Creole();
+		}
 	});
 </script>
 
@@ -136,7 +159,7 @@ $(document).ready(function(){
 		<div class='clearfix contrastUI'>
 			<div class='logo'>
 			<a href='#!home'>
-			LOGO
+			YOUR LOGO GOES HERE
 			<!-- ::: YOUR LOGO GOES HERE ::: -->
 			</a>
 			</div>
@@ -265,7 +288,18 @@ $(document).ready(function(){
 -->
 
 
-<div id='appTemplates' class='displayNone'>
+<div id='appTemplates' class='displayNone seoStrip'>
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!--
@@ -285,9 +319,10 @@ the homepageTemplate template is loaded into mainContentArea by default when the
 -->
 <div id="homepageTemplate" class="homeTemplate">
 	<div class="bannerContainer clearfix marginBottom">
-		<div class="mainBanner"><!-- banner can go here --></div>
+		<div class="mainBanner"><p class="homepagePlaceholder">Main banner goes here.</p><!-- banner can go here --></div>
 		<div class="productSlideshowContainer">
-			<div data-tlc="bind $var '.@products'; store_prodlist#productlist  --hideSummary='1' --itemsPerPage='5' --templateid='productListCycleTemplate'  --legacy;" class="productSlideshow" data-cycle-log="false" data-cycle-fx="scrollHorz" data-cycle-timeout="5000" data-cycle-speed="5000" data-cycle-slides="div.slide" data-cycle-swipe="true" data-cycle-prev=".prev" data-cycle-next=".next" data-cycle-pause-on-hover="true">
+			<p class="homepagePlaceholder" data-tlc="bind $var '.@products'; if (is $var --notblank;) {{apply --hide;}};">Product carousel goes here.</p>
+            <div data-tlc="bind $var '.@products'; store_prodlist#productlist  --hideSummary='1' --itemsPerPage='5' --templateid='productListCycleTemplate'  --legacy;" class="productSlideshow" data-cycle-log="false" data-cycle-fx="scrollHorz" data-cycle-timeout="5000" data-cycle-speed="5000" data-cycle-slides="div.slide" data-cycle-swipe="true" data-cycle-prev=".prev" data-cycle-next=".next" data-cycle-pause-on-hover="true">
 	
 				<nav class="cycle-pager"></nav>
 				<!-- slides will get added for product list here -->
@@ -295,8 +330,9 @@ the homepageTemplate template is loaded into mainContentArea by default when the
 		</div>
 	</div>
 
-	<ul data-tlc="quickstart#searchbytag --tag='IS_BESTSELLER' --title='Best Sellers' --size='12' --templateid='productListTemplateResults';" class='clearfix responsiveProdlist'></ul>
-
+	
+    <p data-tlc="bind $var '.$app_best_sellers.@products'; if (is $var --notblank;) {{apply --hide;}};">BEST SELLERS</p>
+    <ul class="listStyleNone fluidList noPadOrMargin productList" data-tlc="bind $var '.$app_best_sellers.@products'; prodlist_infinite#infiniteproductlist --withReviews='1' --withInventory='1' --withVariations='1' --templateid='productListTemplate' --legacy;" style="margin-right: 0px;">
 </div>
 
 
@@ -371,14 +407,14 @@ Used for the product in a product list (prodlist), usually in the body of a cate
 the loadingBG class is removed (must be that classname) when the template is translated.
 remember to NOT put the button inside the 'onclick' container or two events will occur onclick.
 -->
-<li id="productListTemplate" class="loadingBG plListItem " onmouseover="$('.quickView',$(this)).show();" onmouseout="$('.quickView').hide();">
+<li id="productListTemplate" class="loadingBG plListItem" onmouseover="$('.quickView',$(this)).show();" onmouseout="$('.quickView').hide();">
 	
 	<button class="floatRight pointer quickView displayNone" data-app-click="quickstart|quickviewShow" data-loadstemplate="productTemplateQuickView">Quickview</button>
 
 	<div data-tlc="bind $var '.pid'; apply --attrib='data-pid'; ">
 		<a data-tlc="bind $pid '.pid'; bind $seo '.%attribs.zoovy:prod_name'; bind $href ''; store_routing#productlink --pid=$pid --seo=$seo; apply --attrib='href';"  class='noUnderline'>
 		<div class="prodThumbContainer">
-		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=100 --height=100 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="">
+		<img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --img --media=$var --width=200 --height=200 --bgcolor='#ffffff' --replace;" src="blank.gif" class="prodThumb" alt="">
 		</div>
 
 		<h5 data-tlc="bind $var '.%attribs.zoovy:prod_name'; if (is $var --notblank;) {{apply --append;}};"></h5>
@@ -460,7 +496,7 @@ remember to NOT put the button inside the 'onclick' container or two events will
 <li id="productListTemplateResults" class="searchResultsProduct plListItem">
 	
 		<div class="prodThumbContainer"><a data-tlc="bind $var '.'; store_routing#seoanchor --type='product' --seo; apply --attrib='href';" class="pointer">
-		<img data-tlc="bind $var '.images.0'; if (is $var --notblank;) {{apply --img --media=$var --width=120 --height=120 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodThumb" alt="" height="120" width="120">
+		<img data-tlc="bind $var '.images.0'; if (is $var --notblank;) {{apply --img --media=$var --width=200 --height=200 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodThumb" alt="" height="200" width="200">
 		</a></div>
 
 		<h5 data-tlc="bind $var '.prod_name'; if (is $var --notblank;) {{apply --append;}};" class="hideInMinimalMode"></h5>

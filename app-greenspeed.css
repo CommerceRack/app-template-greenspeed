@@ -239,10 +239,10 @@ a.blockLink {border:none; display:block;}
 .noPadOrMargin	{padding:0; margin:0;}
 .fluidList li	{float:left; margin:1em; padding:0; display:inline-block;}
 
-.quickView	{position:absolute; top:5px; right:5px; z-index:1001;} /* jqui modal has zindex 1002 */
+.quickView	{position:absolute; right: 6px; top: 6px; z-index:1001;} /* jqui modal has zindex 1002 */
 
 /* over rides - height and width ensure each row is the same height. percentages could be used for width */
-.productList > li	{width:150px; height:250px; position:relative;}
+.productList > li	{width:212px; height:300px; position:relative;}
 .lineItemProdlist > li	{position:relative; display:block; float:none; width:auto; padding:1em 0; height:auto !important; border-bottom:1px dotted #efefef;} /* single column product list - used in cart, checkout, etc. productList class is also defined in these cases. */
 
 .lineItemProdlist .prodThumb	{margin-right:1em;}
@@ -254,8 +254,8 @@ a.blockLink {border:none; display:block;}
 .productList li, .categoryList li	{font-size:.8em;}
 
 .productList h4, .categoryList h4	{font-size:1em;}
-.productList h5, .categoryList h5	{font-size:.9em;}
-.productList h6, .categoryList h6	{font-size:.85em;}
+.productList h5, .categoryList h5	{font-size:.9em; margin-bottom: 5px; margin-top: 5px; text-align:center;}
+.productList h6, .categoryList h6	{font-size:.85em; text-align: center;}
 
 
 /* multpage header for lists (product list) - most styling handled by jqueryUI */
@@ -655,8 +655,8 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 .menuItem5	{background:#d8d8d8;}
 
 
-#mastHeadSearchFrm	{position:relative; margin-top:8px; text-align:center;}
-#mastHeadKeywordsInput	{width:98%; margin:0; padding:.3em 0; border:0; font-size:.8em; text-indent:.3em;}
+#mastHeadSearchFrm	{position:relative; margin-top:6px; text-align:center;}
+#mastHeadKeywordsInput	{width:99%; margin:0; padding:.3em 0; border:0; font-size:.8em; text-indent:.3em;}
 #mastHeadSearchButton	{position:absolute; top:0px; right:1%; border:0; background-color:#fff; padding:0;}
 
 
@@ -706,10 +706,28 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 //////////			HOMEPAGE			\\\\\\\\\\\
 */
 .bannerContainer	{position:relative; height:240px;}
-.bannerContainer .mainBanner	{display:none; position:absolute; z-index:10; top:0; left:0; height:240px; width:100%;}
-.productSlideshowContainer	{ margin:0 auto; z-index:15; text-align:center; background:#ffffff;}
+.bannerContainer .mainBanner	{
+	display: none;
+    float: left;
+    height: 100%;
+    width: 79%;
+    z-index: 10;
+}
+.productSlideshowContainer	{ 
+	border: 8px solid #9a9a9a;
+    float: left;
+    height: 100%;
+    margin: 0;
+    position: relative;
+    text-align: right;
+    width: 22%;
+    z-index: 20;
+}
 .productSlideshowContainer .thumbContainer {text-align:center;}
 .slide	{width:100%; overflow:hidden; height:240px;}
+.homepagePlaceholder{
+	text-align:center;
+}
 
 
 
@@ -790,19 +808,32 @@ SANITY -> cycle will add a z-index of 100 to each slide.
     font-size:1em;
 	}
 .catName	{padding-top:.3em; font-size:1em; color:#333;}
-.catName:hover	{text-decoration:underline; color:#000;}
+.catName:hover	{text-decoration:underline; color:#9eca37;}
 .noUnderline	{text-decoration:none;}
 
 
 /*
 //////////			PRODUCT LISTS			\\\\\\\\\\\
 */
-
+.productList{float:left;}
 .productList li {
     font-size:1em;
 	}
 
-.quickView	{background-color:#9eca37; border:0; color:#FFF; font-size:1em; padding:.2em .4em; left:0;}
+.quickView	{
+	background-color: #9eca37;
+    border: 0 none;
+    color: #fff;
+    font-size: 0.7em;
+    height: 25px;
+    padding: 0.2em 0.4em;
+    right: 6px;
+	top: 6px;
+    width: 75px;
+}
+ul.responsiveProdlist .quickView	{
+	right: 14px;
+}
 .responsiveProdlist	{
 	margin:0; padding:0;
 	list-style:none;
@@ -818,11 +849,23 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 	-moz-box-sizing:border-box;
 	webkit-box-sizing:border-box;
 	}
+.prodThumbContainer{border: 6px solid #9a9a9a; width: 200px;}
+	
 
-.responsiveProdlist .prodThumbContainer	{margin-bottom:.3em; overflow:hidden; width:100%; height:120px;}
+.responsiveProdlist .prodThumbContainer	{
+	height: 200px;
+    margin-bottom: 0.3em;
+    overflow: hidden;
+    width: 200px;
+}
 
-.price	{color:#000;}
-.reviewSprite	{width:74px;}
+.price	{color:#000; text-align: center;}
+.reviewSprite	{
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 74px;
+}
 
 .atcListItem	{display:block; margin:0 0 .3em 0; min-height:80px;} /* only shown at higher screen sizes */
 .atcListItemThumbContainer	{float:left; margin:0 .7em .3em 0;}
@@ -927,7 +970,7 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	#mastHeadKeywordsInput	{font-size:1em; padding:.2em 0;}
 	#mastHeadSearchButton	{padding:.2em; top:0px}
 	
-	.productSlideshowContainer	{float:right; width:40%; margin:0; z-index:20; position:relative; text-align:right;}
+	.productSlideshowContainer	{float:right; width:20%; margin:0; z-index:20; position:relative; text-align:right;}
 	.productSlideshowContainer .cycle-overlay { text-align:right;}
 	.bannerContainer .mainBanner	{display:inline-block;}
 
@@ -942,7 +985,19 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	.plListItem	{
 		width:18%;
 		margin-right:2%;
-		}
+	}
+	.plListItem h5{
+		text-align: center;
+	}
+	.plListItem h6{
+		text-align: center;
+		margin-top:10px;
+	}
+	.moreDetails{
+		display: block;
+		text-align: center;
+		width: 100%;
+	}
 	
 	.categoryList > li {
 		width: 49%; float:left; margin:0 1% .5em 0;
@@ -983,7 +1038,7 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	.atcListItem	{display: inline-block; width:20%}
 	.plListItem	{
 		width: 220px;
-		height: 300px;
+		height: 350px;
 		}
 	#hotwButton	{top:.1em; right:.1em; padding:.2em;}
 	}

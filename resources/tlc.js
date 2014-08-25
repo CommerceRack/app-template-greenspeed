@@ -128,35 +128,15 @@ var tlc = function()	{
 		return e.line !== undefined && e.column !== undefined ? "Line " + e.line + ", column " + e.column + ": " + e.message : e.message;
 		}
 
-/*	this.createTemplate = function(templateid)	{
+	this.createTemplate = function(templateid)	{
 		if(templateid)	{
-			var $tmp = $($._app.u.jqSelector('#',templateid)).clone(true);
+			var $tmp = $($._app.u.jqSelector('#',templateid));
 			this.handleTemplates($tmp); //make sure no <template>'s are inside the template or they could get added to the DOM multiple times.
 			return $tmp.length ? $._app.model.makeTemplate($tmp,templateid) : false;
 			}
 		else	{dump("Unable to execute maketemplate in tlc.createTemplate because no templateid was specified."); return false;}
 		}
-
-//copied over from model. was not used in non-experimental version. createTemplate directly referenced this function in the model.
-	this.makeTemplate = function($templateSpec,templateid)	{
-		var r = true; //what is returned. if a template is created, true is returned.
-		if(templateID && $templateSpec)	{
-			if($templateSpec instanceof jQuery)	{}
-			else{
-				$templateSpec = $($templateSpec);
-				}
-			_app.templates[templateID] = $templateSpec.attr('data-templateid',templateID).clone(true); //events needs to be copied from original
-			_app.templates[templateID].removeAttr('id'); //get rid of the ID to reduce likelyhood of duplicate ID's on the DOM.
-			$('#'+templateID).empty().remove(); //here for templates created from existing DOM elements. They're removed to ensure no duplicate ID's exist.
-			}
-		else	{
-			r = false;
-			_app.u.dump("WARNING! - model.makeTemplate executed but no templateID and/or template object specified.");
-			}
-		return r;
-		}
-
-
+	
 	this.getTemplateInstance = function(templateid)	{
 		if($._app.vars.debug == 'tlc')	{
 			dump(" -> tlc.getTemplateInstance was executed for templateid: "+templateid);
@@ -173,25 +153,7 @@ var tlc = function()	{
 		this.element = r; //create a global reference to the element that's being translated. allows bind ~tag to be scoped.
 		return r;
 		}
-*/
-//this is the experimental code
-	this.getTemplateInstance = function(templateid)	{
-		var r = false;
-		if(templateid)	{
-			//check memory first.  if the element type is a template, it still gets stored in memory. Currently, this is ONLY used in admin UI/email messages.
-			if($._app.templates[templateid])	{
-				$._app.templates[templateid].clone(true)
-				}
-			else	{
-				var $tmp = $($._app.u.jqSelector('#',templateid)).clone(true);
-				if($tmp.length)	{
-					r = $tmp;
-					this.handleTemplates(r); //make sure no <template>'s are inside the template or they could get added to the DOM multiple times. these still get stored in memory.
-					}
-				}
-			}
-		return $tmp instanceof jQuery ? $tmp : false;
-		}
+
 //This is used for a '<template>' which is INSIDE of an element that is being translated.
 	this.handleTemplates = function($target)	{
 		$("template",$target).each(function(index){

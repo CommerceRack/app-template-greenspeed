@@ -62,7 +62,7 @@
 "pretty":"Mixed Payment Method Failure",
 "in":"",
 "hint":"Checkout credit charge success (non succes error codees)"},"payment_paypalec_pending":{"msg":"<p align=\"left\">You have chosen to pay via PayPal Express Checkout.  Your payment is considered Pending and funds have not been released at this time.</p><br>",
-"cat":50,"pretty":"Pending Paypal Express Checkout payment"},"payment_pickup_pending":{"msg":"<p><b>You have chosen to pay upon pickup!  Thank you for your order, we look forward to seeing you!</b></p>",
+"cat":50,"pretty":"Pending Paypal Express Checkout payment"},"payment_pickup_pending":{"msg":"<p align=\"left\">You have chosen to pay upon pickup.  Thank you for your order, we look forward to seeing you!</p>",
 "cat":"50",
 "pretty":"Checkout pickup pending",
 "in":"",

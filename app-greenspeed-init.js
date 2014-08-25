@@ -32,26 +32,28 @@ $("#productTemplate, #productTemplateQuickView").on('depart.youtubeReset',functi
 myApp.rq.push(['script',0,(document.location.protocol == 'file:') ? myApp.vars.testURL+'jsonapi/config.js' : myApp.vars.baseURL+'jsonapi/config.js',function(){
 //in some cases, such as the zoovy UI, zglobals may not be defined. If that's the case, certain vars, such as jqurl, must be passed in via P in initialize:
 //	myApp.u.dump(" ->>>>>>>>>>>>>>>>>>>>>>>>>>>>> zGlobals is an object");
-	window.myApp.vars.username = zGlobals.appSettings.username.toLowerCase(); //used w/ image URL's.
+	myApp.vars.username = zGlobals.appSettings.username.toLowerCase(); //used w/ image URL's.
 //need to make sure the secureURL ends in a / always. doesn't seem to always come in that way via zGlobals
-	window.myApp.vars.secureURL = zGlobals.appSettings.https_app_url;
-	window.myApp.vars.domain = zGlobals.appSettings.sdomain; //passed in ajax requests.
-	window.myApp.vars.jqurl = (document.location.protocol === 'file:') ? myApp.vars.testURL+'jsonapi/' : '/jsonapi/';
+	myApp.vars.secureURL = zGlobals.appSettings.https_app_url;
+	myApp.vars.domain = zGlobals.appSettings.sdomain; //passed in ajax requests.
+	myApp.vars.jqurl = (document.location.protocol === 'file:') ? myApp.vars.testURL+'jsonapi/' : '/jsonapi/';
 	}]); //The config.js is dynamically generated.
 	
 myApp.rq.push(['extension',0,'order_create','extensions/checkout/extension.js']);
 myApp.rq.push(['extension',0,'cco','extensions/cart_checkout_order.js']);
 myApp.rq.push(['extension',0,'greenspeed','app-greenspeed.js']);
+myApp.rq.push(['extension',0,'store_routing','extensions/store_routing.js']);
 
 myApp.rq.push(['extension',0,'store_prodlist','extensions/store_prodlist.js']);
 myApp.rq.push(['extension',0,'store_navcats','extensions/store_navcats.js']);
 myApp.rq.push(['extension',0,'prodlist_infinite','extensions/prodlist_infinite.js']);
 myApp.rq.push(['extension',0,'store_search','extensions/store_search.js']);
 myApp.rq.push(['extension',0,'store_product','extensions/store_product.js']);
-myApp.rq.push(['extension',0,'store_crm','extensions/store_crm.js']);
-myApp.rq.push(['extension',0,'quickstart','app-quickstart.js','startMyProgram']);
 myApp.rq.push(['extension',0,'cart_message','extensions/cart_message/extension.js']);
-myApp.rq.push(['extension',0,'store_routing','extensions/store_routing.js']);
+myApp.rq.push(['extension',0,'store_crm','extensions/store_crm.js']);
+myApp.rq.push(['extension',0,'store_tracking','extensions/store_tracking.js']);
+myApp.rq.push(['extension',0,'quickstart','app-quickstart.js','startMyProgram']);
+
 
 myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/jsonpath.0.8.0.js']); //used pretty early in process..
 
@@ -73,6 +75,19 @@ myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/load-image.min.js']); //
 myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/jquery.image-gallery.jt.js']); //in zero pass in case product page is first page.
 
 //myApp.rq.push(['script',0,myApp.vars.baseURL+'srcset-polyfill-1.1.1-jt.js']); //in zero pass in case product page is first page.
+
+myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/jquery.showloading-v1.0.jt.js']); //used pretty early in process..
+myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/jquery.ui.anyplugins.js']); //in zero pass because it's essential to rendering and error handling.
+myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/tlc.js']); //in zero pass cuz you can't render a page without it..
+myApp.rq.push(['css',1,myApp.vars.baseURL+'resources/anyplugins.css']);
+
+myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/jsonpath.0.8.0.js']); //used pretty early in process..
+
+//once peg is loaded, need to retrieve the grammar file. Order is important there. This will validate the file too.
+myApp.u.loadScript(myApp.vars.baseURL+'resources/peg-0.8.0.js',function(){
+	myApp.model.getGrammar(myApp.vars.baseURL+"resources/pegjs-grammar-20140203.pegjs");
+	}); // ### TODO -> callback on RQ.push wasn't getting executed. investigate.
+
 
 
 
@@ -112,52 +127,30 @@ myApp.u.showProgress = function(progress)	{
 
 //Any code that needs to be executed after the app init has occured can go here.
 //will pass in the page info object. (pageType, templateID, pid/navcat/show and more)
-myApp.u.appInitComplete = function(P)	{
-	myApp.u.dump("Executing myAppIsLoaded code...");
-
-	dump(" -> HEY! just a head's up, the default pageTransition was just overwritten from app-greenspeed-init.js");
-	myApp.ext.quickstart.pageTransition = function($o,$n,infoObj){
-		//showing the before before anything shows up in the dropdown when it is clicked is not user friendly.
-		//the array has a fixed number of positions, so length would return a false positive.
-		if(!$.isEmptyObject(myApp.ext.quickstart.vars.hotw[1]))	{
-			$('#hotwButton').show();
-			}
-		function transitionThePage()	{
-//if $o doesn't exist, the animation doesn't run and the new element doesn't show up, so that needs to be accounted for.
-//$o MAY be a jquery instance but have no length, so check both.
-			if($o instanceof jQuery && $o.length)	{
-				$('#mainContentArea').height($o.outerHeight()); //add a fixed height temporarily so that page doesn't 'collapse'
-//				dump(" -> offsetleft: " + $('#mainContentArea').width());
-				$o.animate({'height':20,'width':20,'overflow':'hidden','left':$('#mainContentArea').width(),'top':-30},function(){
-					$('#mainContentArea').height('');
-					$o.removeAttr('style').hide();
-					$n.css({'position':'relative','z-index':10}); //
-					});
-				}
-			else	{
-				//if o isn't set, n needs to be reset to relative positioning or the display will be wonky.
-				$n.css({'position':'relative','z-index':10}); //
-				}
-			
-			}
-
-		$o.css({'position':'relative','z-index':'10'}); //make sure the old page is 'above' the new.
-//$n isn't populated yet, most likely. So instead of animating it, just show it. Then animate the old layer above it.
-		if($n instanceof jQuery && $o instanceof jQuery && ($n.attr('id') == $o.attr('id')))	{} //old and new match. do nothing.
-		if($n instanceof jQuery)	{
-			$n.addClass('pageTemplateBG').css({position:'absolute','z-index':9,'left':0,'top':0,'right':0}).show();
-			}
-//only 'jump to top' if we are partially down the page.  Using the header height as > means if a link in the header is clicked, we don't jump down to the content area. feels natural that way.
-		if(infoObj.performJumpToTop && $(window).scrollTop() > $('header','#appView').height())	{
-			$('html, body').animate({scrollTop : ($('header','#appView').length ? $('header','#appView').first().height() : 0)},500,function(){
-				transitionThePage();
+myApp.u.appInitComplete = function()	{
+//	myApp.u.dump("Executing myAppIsLoaded code...");
+	
+	myApp.ext.order_create.checkoutCompletes.push(function(vars,$checkout){
+		dump(" -> begin checkoutCOmpletes code: "); dump(vars);
+		
+		var cartContentsAsLinks = encodeURIComponent(myApp.ext.cco.u.cartContentsAsLinks(myApp.data[vars.datapointer].order));
+	
+//append this to 
+		$("[data-app-role='thirdPartyContainer']",$checkout).append("<h2>What next?</h2><div class='ocm ocmFacebookComment pointer zlink marginBottom checkoutSprite  '></div><div class='ocm ocmTwitterComment pointer zlink marginBottom checkoutSprit ' ></div><div class='ocm ocmContinue pointer zlink marginBottom checkoutSprite'></div>");
+		$('.ocmTwitterComment',$checkout).click(function(){
+			window.open('http://twitter.com/home?status='+cartContentsAsLinks,'twitter');
+			window[myApp.vars.analyticsPointer]('send', 'event','Checkout','User Event','Tweeted about order');
+			});
+		//the fb code only works if an appID is set, so don't show banner if not present.				
+		if(myApp.u.thisNestedExists("zGlobals.thirdParty.facebook.appId") && typeof FB == 'object')	{
+			$('.ocmFacebookComment',$checkout).click(function(){
+				myApp.ext.quickstart.thirdParty.fb.postToWall(cartContentsAsLinks);
+				ga('send','event','Checkout','User Event','FB message about order');
+				window[myApp.vars.analyticsPointer]('send', 'event','Checkout','User Event','FB message about order');
 				});
-			} //new page content loading. scroll to top.			
-		else	{
-			transitionThePage();
 			}
-
-		}
+		else	{$('.ocmFacebookComment').hide()}
+		});
 	
 	//Cart Messaging Responses.
 	myApp.cmr.push(['chat.join',function(message){
@@ -169,7 +162,7 @@ myApp.u.appInitComplete = function(P)	{
 			$('.hide4ActiveChat',$ui).hide();
 			}
 		}]);
-	
+
 	myApp.cmr.push(['goto',function(message,$context){
 		var $history = $("[data-app-role='messageHistory']",$context);
 		$P = $("<P>")
@@ -182,24 +175,9 @@ myApp.u.appInitComplete = function(P)	{
 		$history.parent().scrollTop($history.height());
 		}]);
 
-	myApp.ext.order_create.checkoutCompletes.push(function(vars,$checkout){
-//append this to 
-		var cartContentsAsLinks = encodeURIComponent(myApp.ext.cco.u.cartContentsAsLinks(myApp.data[vars.datapointer].order));
-		$("[data-app-role='thirdPartyContainer']",$checkout).append("<h2>What next?</h2><div class='ocm ocmFacebookComment pointer zlink marginBottom checkoutSprite  '></div><div class='ocm ocmTwitterComment pointer zlink marginBottom checkoutSprit ' ></div><div class='ocm ocmContinue pointer zlink marginBottom checkoutSprite'></div>");
-		$('.ocmTwitterComment',$checkout).click(function(){
-			window.open('http://twitter.com/home?status='+cartContentsAsLinks,'twitter');
-			_gaq.push(['_trackEvent','Checkout','User Event','Tweeted about order']);
-			});
-		//the fb code only works if an appID is set, so don't show banner if not present.				
-		if(myApp.u.thisNestedExists("zGlobals.thirdParty.facebook.appId") && typeof FB == 'object')	{
-			$('.ocmFacebookComment',$checkout).click(function(){
-				myApp.ext.quickstart.thirdParty.fb.postToWall(cartContentsAsLinks);
-				_gaq.push(['_trackEvent','Checkout','User Event','FB message about order']);
-				});
-			}
-		else	{$('.ocmFacebookComment').hide()}
-		});
 	}
+
+
 
 
 
@@ -218,6 +196,13 @@ myApp.router.appendInit({
 		if(g.uriParams.seoRequest){
 			showContent(g.uriParams.pageType, g.uriParams);
 			}
+		else if (g.uriParams.marketplace){
+			var infoObj = {"pid":g.uriParams.product};
+			if(g.uriParams.sku){
+				infoObj.sku = g.uriParams.sku;
+				}
+			showContent("product",infoObj);
+			}
 		else if(document.location.hash)	{	
 			myApp.u.dump('triggering handleHash');
 			myApp.router.handleHashChange();
@@ -234,3 +219,8 @@ myApp.router.appendInit({
 			}
 		}
 	});
+
+
+
+
+
