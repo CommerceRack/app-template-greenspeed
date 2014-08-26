@@ -368,7 +368,7 @@ don't modify the 'data-templateid' unless you are changing template names and up
 	<a data-tlc="bind $var '.'; store_routing#seoanchor --type='category' --seo; apply --attrib='href';" class='noUnderline'>
 	<div class="pointer">
 		<div class="thumbContainer floatLeft marginRight"><img data-tlc="bind $var '.%meta.CAT_THUMB'; if (is $var --notblank;) {{ apply --img --media=$var --width=45 --height=45 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="catThumb" alt="" height="45" width="45"></div>
-		<div class="catName"><span data-tlc="bind $var '.pretty'; quickstart#cattext  --legacy;"></span></div>
+		<div class="catName"><span data-tlc="bind $var '.pretty'; if (is $var --notblank;) {{format --truncate='60'; apply --append;}};"></span></div>
 	</div>
 	</a>
 </li>

@@ -710,7 +710,7 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 	display: none;
     float: left;
     height: 100%;
-    width: 79%;
+    width: 78%;
     z-index: 10;
 }
 .productSlideshowContainer	{ 
@@ -808,7 +808,7 @@ SANITY -> cycle will add a z-index of 100 to each slide.
     font-size:1em;
 	}
 .catName	{padding-top:.3em; font-size:1em; color:#333;}
-.catName:hover	{text-decoration:underline; color:#9eca37;}
+.catName:hover	{text-decoration:underline;}
 .noUnderline	{text-decoration:none;}
 
 
