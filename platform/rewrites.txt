@@ -1,0 +1,32 @@
+#sample platform/rewrites.txt
+#col1:    [~=]uri|url|path|query
+#col2:     if match
+#col3:  goto
+#col4:  goto modifier
+
+# remove legacy cart and session variables from uri
+~path#rewrite	/c=.*/(.*?)	/$1	http=410
+~path#rewrite	/s=.*/(.*?)	/$1	set=path
+
+#app.sporks.zoovy.com's custom pages
+
+
+
+# redirect all product and category urls
+~path	^.*?/product/(.*?)/.*$	/#!product/$1
+~path	^.*?/category/(.*?)/.*$	/#!category/$1
+
+~path	/category/([^/]*)	/#!category/$1
+~path	/product/([^/]*)	/#!product/$1
+
+#redirect old v-store cart pages
+~path	/cart\.cgis	/#!home
+
+#redirect v-store company pages
+=path	/about_us.cgis	/#!company/about
+=path	/contact_us.cgis	/#!company/contact
+=path	/returns.cgis#faq	/#!company/faq
+=path	/returns.cgis	/#!company/return
+=path	/privacy.cgis	/#!company/privacy
+#redirect homepage
+=uri	http://www.app.sporks.zoovy.com/	http://www.app.sporks.zoovy.com/#!home
