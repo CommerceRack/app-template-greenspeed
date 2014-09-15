@@ -710,9 +710,31 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 	display: none;
     float: left;
     height: 100%;
-    width: 78%;
+    width: auto;
     z-index: 10;
 }
+.homepageBanner800wide{
+	display:none;
+	height: 140px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 800px;
+}
+.homepageBanner600wide{
+	display:none;
+	height: 105px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 600px;
+}
+.homepageBanner400wide{
+	display:none;
+	height: 70px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+}
+
 .productSlideshowContainer	{ 
 	border: 8px solid #9a9a9a;
     float: left;
@@ -720,7 +742,7 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
     margin: 0;
     position: relative;
     text-align: right;
-    width: 22%;
+    width: 280px;
     z-index: 20;
 }
 .productSlideshowContainer .thumbContainer {text-align:center;}
@@ -953,10 +975,7 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
     .cycle-slideshow { width: 200px;}
     .cycle-overlay { padding: 4px;}
     .cycle-caption { bottom: 4px; right: 4px }
-	}
-	
-	
-	
+}		
 
 
 @media only screen and (min-width: 640px) {
@@ -970,7 +989,7 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	#mastHeadKeywordsInput	{font-size:1em; padding:.2em 0;}
 	#mastHeadSearchButton	{padding:.2em; top:0px}
 	
-	.productSlideshowContainer	{float:right; width:20%; margin:0; z-index:20; position:relative; text-align:right;}
+	.productSlideshowContainer	{float:right; width:280px; margin:0; z-index:20; position:relative; text-align:right;}
 	.productSlideshowContainer .cycle-overlay { text-align:right;}
 	.bannerContainer .mainBanner	{display:inline-block;}
 
@@ -1024,9 +1043,51 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	.prodReviewInfo	{float:left; display:block; width:165px; list-style:none; margin:0 1em 0px 0; font-weight:normal; padding:0;} /* on the ul of the list containing the name, location, date, etc */
 
 	.reviewLineItem blockquote	{margin:0 0 0 185px; padding:0;}
-
+	
+	.homepageBanner800wide{
+		display:none;
 	}
+	.homepageBanner600wide{
+		display:none;
+	}
+	.homepageBanner400wide{
+		display:none;
+	}
+	.bannerContainer .mainBanner{
+		display:none;
+	}
+	.productSlideshowContainer{
+		float:left;
+	}
+}
+@media only screen and (min-width: 756px) {
+	.homepageBanner800wide{
+		display:none;
+	}
+	.homepageBanner600wide{
+		display:none;
+	}
+	.homepageBanner400wide{
+		display:block;
+	}
+	.bannerContainer .mainBanner{
+		width:auto;
+		display:block;
+	}
+}
 
+
+@media only screen and (min-width: 975px) {
+	.homepageBanner800wide{
+		display:none;
+	}
+	.homepageBanner600wide{
+		display:block;
+	}
+	.homepageBanner400wide{
+		display:none;
+	}
+}
 
 
 
@@ -1041,6 +1102,28 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 		height: 350px;
 		}
 	#hotwButton	{top:.1em; right:.1em; padding:.2em;}
+	
+	.homepageBanner800wide{
+		display:none;
 	}
+	.homepageBanner600wide{
+		display:block;
+	}
+	.homepageBanner400wide{
+		display:none;
+	}
+	}
+	
+@media only screen and (min-width: 1190px) {
+	.homepageBanner800wide{
+		display:block;
+	}
+	.homepageBanner600wide{
+		display:none;
+	}
+	.homepageBanner400wide{
+		display:none;
+	}
+}
 	
 
