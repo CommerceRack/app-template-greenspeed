@@ -737,13 +737,13 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 
 .productSlideshowContainer	{ 
 	border: 8px solid #9a9a9a;
-    float: left;
     height: 100%;
-    margin: 0;
     position: relative;
     text-align: right;
     width: 280px;
     z-index: 20;
+	margin-left:auto;
+	margin-right:auto;
 }
 .productSlideshowContainer .thumbContainer {text-align:center;}
 .slide	{width:100%; overflow:hidden; height:240px;}
@@ -989,7 +989,6 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	#mastHeadKeywordsInput	{font-size:1em; padding:.2em 0;}
 	#mastHeadSearchButton	{padding:.2em; top:0px}
 	
-	.productSlideshowContainer	{float:right; width:280px; margin:0; z-index:20; position:relative; text-align:right;}
 	.productSlideshowContainer .cycle-overlay { text-align:right;}
 	.bannerContainer .mainBanner	{display:inline-block;}
 
@@ -1057,7 +1056,6 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 		display:none;
 	}
 	.productSlideshowContainer{
-		float:left;
 	}
 }
 @media only screen and (min-width: 756px) {
@@ -1069,11 +1067,18 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	}
 	.homepageBanner400wide{
 		display:block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 400px;
 	}
 	.bannerContainer .mainBanner{
-		width:auto;
+		float: left;
+		margin-left: auto;
+		margin-right: auto;
+		width: 57%;
 		display:block;
 	}
+	.productSlideshowContainer	{float:right; width:280px; margin:0; z-index:20; position:relative; text-align:right;}
 }
 
 
@@ -1086,6 +1091,12 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	}
 	.homepageBanner400wide{
 		display:none;
+	}
+	.bannerContainer .mainBanner{
+		float: left;
+		margin-left: auto;
+		margin-right: auto;
+		width: 66%;
 	}
 }
 
@@ -1108,21 +1119,39 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	}
 	.homepageBanner600wide{
 		display:block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 600px;
 	}
 	.homepageBanner400wide{
 		display:none;
+	}
+	.bannerContainer .mainBanner{
+		float: left;
+		margin-left: auto;
+		margin-right: auto;
+		width: 66%;
 	}
 	}
 	
 @media only screen and (min-width: 1190px) {
 	.homepageBanner800wide{
-		display:block;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 800px;
 	}
 	.homepageBanner600wide{
 		display:none;
 	}
 	.homepageBanner400wide{
 		display:none;
+	}
+	.bannerContainer .mainBanner{
+		float: left;
+		margin-left: auto;
+		margin-right: auto;
+		width: 73%;
 	}
 }
 	
