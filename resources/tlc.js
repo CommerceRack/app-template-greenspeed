@@ -685,9 +685,15 @@ This one block should get called for both img and imageurl but obviously, imageu
 		}//chop
 	
 	this.format_truncate = function(argObj,globals)	{
+		dump(argObj);
+		dump(globals);
 		var
 			r = globals.binds[argObj.bind].toString(), //what is returned. Either original value passed in or a truncated version of it.
 			len = argObj.truncate;
+			if(argObj.truncatetype)
+			{
+				truncType = argObj.truncatetype;
+			}
 		if(!len || isNaN(len)){}
 		else if(r.length <= len){}
 		else	{
@@ -699,6 +705,11 @@ This one block should get called for both img and imageurl but obviously, imageu
 				if(tr.length)	{
 					r = tr;
 					}
+				if(argObj.truncatetype){
+					if(truncType == "text"){
+						r += "....";
+					}
+				}
 //	201402 -> bad idea to have this.  what if we're truncating a number. use format append.
 //				r += '&#8230;'; //Add an ellipses to the end
 				}

@@ -247,6 +247,7 @@ a.blockLink {border:none; display:block;}
 
 .lineItemProdlist .prodThumb	{margin-right:1em;}
 
+.categoryList {margin-bottom: 10px;}
 .categoryList > li	{width:150px; height:200px;}
 
 .productList h4, .productList h5, .productList h6, .categoryList h4, .categoryList h5, .categoryList h6	{padding:0; margin:0;} /* h4 - h6 are used in default templates for name, price, etc */
@@ -862,7 +863,8 @@ ul.responsiveProdlist .quickView	{
 	}
 
 .plListItem	{
-	height: 210px; width:48%;
+	width: 220px;
+	height: 350px;
 	display:block; float:left;
 	overflow:hidden;
 	position:relative;
@@ -1000,10 +1002,6 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 
 	.container	{width:94%;} /* will give a little grey border around content area */
 
-	.plListItem	{
-		width:18%;
-		margin-right:2%;
-	}
 	.plListItem h5{
 		text-align: center;
 	}
@@ -1016,7 +1014,6 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 		text-align: center;
 		width: 100%;
 	}
-	
 	.categoryList > li {
 		width: 49%; float:left; margin:0 1% .5em 0;
 		}
