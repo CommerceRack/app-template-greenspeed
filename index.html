@@ -319,7 +319,12 @@ the homepageTemplate template is loaded into mainContentArea by default when the
 -->
 <div id="homepageTemplate" class="homeTemplate">
 	<div class="bannerContainer clearfix marginBottom">
-		<div class="mainBanner"> <img class="homepageBanner800wide" src="images/placeholder_banner_homepage800x140.jpg" /> <img class="homepageBanner600wide" src="images/placeholder_banner_homepage600x105.png" /> <img class="homepageBanner400wide" src="images/placeholder_banner_homepage400x70.png" /></div>
+		<div class="mainBanner"> 
+        <!--HERE IS THE SECTION FOR THE HOMEPAGE AD BANNER IMAGES. HERE THE BANNER IMAGES CAN BE SWAPPED OUT FOR WHATEVER YOU WANT TO BE DISPLAYED HERE.-->
+        	<a href='#!category/.lots_o_products/Lots of Product'><img class="homepageBanner800wide" src="images/placeholder_banner_homepage800x140.jpg" /></a>
+            <a href="#!product/MODEL06/is a parent product"><img class="homepageBanner600wide" src="images/placeholder_banner_homepage600x105.png" /></a> 
+            <a href='#!category/.lots_o_products/Lots of Product'><img class="homepageBanner400wide" src="images/placeholder_banner_homepage400x70.png" /></a>
+        </div>
 		<div class="productSlideshowContainer">
 			<p class="homepagePlaceholder" data-tlc="bind $var '.@products'; if (is $var --notblank;) {{apply --hide;}};">Product carousel goes here.</p>
             <div data-tlc="bind $var '.@products'; store_prodlist#productlist  --hideSummary='1' --itemsPerPage='5' --templateid='productListCycleTemplate'  --legacy;" class="productSlideshow" data-cycle-log="false" data-cycle-fx="scrollHorz" data-cycle-timeout="5000" data-cycle-speed="5000" data-cycle-slides="div.slide" data-cycle-swipe="true" data-cycle-prev=".prev" data-cycle-next=".next" data-cycle-pause-on-hover="true">
