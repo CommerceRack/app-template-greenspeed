@@ -826,6 +826,7 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 .categoryList > li {
     height: 240px;
 	border:7px solid white;
+	width:180px;
 	}
 .categoryList > li:hover {
 	border:7px solid #9eca37;
@@ -1027,7 +1028,7 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 		width: 100%;
 	}
 	.categoryList > li {
-		width: 49%; float:left; margin:0 1% .5em 0;
+		width: 180px; float:left; margin:0 1% .5em 0;
 		}
 
 	.ui-tabs .ui-tabs-nav li a {
