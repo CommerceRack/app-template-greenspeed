@@ -42,8 +42,8 @@ myApp.rq.push(['script',0,(document.location.protocol == 'file:') ? myApp.vars.t
 myApp.rq.push(['extension',0,'order_create','extensions/checkout/extension.js']);
 myApp.rq.push(['extension',0,'cco','extensions/cart_checkout_order.js']);
 myApp.rq.push(['extension',0,'greenspeed','app-greenspeed.js']);
-myApp.rq.push(['extension',0,'store_routing','extensions/store_routing.js']);
 
+myApp.rq.push(['extension',0,'store_routing','extensions/store_routing.js']);
 myApp.rq.push(['extension',0,'store_prodlist','extensions/store_prodlist.js']);
 myApp.rq.push(['extension',0,'store_navcats','extensions/store_navcats.js']);
 myApp.rq.push(['extension',0,'prodlist_infinite','extensions/prodlist_infinite.js']);
@@ -52,6 +52,7 @@ myApp.rq.push(['extension',0,'store_product','extensions/store_product.js']);
 myApp.rq.push(['extension',0,'cart_message','extensions/cart_message/extension.js']);
 myApp.rq.push(['extension',0,'store_crm','extensions/store_crm.js']);
 myApp.rq.push(['extension',0,'store_tracking','extensions/store_tracking.js']);
+myApp.rq.push(['extension',0,'_store_greenspeed','extensions/_store_greenspeed.js','startExtension']);
 myApp.rq.push(['extension',0,'quickstart','app-quickstart.js','startMyProgram']);
 
 
@@ -82,6 +83,8 @@ myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/tlc.js']); //in zero pas
 myApp.rq.push(['css',1,myApp.vars.baseURL+'resources/anyplugins.css']);
 
 myApp.rq.push(['script',0,myApp.vars.baseURL+'resources/jsonpath.0.8.0.js']); //used pretty early in process..
+
+myApp.rq.push(['script',0,myApp.vars.baseURL+'zoom-master/jquery.zoom.js']);
 
 //once peg is loaded, need to retrieve the grammar file. Order is important there. This will validate the file too.
 myApp.u.loadScript(myApp.vars.baseURL+'resources/peg-0.8.0.js',function(){

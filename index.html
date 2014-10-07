@@ -545,12 +545,82 @@ this will likely become more flexible in the future. ###
 
 	<div class="prodDetailImagesContainer">
 	
-		<div data-tlc="bind $var '.%attribs.zoovy:prod_is_tags'; quickstart#tags --legacy; if (is $var --notblank;) {{apply --append;}};" class="tagsContainer"></div>
+		<div class='imageContainer'>
+            <!--<div onClick='myApp.ext.store_product.u.showPicsInModal({"pid":$(this).attr("data-pid")});' data-bind="var:product(zoovy:prod_image1); format:assignAttribute; attribute:data-pid;">-->
+                <div class="imageContainerBlocker"> <img src="wait.gif" /></div>
+                <div class='largeImageContainer'>
+                    <div data-app-click="quickstart|productPicsInModalShow" data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --attrib='data-imgsrc';" class="prodImageContainer">
+                        <!--<div data-tlc="bind $var '.%attribs.zoovy:prod_is_tags'; quickstart#tags --legacy;" class="tagsContainer"></div>-->
+                        <img data-tlc="bind $var '.%attribs.zoovy:prod_image1'; if(is $var --notblank){{apply --img --media=$var --width=450 --height=560 --bgcolor='#ffffff' --replace;}};" src="blank.gif" class="prodBigImage prodMainImage" alt="" height="560" width="450">
+                    </div>
+                </div>
+            <!--</div>-->
+                <div data-tlc="bind $var '.pid'; apply --attrib='data-pid';" class="prodThumbs">
+                    
+                    <p>Click thumbnail image to view enlarged</p>
+                    <div data-tlc="bind $var '.%attribs.zoovy:prod_image1'; if(is $var --notblank;) {{ apply --show; }};" onclick="myApp.ext.store_product.u.showPicsInModal({'pid':$(this).parent().attr('data-pid'),'int':'1'});" class="pointer displayNone">
+                        <div class="thumbnail" data-tlc="bind $var '.%attribs.zoovy:prod_image1'; apply --attrib='data-imgsrc';">
+                            <img data-tlc="bind $var '.%attribs.zoovy:prod_image1';  if(is $var --notblank){{apply --img --media=$var --width=100 --height=110 --bgcolor='#ffffff' --replace;}};" src="blank.gif" alt="" height="100" width="100">
+                        </div>
+                    </div>
+                    
+                    <div data-tlc="bind $var '.%attribs.zoovy:prod_image2'; if(is $var --notblank;) {{ apply --show; }};" onclick="myApp.ext.store_product.u.showPicsInModal({'pid':$(this).parent().attr('data-pid'),'int':'2'});" class="pointer displayNone">
+                        <div class="thumbnail" data-tlc="bind $var '.%attribs.zoovy:prod_image2'; apply --attrib='data-imgsrc';">
+                            <img data-tlc="bind $var '.%attribs.zoovy:prod_image2';  if(is $var --notblank){{apply --img --media=$var --width=100 --height=110 --bgcolor='#ffffff' --replace;}};" src="blank.gif" alt="" height="100" width="100">
+                        </div>
+                    </div>
+            
+                    <div data-tlc="bind $var '.%attribs.zoovy:prod_image3'; if(is $var --notblank;) {{ apply --show; }};" onclick="myApp.ext.store_product.u.showPicsInModal({'pid':$(this).parent().attr('data-pid'),'int':'3'});" class="pointer displayNone">
+                        <div class="thumbnail" data-tlc="bind $var '.%attribs.zoovy:prod_image3'; apply --attrib='data-imgsrc';">
+                            <img data-tlc="bind $var '.%attribs.zoovy:prod_image3';  if(is $var --notblank){{apply --img --media=$var --width=100 --height=110 --bgcolor='#ffffff' --replace;}};" src="blank.gif" alt="" height="100" width="100">
+                        </div>
+                    </div>
+                    
+                    <div data-tlc="bind $var '.%attribs.zoovy:prod_image4'; if(is $var --notblank;) {{ apply --show; }};" onclick="myApp.ext.store_product.u.showPicsInModal({'pid':$(this).parent().attr('data-pid'),'int':'4'});" class="pointer displayNone">
+                        <div class="thumbnail" data-tlc="bind $var '.%attribs.zoovy:prod_image4'; apply --attrib='data-imgsrc';">
+                            <img data-tlc="bind $var '.%attribs.zoovy:prod_image4';  if(is $var --notblank){{apply --img --media=$var --width=100 --height=110 --bgcolor='#ffffff' --replace;}};" src="blank.gif" alt="" height="100" width="100">
+                        </div>
+                    </div>
+                    
+                    <div data-tlc="bind $var '.%attribs.zoovy:prod_image5'; if(is $var --notblank;) {{ apply --show; }};" onclick="myApp.ext.store_product.u.showPicsInModal({'pid':$(this).parent().attr('data-pid'),'int':'5'});" class="pointer displayNone">
+                        <div class="thumbnail" data-tlc="bind $var '.%attribs.zoovy:prod_image5'; apply --attrib='data-imgsrc';">
+                            <img data-tlc="bind $var '.%attribs.zoovy:prod_image5';  if(is $var --notblank){{apply --img --media=$var --width=100 --height=110 --bgcolor='#ffffff' --replace;}};" src="blank.gif" alt="" height="100" width="100">
+                        </div>
+                    </div>
+    
+                    <div data-tlc="bind $var '.%attribs.zoovy:prod_image6'; if(is $var --notblank;) {{ apply --show; }};" onclick="myApp.ext.store_product.u.showPicsInModal({'pid':$(this).parent().attr('data-pid'),'int':'6'});" class="pointer displayNone">
+                        <div class="thumbnail" data-tlc="bind $var '.%attribs.zoovy:prod_image6'; apply --attrib='data-imgsrc';">
+                            <img data-tlc="bind $var '.%attribs.zoovy:prod_image6';  if(is $var --notblank){{apply --img --media=$var --width=100 --height=110 --bgcolor='#ffffff' --replace;}};" src="blank.gif" alt="" height="100" width="100">
+                        </div>
+                    </div>
+                    
+                    <div data-tlc="bind $var '.%attribs.zoovy:prod_image7'; if(is $var --notblank;) {{ apply --show; }};" onclick="myApp.ext.store_product.u.showPicsInModal({'pid':$(this).parent().attr('data-pid'),'int':'7'});" class="pointer displayNone">
+                        <div class="thumbnail" data-tlc="bind $var '.%attribs.zoovy:prod_image7'; apply --attrib='data-imgsrc';">
+                            <img data-tlc="bind $var '.%attribs.zoovy:prod_image7';  if(is $var --notblank){{apply --img --media=$var --width=100 --height=110 --bgcolor='#ffffff' --replace;}};" src="blank.gif" alt="" height="100" width="100">
+                        </div>
+                    </div>
+                    
+                    <div data-tlc="bind $var '.%attribs.zoovy:prod_image8'; if(is $var --notblank;) {{ apply --show; }};" onclick="myApp.ext.store_product.u.showPicsInModal({'pid':$(this).parent().attr('data-pid'),'int':'8'});" class="pointer displayNone">
+                        <div class="thumbnail" data-tlc="bind $var '.%attribs.zoovy:prod_image8'; apply --attrib='data-imgsrc';">
+                            <img data-tlc="bind $var '.%attribs.zoovy:prod_image8';  if(is $var --notblank){{apply --img --media=$var --width=100 --height=110 --bgcolor='#ffffff' --replace;}};" src="blank.gif" alt="" height="100" width="100">
+                        </div>
+                    </div>
+                    
+                    <div data-tlc="bind $var '.%attribs.zoovy:prod_image9'; if(is $var --notblank;) {{ apply --show; }};" onclick="myApp.ext.store_product.u.showPicsInModal({'pid':$(this).parent().attr('data-pid'),'int':'9'});" class="pointer displayNone">
+                        <div class="thumbnail" data-tlc="bind $var '.%attribs.zoovy:prod_image9'; apply --attrib='data-imgsrc';">
+                            <img data-tlc="bind $var '.%attribs.zoovy:prod_image9';  if(is $var --notblank){{apply --img --media=$var --width=100 --height=110 --bgcolor='#ffffff' --replace;}};" src="blank.gif" alt="" height="100" width="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--
+        <div data-tlc="bind $var '.%attribs.zoovy:prod_is_tags'; quickstart#tags --legacy; if (is $var --notblank;) {{apply --append;}};" class="tagsContainer"></div>
 		<a data-tlc="bind $var '.%attribs.zoovy:prod_image1'; greenspeed#imageurlhref  --legacy;" href="blank.gif" data-gallery="gallery">
 		<img class="prodBigImage" data-tlc="bind $var '.%attribs.zoovy:prod_image1'; if(is $var --notblank;){{apply --imageurl --media=$var --width=250 --height=250 --bgcolor='#ffffff' --attrib='src'; }}; bind $image '.%attribs.zoovy:prod_image1'; greenspeed#srcset --views='h=250&w=250&dpi=1x&vp=400w,h=350&w=350&dpi=1x&vp=1100w,h=500&w=500&dpi=1x&vp=1800w'; apply --attrib='srcset';" src="blank.gif" alt="" />
 		</a>
 	
 		<div data-tlc="bind $var '.%attribs'; greenspeed#prodthumbs; apply --append;" data-legacy-useparentdata="true" class="marginTop"></div>
+        -->
 	</div>
 
 	
