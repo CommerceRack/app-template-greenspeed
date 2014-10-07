@@ -824,14 +824,20 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 */
 
 .categoryList > li {
-    height: 35px;
-    width: 100%;
+    height: 240px;
+	border:7px solid white;
 	}
+.categoryList > li:hover {
+	border:7px solid #9eca37;
+}
+.categoryList > li:hover div.catName {
+	text-decoration:underline; color:#9eca37;
+}
 .categoryList li {
     font-size:1em;
 	}
-.catName	{padding-top:.3em; font-size:1em; color:#333;}
-.catName:hover	{text-decoration:underline;}
+.catName	{padding-top:.3em; font-size:1em; color:#333; text-align: center;}
+.catName:hover	{}
 .noUnderline	{text-decoration:none;}
 
 
@@ -851,16 +857,16 @@ SANITY -> cycle will add a z-index of 100 to each slide.
     height: 25px;
     padding: 0.2em 0.4em;
     right: 6px;
-	top: 6px;
+	top: 9px;
     width: 75px;
 }
 ul.responsiveProdlist .quickView	{
-	right: 14px;
+	right: 17px;
 }
 .responsiveProdlist	{
 	margin:0; padding:0;
 	list-style:none;
-	}
+}
 
 .plListItem	{
 	width: 220px;
@@ -869,10 +875,16 @@ ul.responsiveProdlist .quickView	{
 	overflow:hidden;
 	position:relative;
 	margin:0 1% 1em 0;
-	box-sizing:border-box;
-	-moz-box-sizing:border-box;
-	webkit-box-sizing:border-box;
-	}
+}
+.plListItem h5{
+	color:black;
+}
+.plListItem:hover div.prodThumbContainer{
+	border: 6px solid #9eca37;
+}
+.plListItem:hover h5{
+	color:#9eca37;
+}
 .prodThumbContainer{border: 6px solid #9a9a9a; width: 200px;}
 	
 
@@ -1149,6 +1161,9 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 		margin-left: auto;
 		margin-right: auto;
 		width: 73%;
+	}
+	.categoryList > li{
+		width: 180px;
 	}
 }
 	
