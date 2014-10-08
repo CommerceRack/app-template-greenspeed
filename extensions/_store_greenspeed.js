@@ -317,7 +317,6 @@ var _store_greenspeed = function(_app) {
 					$(".faqContentCont", $tagContext).data('collapseExpand',false).append();
 					//_app.u.dump("collapseExpand Data did not exist for this drop down. Created it.");
 					//_app.u.dump($(".faqContentCont", $tagContext).data('collapseExpand'));
-
 				}
 				else{
 				}

@@ -96,6 +96,7 @@ h6	{font-size:.9em;line-height:.8em; margin-bottom:.2em;}
 /* some optional form styling
 <label><span class='prompt'>prompt</span><input class='alignInput'></label> w/ alignedForm class around it on form, fieldset, whatever 
  */
+.alignedForm{float: left;width: 55%;}
 .alignedForm label	{display:block; clear:both; margin-bottom:.2em; vertical-align:top;}
 .alignedForm label:after {
     content: ".";
@@ -104,8 +105,8 @@ h6	{font-size:.9em;line-height:.8em; margin-bottom:.2em;}
     clear: both;
     visibility: hidden;
 	}
-.alignedForm .prompt	{text-align:right; float:left; width:35%; display:block; margin-right:2%;}
-.alignedForm .alignInput	{width:60%; float:right;} /* not enforcing width is common enough that it justifies using a class to enforce it. */
+.alignedForm .prompt	{display: block;float: left;margin-right: 2%;text-align: left;width: 18%;}
+.alignedForm .alignInput	{float: left;width: 78%;} /* not enforcing width is common enough that it justifies using a class to enforce it. */
 
 /* chrome and safari add an outer border/glow to the input in focus. this removes it. */
 input:focus {

@@ -337,7 +337,7 @@ the homepageTemplate template is loaded into mainContentArea by default when the
 
 	
     <p data-tlc="bind $var '.$app_best_sellers.@products'; if (is $var --notblank;) {{apply --hide;}};">BEST SELLERS</p>
-    <ul class="listStyleNone fluidList noPadOrMargin productList" data-tlc="bind $var '.$app_best_sellers.@products'; prodlist_infinite#infiniteproductlist --withReviews='1' --withInventory='1' --withVariations='1' --templateid='productListTemplate' --legacy;" style="margin-right: 0px;">
+    <ul class="listStyleNone fluidList noPadOrMargin productList" data-tlc="bind $var '.$app_best_sellers.@products'; prodlist_infinite#infiniteproductlist --withReviews='1' --withInventory='1' --withVariations='1' --templateid='productListTemplate' --legacy;" style="margin-right: 0px;"></ul>
 </div>
 
 
@@ -832,6 +832,7 @@ if you change these, you should move them above this comment so that when you (o
 		<div id="aboutArticle" class="textContentArea article">
 			<h1>About Us</h1>
 			<div>
+            <p>Have your developer input any content you would like to share about your company here.</p>
 			<!-- ::: add your about us information here -->
 			</div>
 		</div>
@@ -840,6 +841,7 @@ if you change these, you should move them above this comment so that when you (o
 		<div id="contactArticle" class="displayNone textContentArea">
 			<h1>Contact Information</h1>
 			<div class="companyAddress">
+            <p>Have your developer add any instructional text here for all associated information for contacting your company.</p>
 			<!-- ::: add your contact information here ::: -->
 			</div>
 
@@ -861,7 +863,22 @@ if you change these, you should move them above this comment so that when you (o
 		<!-- faq are generated through the faq manager in the admin UI. do not add content in the faqContent area -->
 		<div id="faqArticle" class="displayNone textContentArea">
 			<h1>Frequently Asked Questions</h1>
-			<div id="faqContent" class=" ui-accordion ui-widget ui-helper-reset ui-accordion-icons appAccordianesque"></div>
+            <p>Have your developer input any FAQs you would like displayed here. Dev note: refer to the commented section in the code for instructions on how to input a proper FAQ.</p>
+            
+<!--*******************************************************************************************************************************************************************************************
+*************HERE IS AN EXAMPLE OF HOW EACH FAQ SHOULD BE SETUP********************************************************************************************************************************
+            <div class="faqPrivacyPolicy">
+				<div class="faqTitleCont" onClick="myApp.ext._store_greenspeed.a.collapseExpandFAQ($(this).parent());">
+					<div></div>
+					<span class="ui-icon ui-icon-triangle-1-e floatLeft marginRight"></span>
+					<h3>FAQ Title</h3>
+				</div>
+				<div class="faqContentCont">
+					<p><span>Q: </span>Your question goes here?</p>
+					<p><span>A: </span>Your answer to the question goes here. </p>
+				</div>
+			</div>
+            -->
 		</div>
 
 
@@ -869,6 +886,7 @@ if you change these, you should move them above this comment so that when you (o
 		<div class="displayNone textContentArea" id="paymentArticle">
 			<h1>Payment Policy</h1>
 			<div>
+            <p>Have your developer input any content you want here associated with your payment policy.</p>
 			<!-- ::: add your payment policy here ::: -->
 			</div>
 		</div>
@@ -921,6 +939,7 @@ if you change these, you should move them above this comment so that when you (o
 		<div class="displayNone textContentArea" id="returnArticle">
 			<h1>Return Policy</h1>
 			<div>
+            <p>Have your developer input any content you want here associated with your return policy.</p>
 			<!-- ::: add your return policy here ::: -->
 			</div>
 		</div>
@@ -930,6 +949,7 @@ if you change these, you should move them above this comment so that when you (o
 		<div class="displayNone textContentArea" id="shippingArticle">
 			<h1>Shipping Information</h1>
 			<div>
+            <p>Have your developer input any content you want here associated with your shipping policy.</p>
 			<!-- ::: add your shipping information here ::: -->
 			</div>
 		</div>
