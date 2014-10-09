@@ -89,7 +89,7 @@ h1	{font-size:1.4em; line-height:1.0em; margin-bottom:.4em;}
 h2	{font-size:1.3em;line-height:1.0em; margin-bottom:.4em;}
 h3	{font-size:1.2em;line-height:1.0em; margin-bottom:.3em;}
 h4	{font-size:1.1em;line-height:1.0em; margin-bottom:.2em;}
-h5	{font-size:1.0em;line-height:.9em; margin-bottom:.2em;}
+h5	{font-size:1.0em;line-height:1em; margin-bottom:.2em;}
 h6	{font-size:.9em;line-height:.8em; margin-bottom:.2em;}
 
 
@@ -133,9 +133,8 @@ and offMenu is toggle off, hiding the change button.
 
 .bindByAnchor	{} /* here just to give a little aid to wysiwyg editors. no styles should be applied. used w/ bindNav feature */
 
-.appAccordianesque div.prodThumbContainer{
-	width: 55px;
-}
+.appAccordianesque div.prodThumbContainer{width: 55px;}
+.appAccordianesque div.prodThumbContainer{}
 
 
 /* some general classes used for styling templates. feel free to use these. It's not recommended you delete or rename them */
@@ -845,7 +844,7 @@ SANITY -> cycle will add a z-index of 100 to each slide.
 */
 
 .categoryList > li {
-    height: 240px;
+    height: 260px;
 	border:7px solid white;
 	width:180px;
 	}
