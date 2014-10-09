@@ -108,6 +108,11 @@ h6	{font-size:.9em;line-height:.8em; margin-bottom:.2em;}
 .alignedForm .prompt	{display: block;float: left;margin-right: 2%;text-align: left;width: 18%;}
 .alignedForm .alignInput	{float: left;width: 78%;} /* not enforcing width is common enough that it justifies using a class to enforce it. */
 
+
+div#loginFormContainer form.alignedForm{float: left;width: 100%;}
+div#loginFormContainer a:hover{color: #9eca37;}
+div#loginFormContainer input.applyButton:hover{background-color:#9eca37;border:none;padding-left:9px;padding-right:9px;padding-top:3px;padding-bottom:3px;color:white;}
+
 /* chrome and safari add an outer border/glow to the input in focus. this removes it. */
 input:focus {
 	outline:none;
@@ -128,7 +133,9 @@ and offMenu is toggle off, hiding the change button.
 
 .bindByAnchor	{} /* here just to give a little aid to wysiwyg editors. no styles should be applied. used w/ bindNav feature */
 
-
+.appAccordianesque div.prodThumbContainer{
+	width: 55px;
+}
 
 
 /* some general classes used for styling templates. feel free to use these. It's not recommended you delete or rename them */
