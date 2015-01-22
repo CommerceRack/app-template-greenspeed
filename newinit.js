@@ -10,7 +10,7 @@ _app.u.loadScript(configURI,function(){
 	_app.vars.domain = zGlobals.appSettings.sdomain; //passed in ajax requests.
 	_app.vars.jqurl = (document.location.protocol === 'file:') ? _app.vars.testURL+'jsonapi/' : '/jsonapi/';
 	
-	var startupRequires = ['quickstart'];
+	var startupRequires = ['quickstart','_store_greenspeed'];
 	
 	_app.require(startupRequires, function(){
 		setTimeout(function(){$('#appView').removeClass('initFooter');}, 1200);
@@ -22,6 +22,11 @@ _app.extend({
 	"namespace" : "quickstart",
 	"filename" : "app-quickstart.js"
 	});
+_app.extend({
+	"namespace" : "_store_greenspeed",
+	"filename" : "extensions/_store_greenspeed.js"
+	});
+
 
 _app.couple('quickstart','addPageHandler',{
 	"pageType" : "static",
@@ -638,21 +643,30 @@ _app.u.appInitComplete = function()	{
 /*****************************************************************************************************************************************************************************************************************************/
 /*******************************************************************************************************CUSTOM ONCOMPLETES****************************************************************************************************/
 
-$("#homepageTemplate").on('complete.cycle',function(state,$ele,infoObj){
-	$('.productSlideshow',$ele).cycle();
+_app.u.bindTemplateEvent('homepageTemplate', 'complete.cycle',function(event,$context,infoObj){
+	$('.productSlideshow',$context).cycle();
 	});
 
 
 //unbind this from window anytime a category page is left.
 //NOTE! if infinite prodlist is used on other pages, remove run this on that template as well.
-$("#categoryTemplate").on('complete.infinitescroll',function(state,$ele,infoObj){
+_app.u.bindTemplateEvent('categoryTemplate', 'complete.infinitescroll',function(event,$context,infoObj){
 	$(window).off('scroll.infiniteScroll'); 
 	});
 
 
-$("#productTemplate, #productTemplateQuickView").on('complete.dynimaging',function(state,$ele,infoObj){
-	handleSrcSetUpdate($ele);
-	$('.prodDetailImagesContainer',$ele).imagegallery({
+_app.u.bindTemplateEvent('productTemplate', 'complete.dynimaging',function(event,$context,infoObj){
+	handleSrcSetUpdate($context);
+	$('.prodDetailImagesContainer',$context).imagegallery({
+		show: 'fade',
+		hide: 'fade',
+		fullscreen: false,
+		slideshow: false
+		});
+	});
+_app.u.bindTemplateEvent('productTemplateQuickView', 'complete.dynimaging',function(event,$context,infoObj){
+	handleSrcSetUpdate($context);
+	$('.prodDetailImagesContainer',$context).imagegallery({
 		show: 'fade',
 		hide: 'fade',
 		fullscreen: false,
@@ -661,12 +675,234 @@ $("#productTemplate, #productTemplateQuickView").on('complete.dynimaging',functi
 	});
 
 //stops the video from playing when a user leaves the detail page (or quickview)
-$("#productTemplate, #productTemplateQuickView").on('depart.youtubeReset',function(state,$ele,infoObj){
-	var $iframe = $("[data-app-role='videoContainer']:first",$ele).find('iframe:first');
+_app.u.bindTemplateEvent('productTemplate', 'depart.youtubeReset',function(event,$context,infoObj){
+	var $iframe = $("[data-app-role='videoContainer']:first",$context).find('iframe:first');
 	var video = $iframe.attr('src');
 	$iframe.attr('src',''); //this stops the video.
 	$iframe.attr('src',$iframe.src); //set the src so if the page is visited again, the video is present. 
 	});
+_app.u.bindTemplateEvent('productTemplateQuickView', 'depart.youtubeReset',function(event,$context,infoObj){
+	var $iframe = $("[data-app-role='videoContainer']:first",$context).find('iframe:first');
+	var video = $iframe.attr('src');
+	$iframe.attr('src',''); //this stops the video.
+	$iframe.attr('src',$iframe.src); //set the src so if the page is visited again, the video is present. 
+	});
+
+	
+	//replacement for bindByAnchor href to make crawlable links. Currently used mainly on sitemap
+					
+//BEGIN ONCOMPLETES/ONDEPARTS/ONINITS
+_app.u.bindTemplateEvent('productTemplate', 'complete.greenspeed',function(event,$context,infoObj){
+
+	//INTERNET EXPLORER WARNING MESSAGE
+	if($('.headerIE8WarningCont').data('messageShown')){
+	}
+	else{
+		$('.headerIE8WarningCont').data('messageShown',false);
+	}
+	if($('.headerIE8WarningCont').data('messageShown') === false)
+	{
+		$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
+		$('.headerIE8WarningCont').data('messageShown',true).append();
+	}
+	
+	//var $context = $(_app.u.jqSelector('#',infoObj.parentID));
+	var $tabContainer = $( ".tabbedProductContent",$context);
+		if($tabContainer.length)	{
+			if($tabContainer.data("widget") == 'anytabs'){} //tabs have already been instantiated. no need to be redundant.
+			else	{
+				$tabContainer.anytabs();
+			}
+		}
+		else	{} //couldn't find the tab to tabificate.
+		
+		
+		//HOVER ZOOM FEATURE
+		 
+		 var image = $('.prodImageContainer',$context).attr('data-imgsrc');
+		 //dump("var image =");
+		 //dump (image);
+		 var imageURL = _app.u.makeImage({
+		   "name" : image,
+		   "w" : 1000,
+		   "h" : 1150,
+		   "b" : "FFFFFF"
+		   });
+		 $('.largeImageContainer', $context).zoom({
+		  url: imageURL,
+		  on:'mouseover',
+		  onZoomIn: function(){
+		   // the active class causes the curser to be switched to a zoom out image - this occurs when the image has zoom
+		   $('.largeImageContainer').addClass('active');
+		   },
+		  onZoomOut: function(){
+		   // restores the zoom in curser after zoom out
+		   $('.largeImageContainer').removeClass('active');
+		   }});
+		 $('.thumbnail',$context).on('mouseenter', function(){
+			  //dump("Thumbnail swap action activated.");
+			  $('.largeImageContainer').trigger('zoom.destroy');
+			  //dump("$(this).parent().attr('data-imgsrc') = ");
+			  //dump($(this).parent().attr('data-imgsrc'));
+			  var newImage = $(this).attr('data-imgsrc');
+			  
+			  //IMAGE VIEWER CLICK BLOCKER
+			  var thumbObject = $(this);
+			  if(thumbObject.data("firstTimeHover")){
+				  //_app.u.dump("firstTimeHover exists for " + $(this) + ". Doing nothing.")
+			  }
+			  else{
+				  //_app.u.dump("firstTimeHover does not exists for " + $(this) + ". Adding it set to false.")
+				  thumbObject.data('firstTimeHover',false).append();
+			  }
+			  
+			  if (thumbObject.data('firstTimeHover') === false){
+				  //_app.u.dump("Running image blocker for " + $(this) + ".")
+				  var imageContainerSize = $('.imageContainer', $context).height();
+				  //_app.u.dump(imageContainerSize);
+				  $(".imageContainerBlocker", $context).css("height",imageContainerSize);
+				  $(".imageContainerBlocker", $context).show();
+			  }
+			  //END IMAGE CLICK BLOCKER
+		
+			  $('.prodImageContainer > img',$context).attr('src', _app.u.makeImage({
+				   "name" : newImage,
+				   "w" : 450,
+				   "h" : 560,
+				   "b" : "FFFFFF"
+			   }));
+			  var newImageURL = _app.u.makeImage({
+				   "name" : newImage,
+				   "w" : 1000,
+				   "h" : 1150,
+				   "b" : "FFFFFF"
+			   });
+			   
+			   //CLICK BLOCKER ACTIVATOR
+			   setTimeout(function(){
+				   $(".imageContainerBlocker", $context).hide();
+				   thumbObject.data('firstTimeHover',true).append();
+				   //_app.u.dump("Setting firstTimeHover to true for " + $(this) + ".");
+			   }, 3000);
+			   //END CLICK BLOCK ACTIVATOR
+			   
+			  $('.largeImageContainer').zoom({
+				   url: newImageURL,
+				   on:'mouseover',
+				   onZoomIn: function(){
+					$('.largeImageContainer').addClass('active');
+					//_app.u.dump("we're running addClass");
+					},
+				   onZoomOut: function(){
+					$('.largeImageContainer').removeClass('active');
+					}
+				});
+		});
+	
+		function productHoverZoomClick(){
+			$(".zoomImg", $context).before("<div onClick='_app.ext.store_product.u.showPicsInModal({\"pid\":$(this).attr(\"data-pid\")});' data-bind=\"var:product(zoovy:prod_image1; format:assignAttribute; attribute:data-pid;\">");
+			$(".zoomImg", $context).after("</div>");
+		}
+});
+	
+_app.u.bindTemplateEvent('homepageTemplate', 'complete.greenspeed',function(event,$context,infoObj){
+	//INTERNET EXPLORER WARNING MESSAGE
+	if($('.headerIE8WarningCont').data('messageShown')){
+	}
+	else{
+		$('.headerIE8WarningCont').data('messageShown',false);
+	}
+	if($('.headerIE8WarningCont').data('messageShown') === false)
+	{
+		$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
+		$('.headerIE8WarningCont').data('messageShown',true).append();
+	}
+});
+
+_app.u.bindTemplateEvent('categoryTemplate', 'complete.greenspeed',function(event,$context,infoObj){
+	
+	//INTERNET EXPLORER WARNING MESSAGE
+	if($('.headerIE8WarningCont').data('messageShown')){
+	}
+	else{
+		$('.headerIE8WarningCont').data('messageShown',false);
+	}
+	if($('.headerIE8WarningCont').data('messageShown') === false)
+	{
+		$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
+		$('.headerIE8WarningCont').data('messageShown',true).append();
+	}
+});
+
+_app.u.bindTemplateEvent('searchTemplate', 'complete.greenspeed',function(event,$context,infoObj){
+	//INTERNET EXPLORER WARNING MESSAGE
+	if($('.headerIE8WarningCont').data('messageShown')){
+	}
+	else{
+		$('.headerIE8WarningCont').data('messageShown',false);
+	}
+	if($('.headerIE8WarningCont').data('messageShown') === false)
+	{
+		$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
+		$('.headerIE8WarningCont').data('messageShown',true).append();
+	}
+});
+_app.u.bindTemplateEvent('productTemplate', 'complete.greenspeed',function(event,$context,infoObj){
+	//INTERNET EXPLORER WARNING MESSAGE
+	if($('.headerIE8WarningCont').data('messageShown')){
+	}
+	else{
+		$('.headerIE8WarningCont').data('messageShown',false);
+	}
+	if($('.headerIE8WarningCont').data('messageShown') === false)
+	{
+		$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
+		$('.headerIE8WarningCont').data('messageShown',true).append();
+	}
+});
+_app.u.bindTemplateEvent('checkoutTemplate', 'complete.greenspeed',function(event,$context,infoObj){
+	//INTERNET EXPLORER WARNING MESSAGE
+	if($('.headerIE8WarningCont').data('messageShown')){
+	}
+	else{
+		$('.headerIE8WarningCont').data('messageShown',false);
+	}
+	if($('.headerIE8WarningCont').data('messageShown') === false)
+	{
+		$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
+		$('.headerIE8WarningCont').data('messageShown',true).append();
+	}
+});
+_app.u.bindTemplateEvent('pageNotFoundTemplate', 'complete.greenspeed',function(event,$context,infoObj){
+	//INTERNET EXPLORER WARNING MESSAGE
+	if($('.headerIE8WarningCont').data('messageShown')){
+	}
+	else{
+		$('.headerIE8WarningCont').data('messageShown',false);
+	}
+	if($('.headerIE8WarningCont').data('messageShown') === false)
+	{
+		$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
+		$('.headerIE8WarningCont').data('messageShown',true).append();
+	}
+});
+
+_app.u.bindTemplateEvent('cartTemplate', 'complete.updateMinicart',function(event,$context,infoObj){
+	var cartid = infoObj.cartid || myApp.model.fetchCartID();
+	var $appView = $('#appView'), cart = myApp.data['cartDetail|'+cartid], itemCount = 0, subtotal = 0, total = 0;
+	dump(" -> cart "+cartid+": "); dump(cart);
+	if(!$.isEmptyObject(cart['@ITEMS']))	{
+		itemCount = cart.sum.items_count || 0;
+		subtotal = cart.sum.items_total;
+		total = cart.sum.order_total;
+		}
+	else	{
+		//cart not in memory yet. use defaults.
+		}
+	$('.cartItemCount',$appView).text(itemCount);
+	$('.cartSubtotal',$appView).text(myApp.u.formatMoney(subtotal,'$',2,false));
+	$('.cartTotal',$appView).text(myApp.u.formatMoney(total,'$',2,false));
+});
 /*****************************************************************************************************************************************************************************************************************************/
 /*******************************************************************************************************END CUSTOM ONCOMPLETES************************************************************************************************/
 

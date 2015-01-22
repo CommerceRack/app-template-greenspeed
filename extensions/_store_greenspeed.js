@@ -47,258 +47,41 @@ var _store_greenspeed = function(_app) {
 				onSuccess : function(){
 					_app.u.dump('BEGIN _app.ext_store_greenspeed.callbacks.init.onSuccess');
 					_app.ext._store_greenspeed.u.bindOnclick();
-					
+					var _tag = {
+						"callback"				: "topnavCatLinks",		
+						"extension"				: "_store_greenspeed",			
+						"loadsTemplate"			: "topnavCatLinksTemplate"
+					};
+					var obj = {
+						  "path" : ".",
+						  "detail" : "max"
+					}
+					 app.calls.appNavcatDetail.init(obj, tag, 'immutable');
+					 _app.model.dispatchThis('immutable');
 										
 				},
 				onError : function() {
 					_app.u.dump('BEGIN _app.ext_store_greenspeed.callbacks.init.onError');
 				}
 			},
+			topnavCatLinks : {
+				onSuccess : function(rd) {
+					_app.u.dump('BEGIN _app.ext_store_greenspeed.callbacks.topnavCatLinks.onSuccess');
+					var navData = _app.data['appNavcatDetail|.']
+					dump("Top nav link data = ")
+					dump(navData);
+					dump("rd = ");
+					dump(rd);
+					//$('#top-level-cat-container').tlc({"templateid":rd.loadsTemplate,"dataset":_app.data[rd.datapointer],verb:"transmogrify"});
+					$("#top-level-cat-container").tlc({"templateid":rd.loadsTemplate,"dataset":_app.data[rd.datapointer]['@subcategoryDetail'], "verb":"transmogrify"});
+				},
+				onError : function(rd) {
+					_app.u.dump('BEGIN _app.ext_store_greenspeed.callbacks.topnavCatLinks.onError');
+				}
+			},
 			startExtension : {
 				onSuccess : function (){
 					_app.u.dump('BEGIN _app.ext_store_greenspeed.callbacks.startExtension.onSuccess')
-					
-					//replacement for bindByAnchor href to make crawlable links. Currently used mainly on sitemap
-					
-					//BEGIN ONCOMPLETES/ONDEPARTS/ONINITS
-					_app.templates.productTemplate.on('complete.greenspeed',function(event,$context,infoObj){
-					//_app.rq.push(['templateFunction','productTemplate','onCompletes',function(P) {
-	
-						//INTERNET EXPLORER WARNING MESSAGE
-						if($('.headerIE8WarningCont').data('messageShown')){
-						}
-						else{
-							$('.headerIE8WarningCont').data('messageShown',false);
-						}
-						if($('.headerIE8WarningCont').data('messageShown') === false)
-						{
-							$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
-							$('.headerIE8WarningCont').data('messageShown',true).append();
-						}
-						
-						//var $context = $(_app.u.jqSelector('#',infoObj.parentID));
-						var $tabContainer = $( ".tabbedProductContent",$context);
-							if($tabContainer.length)	{
-								if($tabContainer.data("widget") == 'anytabs'){} //tabs have already been instantiated. no need to be redundant.
-								else	{
-									$tabContainer.anytabs();
-								}
-							}
-							else	{} //couldn't find the tab to tabificate.
-							
-							
-							//HOVER ZOOM FEATURE
-							 
-							 var image = $('.prodImageContainer',$context).attr('data-imgsrc');
-							 //dump("var image =");
-							 //dump (image);
-							 var imageURL = _app.u.makeImage({
-							   "name" : image,
-							   "w" : 1000,
-							   "h" : 1150,
-							   "b" : "FFFFFF"
-							   });
-							 $('.largeImageContainer', $context).zoom({
-							  url: imageURL,
-							  on:'mouseover',
-							  onZoomIn: function(){
-							   // the active class causes the curser to be switched to a zoom out image - this occurs when the image has zoom
-							   $('.largeImageContainer').addClass('active');
-							   },
-							  onZoomOut: function(){
-							   // restores the zoom in curser after zoom out
-							   $('.largeImageContainer').removeClass('active');
-							   }});
-							 $('.thumbnail',$context).on('mouseenter', function(){
-								  //dump("Thumbnail swap action activated.");
-								  $('.largeImageContainer').trigger('zoom.destroy');
-								  //dump("$(this).parent().attr('data-imgsrc') = ");
-								  //dump($(this).parent().attr('data-imgsrc'));
-								  var newImage = $(this).attr('data-imgsrc');
-								  
-								  //IMAGE VIEWER CLICK BLOCKER
-								  var thumbObject = $(this);
-								  if(thumbObject.data("firstTimeHover")){
-									  //_app.u.dump("firstTimeHover exists for " + $(this) + ". Doing nothing.")
-								  }
-								  else{
-									  //_app.u.dump("firstTimeHover does not exists for " + $(this) + ". Adding it set to false.")
-									  thumbObject.data('firstTimeHover',false).append();
-								  }
-								  
-								  if (thumbObject.data('firstTimeHover') === false){
-									  //_app.u.dump("Running image blocker for " + $(this) + ".")
-									  var imageContainerSize = $('.imageContainer', $context).height();
-									  //_app.u.dump(imageContainerSize);
-									  $(".imageContainerBlocker", $context).css("height",imageContainerSize);
-									  $(".imageContainerBlocker", $context).show();
-								  }
-								  //END IMAGE CLICK BLOCKER
-							
-								  $('.prodImageContainer > img',$context).attr('src', _app.u.makeImage({
-									   "name" : newImage,
-									   "w" : 450,
-									   "h" : 560,
-									   "b" : "FFFFFF"
-								   }));
-								  var newImageURL = _app.u.makeImage({
-									   "name" : newImage,
-									   "w" : 1000,
-									   "h" : 1150,
-									   "b" : "FFFFFF"
-								   });
-								   
-								   //CLICK BLOCKER ACTIVATOR
-								   setTimeout(function(){
-									   $(".imageContainerBlocker", $context).hide();
-									   thumbObject.data('firstTimeHover',true).append();
-									   //_app.u.dump("Setting firstTimeHover to true for " + $(this) + ".");
-								   }, 3000);
-								   //END CLICK BLOCK ACTIVATOR
-								   
-								  $('.largeImageContainer').zoom({
-									   url: newImageURL,
-									   on:'mouseover',
-									   onZoomIn: function(){
-										$('.largeImageContainer').addClass('active');
-										//_app.u.dump("we're running addClass");
-										},
-									   onZoomOut: function(){
-										$('.largeImageContainer').removeClass('active');
-										}
-							   		});
-							});
-						
-							function productHoverZoomClick(){
-								$(".zoomImg", $context).before("<div onClick='_app.ext.store_product.u.showPicsInModal({\"pid\":$(this).attr(\"data-pid\")});' data-bind=\"var:product(zoovy:prod_image1; format:assignAttribute; attribute:data-pid;\">");
-								$(".zoomImg", $context).after("</div>");
-							}
-					});
-						
-					_app.templates.homepageTemplate.on('complete.greenspeed',function(event,$context,infoObj){
-						//INTERNET EXPLORER WARNING MESSAGE
-						if($('.headerIE8WarningCont').data('messageShown')){
-						}
-						else{
-							$('.headerIE8WarningCont').data('messageShown',false);
-						}
-						if($('.headerIE8WarningCont').data('messageShown') === false)
-						{
-							$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
-							$('.headerIE8WarningCont').data('messageShown',true).append();
-						}
-					});
-					
-					_app.templates.categoryTemplate.on('complete.greenspeed',function(event,$context,infoObj){
-						
-						//INTERNET EXPLORER WARNING MESSAGE
-						if($('.headerIE8WarningCont').data('messageShown')){
-						}
-						else{
-							$('.headerIE8WarningCont').data('messageShown',false);
-						}
-						if($('.headerIE8WarningCont').data('messageShown') === false)
-						{
-							$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
-							$('.headerIE8WarningCont').data('messageShown',true).append();
-						}
-					});
-					
-					_app.templates.companyTemplate.on('complete.greenspeed',function(event,$context,infoObj){
-						//INTERNET EXPLORER WARNING MESSAGE
-						if($('.headerIE8WarningCont').data('messageShown')){
-						}
-						else{
-							$('.headerIE8WarningCont').data('messageShown',false);
-						}
-						if($('.headerIE8WarningCont').data('messageShown') === false)
-						{
-							$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
-							$('.headerIE8WarningCont').data('messageShown',true).append();
-						}
-					});
-					_app.templates.customerTemplate.on('complete.greenspeed',function(event,$context,infoObj){
-						//INTERNET EXPLORER WARNING MESSAGE
-						if($('.headerIE8WarningCont').data('messageShown')){
-						}
-						else{
-							$('.headerIE8WarningCont').data('messageShown',false);
-						}
-						if($('.headerIE8WarningCont').data('messageShown') === false)
-						{
-							$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
-							$('.headerIE8WarningCont').data('messageShown',true).append();
-						}
-					});
-					_app.templates.searchTemplate.on('complete.greenspeed',function(event,$context,infoObj){
-						//INTERNET EXPLORER WARNING MESSAGE
-						if($('.headerIE8WarningCont').data('messageShown')){
-						}
-						else{
-							$('.headerIE8WarningCont').data('messageShown',false);
-						}
-						if($('.headerIE8WarningCont').data('messageShown') === false)
-						{
-							$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
-							$('.headerIE8WarningCont').data('messageShown',true).append();
-						}
-					});
-					_app.templates.productTemplate.on('complete.greenspeed',function(event,$context,infoObj){
-						//INTERNET EXPLORER WARNING MESSAGE
-						if($('.headerIE8WarningCont').data('messageShown')){
-						}
-						else{
-							$('.headerIE8WarningCont').data('messageShown',false);
-						}
-						if($('.headerIE8WarningCont').data('messageShown') === false)
-						{
-							$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
-							$('.headerIE8WarningCont').data('messageShown',true).append();
-						}
-					});
-					_app.templates.checkoutTemplate.on('complete.greenspeed',function(event,$context,infoObj){
-						//INTERNET EXPLORER WARNING MESSAGE
-						if($('.headerIE8WarningCont').data('messageShown')){
-						}
-						else{
-							$('.headerIE8WarningCont').data('messageShown',false);
-						}
-						if($('.headerIE8WarningCont').data('messageShown') === false)
-						{
-							$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
-							$('.headerIE8WarningCont').data('messageShown',true).append();
-						}
-					});
-					_app.templates.pageNotFoundTemplate.on('complete.greenspeed',function(event,$context,infoObj){
-						//INTERNET EXPLORER WARNING MESSAGE
-						if($('.headerIE8WarningCont').data('messageShown')){
-						}
-						else{
-							$('.headerIE8WarningCont').data('messageShown',false);
-						}
-						if($('.headerIE8WarningCont').data('messageShown') === false)
-						{
-							$('.headerIE8WarningCont').anymessage({'message':'We noticed you\'re using Internet Explorer 8. We recommend upgrading to version 9 and above or using Firefox, Chrome, or Safari for a more enhanced shopping experience.'});	
-							$('.headerIE8WarningCont').data('messageShown',true).append();
-						}
-					});
-					
-					$('#cartTemplate').on('complete.updateMinicart',function(state,$ele,infoObj)	{
-						var cartid = infoObj.cartid || myApp.model.fetchCartID();
-						var $appView = $('#appView'), cart = myApp.data['cartDetail|'+cartid], itemCount = 0, subtotal = 0, total = 0;
-						dump(" -> cart "+cartid+": "); dump(cart);
-						if(!$.isEmptyObject(cart['@ITEMS']))	{
-							itemCount = cart.sum.items_count || 0;
-							subtotal = cart.sum.items_total;
-							total = cart.sum.order_total;
-							}
-						else	{
-							//cart not in memory yet. use defaults.
-							}
-						$('.cartItemCount',$appView).text(itemCount);
-						$('.cartSubtotal',$appView).text(myApp.u.formatMoney(subtotal,'$',2,false));
-						$('.cartTotal',$appView).text(myApp.u.formatMoney(total,'$',2,false));
-					});
 				},
 				onError : function (){
 					_app.u.dump('BEGIN app_store_greenspeed.callbacks.startExtension.onError');

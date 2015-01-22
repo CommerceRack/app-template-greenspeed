@@ -85,6 +85,8 @@ document.getElementsByTagName('base')[0].href = baseURL;
 
 <script data-apptimize="embed" type="text/javascript" src="resources/jquery.ui.anyplugins.js"></script>
 <script data-apptimize="embed" type="text/javascript" src="includes.js"></script><!-- contains some polyfills and should be loaded early -->
+<script data-apptimize="embed" type="text/javascript" src="_jquery_cycle_plugin.js"></script>
+
 
 <link data-apptimize="embed" rel="stylesheet" type="text/css" href="resources/anyplugins.css"/>
 <link data-apptimize="embed" rel="stylesheet" type="text/css" href="extensions/checkout/styles.css"/>
@@ -185,7 +187,8 @@ $(document).ready(function(){
 		</div>
 		<div class='clearfix' id='catsAndTitle'>
 			<div class='categoryContainer contrastUI' id='shopNowLink'>Shop</div><!-- hidden by default. on click, shows tier 1 categories -->
-			<ul id='tier1categories' class='mastHeadMenu'>
+			   <div id="top-level-cat-container"></div>
+            <ul id='tier1categories' class='mastHeadMenu'>
 			</ul>
 			<div id='mastHeadBC'>
 				<button id='hotwButton' class='displayNone'></button>
