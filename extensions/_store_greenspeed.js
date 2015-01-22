@@ -56,7 +56,7 @@ var _store_greenspeed = function(_app) {
 						  "path" : ".",
 						  "detail" : "max"
 					}
-					 app.calls.appNavcatDetail.init(obj, tag, 'immutable');
+					 _app.calls.appNavcatDetail.init(obj, _tag, 'immutable');
 					 _app.model.dispatchThis('immutable');
 										
 				},
