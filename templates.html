@@ -442,17 +442,20 @@ It's done this way because ID's hard coded into template are bad mojo (templates
 
 
 <div id="topnavCatLinksTemplate" data-tlc="bind $var '.'; controller#loop --templateid='topnavCatLinkAnchorTemplate'; if (is $var --notblank;) {{apply --empty; apply --append;}};">
-<p>abc123</p>
 </div>
 
 <div id="topnavCatLinkAnchorTemplate">
 <a data-tlc="bind $title '.%page.page_title'; 
      if(is $title --null;){{bind $title '.pretty';}};
      if(is $title --blank;){{bind $title '.pretty';}}; 
-     bind $parent '.'; store_routing#seoanchor  --seo=$title; apply --attrib='href';" >
+     bind $parent '.'; store_routing#seoanchor  --seo=$title; apply --attrib='href';
+     bind $titletext '.'; _store_greenspeed#topnavappendtitle;" >     
 </a>
 </div>
-
+<!-- bind $parent '.'; store_routing#seoanchor  --seo=$title; apply --attrib='href';"   
+	 if(is $title --notnull;){{bind $title '.pretty';}};
+     if(is $title --notblank;){{bind $title '.pretty';}}; 
+     bind $title '.'; _store_greenspeed#topnavappendtitle;   -->
 
 
 

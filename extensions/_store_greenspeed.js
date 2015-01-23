@@ -338,12 +338,20 @@ var _store_greenspeed = function(_app) {
 		e : {
 		},
 		
-		tlcFormats : {
-			dump : function(data,thisTLC) {
-				var prod = data.globals.binds.var;
-				var $tag = data.globals.tags[data.globals.focusTag];
-				dump('=======================dump data: '); dump(prod); 
-		    },
+			tlcFormats : {
+				dump : function(data,thisTLC) {
+					var prod = data.globals.binds.var;
+					var $tag = data.globals.tags[data.globals.focusTag];
+					dump('=======================dump data: '); dump(data); dump(prod); 
+				},
+			
+				topnavappendtitle : function(data,thisTLC) {
+					var name = data.value.pretty;
+					name = name.replace('!','');
+					var anchorElement = $('a',thisTLC.element);
+					anchorElement.text(name);
+				},
+		
 			currencyprodlist : function(data,thisTLC)	{
 				//dump("Begin currency format");
 				//dump(data);
