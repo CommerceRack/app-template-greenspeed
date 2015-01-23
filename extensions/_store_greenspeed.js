@@ -46,18 +46,20 @@ var _store_greenspeed = function(_app) {
 			init : {
 				onSuccess : function(){
 					_app.u.dump('BEGIN _app.ext_store_greenspeed.callbacks.init.onSuccess');
-					_app.ext._store_greenspeed.u.bindOnclick();
-					var _tag = {
-						"callback"				: "topnavCatLinks",		
-						"extension"				: "_store_greenspeed",			
-						"loadsTemplate"			: "topnavCatLinksTemplate"
-					};
-					var obj = {
-						  "path" : ".",
-						  "detail" : "max"
-					}
-					 _app.calls.appNavcatDetail.init(obj, _tag, 'immutable');
-					 _app.model.dispatchThis('immutable');
+					_app.require(['templates.html','store_routing'], function(){
+						_app.ext._store_greenspeed.u.bindOnclick();
+						var _tag = {
+							"callback"				: "topnavCatLinks",		
+							"extension"				: "_store_greenspeed",			
+							"loadsTemplate"			: "topnavCatLinksTemplate"
+						};
+						var obj = {
+							  "path" : ".",
+							  "detail" : "max"
+						}
+						 _app.calls.appNavcatDetail.init(obj, _tag, 'immutable');
+						 _app.model.dispatchThis('immutable');
+					});
 										
 				},
 				onError : function() {
@@ -66,14 +68,17 @@ var _store_greenspeed = function(_app) {
 			},
 			topnavCatLinks : {
 				onSuccess : function(rd) {
-					_app.u.dump('BEGIN _app.ext_store_greenspeed.callbacks.topnavCatLinks.onSuccess');
-					var navData = _app.data['appNavcatDetail|.']
-					dump("Top nav link data = ")
-					dump(navData);
-					dump("rd = ");
-					dump(rd);
-					//$('#top-level-cat-container').tlc({"templateid":rd.loadsTemplate,"dataset":_app.data[rd.datapointer],verb:"transmogrify"});
-					$("#top-level-cat-container").tlc({"templateid":rd.loadsTemplate,"dataset":_app.data[rd.datapointer]['@subcategoryDetail'], "verb":"transmogrify"});
+					_app.require(['templates.html','store_routing'], function(){
+						_app.u.dump('BEGIN _app.ext_store_greenspeed.callbacks.topnavCatLinks.onSuccess');
+						var navData = _app.data['appNavcatDetail|.']
+						dump("Top nav link data = ")
+						dump(navData);
+						dump("rd = ");
+						dump(rd);
+						dump("$('#top-level-cat-container')");
+						dump($("#top-level-cat-container"));
+						$("#top-level-cat-container").tlc({"templateid":rd.loadsTemplate,"dataset":_app.data[rd.datapointer]['@subcategoryDetail'], "verb":"transmogrify"});
+					});
 				},
 				onError : function(rd) {
 					_app.u.dump('BEGIN _app.ext_store_greenspeed.callbacks.topnavCatLinks.onError');
@@ -334,7 +339,11 @@ var _store_greenspeed = function(_app) {
 		},
 		
 		tlcFormats : {
-			//currencyprodlist : function(argObj,globals)	{
+			dump : function(data,thisTLC) {
+				var prod = data.globals.binds.var;
+				var $tag = data.globals.tags[data.globals.focusTag];
+				dump('=======================dump data: '); dump(prod); 
+		    },
 			currencyprodlist : function(data,thisTLC)	{
 				//dump("Begin currency format");
 				//dump(data);
