@@ -347,6 +347,11 @@ var _store_greenspeed = function(_app) {
 					$("#top-level-cat-container").hide();
 					$('#shopNowLink').data('collapseOrExpanded',false).append();
 				}
+			},
+			
+			clickhidetoplinks : function($ele,p)	{				
+					$("#top-level-cat-container").hide();
+					$('#shopNowLink').data('collapseOrExpanded',false).append();
 			}
 		},
 		
