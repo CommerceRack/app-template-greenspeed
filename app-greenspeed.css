@@ -709,9 +709,9 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 	background-color: white;
     border: 3px solid #9eca37;
     position: absolute;
-    width: 1000px;
+    width: 500px;
     z-index: 100;
-	padding-left: 50px;
+	padding-left: 10px;
 	display:none;
 	top: 48px;
 }
@@ -719,7 +719,7 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 }
 .topnavCatLinkAnchorTemplate{
 	float:left;
-	width:300px;
+	width:165px;
 }
 #tier1categories	{top:35px; left:1%;}
 #hotwMenu	{top:25px; right:.2em;}
@@ -1026,6 +1026,17 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
     .cycle-slideshow { width: 200px;}
     .cycle-overlay { padding: 4px;}
     .cycle-caption { bottom: 4px; right: 4px }
+	#top-level-cat-container{
+		width:462px;
+		padding-left: 10px;
+	}
+	.topnavCatLinkAnchorTemplate{
+		width:150px;
+		margin-bottom: 5px;
+	}
+	.topnavCatLinkAnchorTemplate a{
+		font-size: 14px;
+	}
 }		
 
 
@@ -1103,7 +1114,13 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	}
 	.productSlideshowContainer{
 	}
-	
+	#top-level-cat-container{
+		width:500px;
+		padding-left: 10px;
+	}
+	.topnavCatLinkAnchorTemplate{
+		width:165px;
+	}
 }
 @media only screen and (min-width: 756px) {
 	.homepageBanner800wide{
@@ -1127,6 +1144,13 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	}
 	.productSlideshowContainer	{float:right; width:280px; margin:0; z-index:20; position:relative; text-align:right;}
 	.prodDetailSummaryATC	{clear:none; position:relative; top:0; left:0; margin-left:500px;float:none;}
+	#top-level-cat-container{
+		width:700px;
+		padding-left: 50px;
+	}
+	.topnavCatLinkAnchorTemplate{
+		width:230px;
+	}
 }
 
 
@@ -1145,6 +1169,13 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 		margin-left: auto;
 		margin-right: auto;
 		width: 66%;
+	}
+	#top-level-cat-container{
+		width:880px;
+		padding-left: 50px;
+	}
+	.topnavCatLinkAnchorTemplate{
+		width:290px;
 	}
 }
 
@@ -1180,7 +1211,29 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 		margin-right: auto;
 		width: 66%;
 	}
+	#top-level-cat-container{
+		width:880px;
 	}
+	.topnavCatLinkAnchorTemplate{
+		width:290px;
+	}
+	#top-level-cat-container{
+		width:880px;
+		padding-left: 50px;
+	}
+	.topnavCatLinkAnchorTemplate{
+		width:290px;
+	}
+	}
+@media only screen and (min-width: 1090px) {
+	#top-level-cat-container{
+		width:880px;
+		padding-left: 50px;
+	}
+	.topnavCatLinkAnchorTemplate{
+		width:290px;
+	}
+}
 	
 @media only screen and (min-width: 1190px) {
 	.homepageBanner800wide{
@@ -1203,6 +1256,13 @@ doesn't respond quite as well once in a tab. will need media queries to adjust t
 	}
 	.categoryList > li{
 		width: 180px;
+	}
+	#top-level-cat-container{
+		width:1000px;
+		padding-left: 50px;
+	}
+	.topnavCatLinkAnchorTemplate{
+		width:300px;
 	}
 }
 	
