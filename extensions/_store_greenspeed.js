@@ -59,6 +59,7 @@ var _store_greenspeed = function(_app) {
 						}
 						 _app.calls.appNavcatDetail.init(obj, _tag, 'immutable');
 						 _app.model.dispatchThis('immutable');
+						 $("#shopNowLink").data('collapseOrExpanded',false).append();
 					});
 										
 				},
@@ -336,6 +337,17 @@ var _store_greenspeed = function(_app) {
 		},
 		
 		e : {
+			showhidetoplinks : function($ele,p)	{
+				if($("#shopNowLink").data('collapseOrExpanded') === false)
+				{
+					$("#top-level-cat-container").show();
+					$('#shopNowLink').data('collapseOrExpanded',true).append();
+				}
+				else{
+					$("#top-level-cat-container").hide();
+					$('#shopNowLink').data('collapseOrExpanded',false).append();
+				}
+			}
 		},
 		
 			tlcFormats : {

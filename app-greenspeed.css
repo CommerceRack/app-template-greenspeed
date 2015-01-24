@@ -705,6 +705,22 @@ h2, h3, h4, h5, h6	{font-weight:normal;}
 .mastHeadMenu li:hover	{background:#9eca37; color:#FF0;}
 .mastHeadMenu .thumbContainer	{float:left; margin:0 0 .2em .2em;}
 
+#top-level-cat-container{
+	background-color: white;
+    border: 3px solid #9eca37;
+    position: absolute;
+    width: 1000px;
+    z-index: 100;
+	padding-left: 50px;
+	display:none;
+	top: 48px;
+}
+.topnavCatLinksTemplate{
+}
+.topnavCatLinkAnchorTemplate{
+	float:left;
+	width:300px;
+}
 #tier1categories	{top:35px; left:1%;}
 #hotwMenu	{top:25px; right:.2em;}
 
