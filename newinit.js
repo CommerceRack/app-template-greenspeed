@@ -455,7 +455,7 @@ _app.extend({
 	
 _app.couple('quickstart','addPageHandler',{
 	"pageType" : "homepage",
-	"require" : ['store_navcats','templates.html','store_routing','store_prodlist'],
+	"require" : ['store_navcats','templates.html','store_routing','store_prodlist','prodlist_infinite'],
 	"handler" : function($container, infoObj, require){
 		infoObj.deferred = $.Deferred();
 		infoObj.defPipeline.addDeferred(infoObj.deferred);

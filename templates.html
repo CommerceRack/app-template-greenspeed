@@ -2,7 +2,10 @@
 	<div class="bannerContainer clearfix marginBottom">
 		<div class="mainBanner"> 
         <!--HERE IS THE SECTION FOR THE HOMEPAGE AD BANNER IMAGES. HERE THE BANNER IMAGES CAN BE SWAPPED OUT FOR WHATEVER YOU WANT TO BE DISPLAYED HERE.-->
-        	<a href='#!category/.lots_o_products/Lots of Product'><img class="homepageBanner800wide" src="images/placeholder_banner_homepage800x140.jpg" /></a>
+        	<!--
+            <a href='#!category/.lots_o_products/Lots of Product'><img class="homepageBanner1000wide" src="images/placeholder_banner_homepage1000x175.png" /></a>
+            -->
+            <a href='#!category/.lots_o_products/Lots of Product'><img class="homepageBanner800wide" src="images/placeholder_banner_homepage800x140.jpg" /></a>
             <a href="#!product/MODEL06/is a parent product"><img class="homepageBanner600wide" src="images/placeholder_banner_homepage600x105.png" /></a> 
             <a href='#!category/.lots_o_products/Lots of Product'><img class="homepageBanner400wide" src="images/placeholder_banner_homepage400x70.png" /></a>
         </div>
@@ -18,7 +21,10 @@
 
 	
     <p data-tlc="bind $var '.$app_best_sellers.@products'; if (is $var --notblank;) {{apply --hide;}};">BEST SELLERS</p>
+    <ul class="listStyleNone fluidList noPadOrMargin productList" data-tlc="bind $var '.$artisan_chess_sets.@products'; prodlist_infinite#infiniteproductlist --withReviews='1' --withInventory='1' --withVariations='1' --templateid='productListTemplate' --legacy;" style="margin-right: 0px;"></ul>
+    <!--
     <ul class="listStyleNone fluidList noPadOrMargin productList" data-tlc="bind $var '.$app_best_sellers.@products'; prodlist_infinite#infiniteproductlist --withReviews='1' --withInventory='1' --withVariations='1' --templateid='productListTemplate' --legacy;" style="margin-right: 0px;"></ul>
+	-->
 </div>
 
 
