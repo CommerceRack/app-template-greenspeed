@@ -110,13 +110,12 @@ item list and summary are separate just to give more control over location.
 	
 	<div data-app-role="login">
 		<div class='floatLeft marginBottom'>
+            <div>If you have an account with us, please enter your email and password below and click login. If you need to make an account, please enter your email and click the create an account slider to fill in the remaining fields to comlete account creation.</div>
 			<input data-tlc="bind $var '.bill.email'; if(is $var --blank;) {{bind $var '.customer.login'; }}; if(is $var --notblank;) {{apply --select=$var;}}; " required name="bill/email" size="30" placeholder="email address" data-app-blur="order_create|execBuyerEmailUpdate" type="email"><br>
-			<label class="accountCreateContainer"><input name="want/create_customer" class="applyAnycb" data-app-change="order_create|tagAsAccountCreate" type="checkbox" >Create account</label>
-		</div>
-	
-		<div data-app-role="loginPasswordContainer" class="displayNone floatRight passwordContainer">
-			<div>If you have an account with us, please enter your password below to login</div>
-			<input placeholder="password" size="30" name="password" type="password"><button class="applyButton" data-app-click="order_create|execBuyerLogin">login</button>
+			<div data-app-role="loginPasswordContainer" class="displayNone floatLeft passwordContainer">
+                <input placeholder="password" size="30" name="password" type="password"><button class="applyButton" data-app-click="order_create|execBuyerLogin">login</button>
+            </div>
+            <label class="accountCreateContainer"><input name="want/create_customer" class="applyAnycb" data-app-change="order_create|tagAsAccountCreate" type="checkbox" >Create account</label>
 		</div>
 	</div>
 
@@ -155,7 +154,7 @@ because the panel is shared, the events (which aren't desired in the editor) are
 	<!-- postal not required for international. don't add it. -->
 	<div><input data-tlc="bind $var '.bill.postal'; if(is $var --blank;){{bind $var '.bill/postal';}}; if(is $var --notblank;) {{apply --select=$var;}}; " name="bill/postal" placeholder="zip/postal code" required size="14" value="" maxlength="10" type="text"></div>
 
-	<div class="billCountry" data-app-role="billCountry"><select data-tlc="bind $var '.'; cco#countriesasoptions  --shiptype='bill' --legacy;" data-legacy-useparentdata="true" name="bill/countrycode" placeholder="country" required="required"><option value=''>Please choose</option></select></div>
+	<div class="billCountry" data-app-role="billCountry"><select data-tlc="bind $var '.'; cco#countriesasoptions  --shiptype='bill' --legacy;" data-legacy-useparentdata="true" name="bill/countrycode" placeholder="country" required><option value=''>Please choose</option></select></div>
 
 	<div><input data-tlc="bind $var '.bill.phone';  if(is $var --blank;){{bind $var '.bill/phone';}}; if(is $var --notblank;) {{apply --select=$var;}}; " name="bill/phone" placeholder="phone number" required value="" type="tel"> <span class="hint zhint">in case of billing/delivery problems</span></div>
 

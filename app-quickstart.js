@@ -521,26 +521,25 @@ need to be customized on a per-ria basis.
 
 // * 201403 -> infoObj now passed into pageTransition.
 		pageTransition : function($o,$n, infoObj, callback)	{
+			$n.removeClass('displayNone').show();
 //if $o doesn't exist, the animation doesn't run and the new element doesn't show up, so that needs to be accounted for.
-//$o MAY be a jquery instance but have no length, so check both.
-			if($o instanceof jQuery && $o.length)	{
-/*
-*** 201403 -> move the scroll to top into the page transition for 2 reasons:
-1. allows the animations to be performed sequentially, which will be less jittery than running two at the same time
-2. Puts control of this into custom page transitions.
-*/
-
-				$o.fadeOut(1000, function(){
-					$n.fadeIn(1000); 
+			
+			//if(infoObj.performJumpToTop){
+			//	$('html, body').animate({scrollTop : 0}, 300);
+			//	}
+			if($o.length)	{
+//2. Puts control of this into custom page transitions.
+				//dump(" -> got here.  n.is(':visible'): "+$n.is(':visible'));
+				$o.addClass('post'); 
+				setTimeout(function(){
+					$n.addClass('active'); 
+					$o.removeClass('post active').hide(); 
 					callback();
-					}); //fade out old, fade in new.
-				}
-			else if($n instanceof jQuery)	{
-				$n.fadeIn(1000);
-				callback();
+					}, 300); //fade out old, fade in new.
 				}
 			else	{
-				dump("WARNING! in pageTransition, neither $o nor $n were instances of jQuery.  how odd.",'warn');
+				$n.addClass('active')
+				callback();
 				}
 			}, //pageTransition
 
