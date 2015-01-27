@@ -11,11 +11,10 @@
         </div>
 		<div class="productSlideshowContainer">
 			<p class="homepagePlaceholder" data-tlc="bind $var '.@products'; if (is $var --notblank;) {{apply --hide;}};">Product carousel goes here.</p>
-            <div data-tlc="bind $var '.@products'; store_prodlist#productlist  --hideSummary='1' --itemsPerPage='5' --templateid='productListCycleTemplate'  --legacy;" class="productSlideshow" data-cycle-log="false" data-cycle-fx="scrollHorz" data-cycle-timeout="5000" data-cycle-speed="5000" data-cycle-slides="div.slide" data-cycle-swipe="true" data-cycle-prev=".prev" data-cycle-next=".next" data-cycle-pause-on-hover="true">
-	
-				<nav class="cycle-pager"></nav>
-				<!-- slides will get added for product list here -->
+            <div data-tlc="bind $var '.$artisan_chess_sets.@products'; store_prodlist#productlist  --hideSummary='1' --itemsPerPage='5' --templateid='productListCycleTemplate'  --legacy;" class="productSlideshow" data-cycle-log="false" data-cycle-fx="scrollHorz" data-cycle-timeout="5000" data-cycle-speed="5000" data-cycle-slides="div.slide" data-cycle-swipe="true" data-cycle-prev=".prev" data-cycle-next=".next" data-cycle-pause-on-hover="true" data-cycle-pager="#pager">
+					<!-- slides will get added for product list here -->
 			</div>
+            <nav id="pager" class="cycle-pager"></nav>
 		</div>
 	</div>
 
